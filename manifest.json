@@ -1,0 +1,16 @@
+{
+  "name": "PixelBot Compagnon",
+  "short_name": "PixelBot",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "icons": [
+    {
+      "src": "assets/normal_1.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

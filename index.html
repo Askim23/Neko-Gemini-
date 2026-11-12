@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0e14">
+  <link rel="manifest" href="manifest.json">
+  <title>PixelBot - Compagnon de Bureau</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Écran d'activation initial -->
+  <div id="overlay">
+    <div class="overlay-box">
+      <img src="assets/normal_1.png" alt="PixelBot" class="preview-sprite">
+      <h1>PIXEL-BOT v1.0</h1>
+      <p>Touche l'écran pour activer le micro et réveiller le compagnon de Justine.</p>
+      <span class="btn-start">▶ START</span>
+    </div>
+  </div>
+
+  <!-- Interface Principale -->
+  <main class="stage" id="stage">
+    <!-- Bulle de statut Pixel Art -->
+    <div class="status-badge" id="status-badge">Zzz...</div>
+
+    <!-- Conteneur du Sprite Pixel Art -->
+    <div class="sprite-container" id="sprite-container">
+      <img id="bot-sprite" src="assets/sleep_1.png" alt="Bot">
+      <div id="particles"></div>
+    </div>
+
+    <!-- Jauge de son rétro discrète en bas -->
+    <div class="hud">
+      <div class="mic-bar-bg">
+        <div class="mic-bar-fill" id="mic-bar"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
