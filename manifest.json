@@ -1,15 +1,22 @@
 {
-  "name": "PixelBot Compagnon",
+  "name": "PixelBot",
   "short_name": "PixelBot",
-  "start_url": "./index.html",
-  "display": "fullscreen",
+  "description": "Ton petit compagnon de bureau en Pixel Art.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0b0e14",
-  "theme_color": "#0b0e14",
+  "background_color": "#101426",
+  "theme_color": "#101426",
   "icons": [
     {
-      "src": "assets/normal_1.png",
-      "sizes": "256x256",
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]

@@ -1,26 +1,44 @@
-# 👾 PixelBot - Compagnon Tamagotchi Rétro
+# PixelBot 🤖
 
-Un petit compagnon interactif en **Pixel Art (8-bit)** pensé pour recycler un ancien smartphone posé sur un bureau. Il réagit à la voix, aux bruits ambiants et aux caresses sur l'écran.
+PixelBot transforme un ancien smartphone Android en compagnon de bureau rétro en Pixel Art.
 
-## ✨ Fonctionnalités
-- **100% Pixel Art (Licence CC0 / Libre)** : 12 sprites PNG 16x16 upscalés proprement en 256x256 (`image-rendering: pixelated`).
-- **Réveil sonore (Web Audio API)** :
-  - **Silence** : Dort paisiblement (`Zzz...`).
-  - **Voix douce / Clavier** : Se réveille joyeusement ou affiche des yeux en cœurs (`<3`).
-  - **Bruit moyen (Rire, appel)** : Regard surpris (`Oh ?!`).
-  - **Bruit fort / Choc** : Fronce les sourcils (`Trop de bruit !`).
-- **Mode Caresse tactile** : Glisse le doigt sur l'écran pour le faire ronronner et vibrer (`^w^`).
-- **Bruitages 8-bit intégrés** : Sons synthétisés façon GameBoy / Tamagotchi sans aucun fichier MP3 externe.
-- **PWA & Wake Lock** : Fonctionne en plein écran via GitHub Pages (HTTPS natif, donc accès au micro autorisé directement sur Android).
+## Contenu
+- `index.html` : interface et scène du compagnon
+- `style.css` : habillage arcade responsive
+- `app.js` : microphone, analyse du volume, émotions, caresses et sons 8-bit
+- `manifest.json` : configuration PWA portrait
+- `sw.js` : cache hors ligne
+- `assets/` : 12 sprites Pixel Art (16×16) et icônes PWA
 
-## 🚀 Déploiement sur GitHub Pages (Recommandé pour Android)
-1. Crée un nouveau dépôt sur GitHub (ex: `pixel-bot`).
-2. Uploade tous les fichiers de cette archive (`index.html`, `style.css`, `app.js`, `manifest.json`, et le dossier `assets/`).
-3. Va dans **Settings > Pages** sur ton dépôt GitHub, puis active la branche `main`.
-4. Ouvre l'URL `https://<ton-pseudo>.github.io/pixel-bot/` sur le smartphone Android et fais **Ajouter à l'écran d'accueil** pour l'avoir en plein écran permanent !
+## Mise en ligne sur GitHub Pages
+1. Crée un dépôt GitHub, par exemple `pixel-bot`.
+2. Décompresse cette archive et envoie **le contenu** du dossier à la racine du dépôt.
+3. Dans **Settings → Pages**, choisis `Deploy from a branch`, la branche `main` et le dossier `/ (root)`.
+4. Attends la publication puis ouvre l'URL HTTPS fournie par GitHub Pages.
+5. Sur Android, ouvre la page dans Chrome, accepte le microphone, puis utilise le menu du navigateur → **Ajouter à l'écran d'accueil**.
 
-## 🎨 Remplacer par d'autres packs Pixel Art gratuits (CC0 / Usage privé)
-Si tu souhaites changer l'apparence du robot par un chat, un dinosaure ou un monstre, remplace simplement les images dans `assets/` par des sprites issus de ces banques libres de droits :
-- **Kenney.nl (CC0 - Domaine Public)** : `https://kenney.nl/assets` (ex: *Animal Pack Redux*, *Pixel Platformer*).
-- **OpenGameArt.org (CC0 / CC-BY)** : `https://opengameart.org/`
-- **Itch.io Free Pixel Pets** : `https://itch.io/game-assets/free/tag-pixel-art/tag-creatures` (ex: *Dino Characters* par Arks ou *Cat Sprite Sheet* par Elthen).
+## Première utilisation
+- Appuie sur **ACTIVER LE MICRO** : le navigateur demandera l'autorisation.
+- Le niveau sonore est analysé localement. Aucun son n'est enregistré ni envoyé.
+- Touche ou fais glisser ton doigt sur le robot pour le caresser.
+- Le bouton **SON ON/OFF** coupe ou réactive les effets sonores générés par le navigateur.
+
+## États
+- Silence prolongé : sommeil (`Zzz...`)
+- Son doux : écoute / affection
+- Pic moyen : surprise pendant environ 3 secondes
+- Pic fort : colère pendant environ 4 secondes
+- Contact tactile : ronron pendant environ 2,4 secondes
+
+Les seuils audio sont configurables au début de `app.js`, dans l'objet `config`.
+
+## Notes techniques et limites Android
+- Le microphone nécessite HTTPS (GitHub Pages convient) et une autorisation explicite de l'utilisateur.
+- L'écoute démarre uniquement après un appui sur le bouton : c'est une exigence habituelle des navigateurs.
+- `Wake Lock` demande à empêcher l'extinction de l'écran, mais Android, le navigateur, le mode économie d'énergie ou la surchauffe peuvent tout de même interrompre l'activité.
+- Pour un affichage réellement permanent, branche le téléphone, désactive l'optimisation batterie pour le navigateur et vérifie les réglages de mise en veille de l'appareil.
+- Le navigateur peut limiter le micro lorsque l'onglet passe en arrière-plan ou lorsque l'écran est verrouillé. Garde PixelBot au premier plan.
+- La police Press Start 2P est chargée depuis Google Fonts ; en cas d'absence de réseau, une police monospace de secours sera utilisée.
+
+## Confidentialité
+Le flux micro reste dans le navigateur : l'application calcule un niveau RMS et ne conserve ni n'envoie de fichier audio.

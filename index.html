@@ -1,45 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0b0e14">
-  <link rel="manifest" href="manifest.json">
-  <title>PixelBot - Compagnon de Bureau</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101426">
+  <meta name="description" content="PixelBot, un petit compagnon de bureau rétro qui réagit aux sons et aux caresses.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./assets/icon-192.png">
+  <link rel="stylesheet" href="./style.css">
+  <title>PixelBot</title>
 </head>
 <body>
-
-  <!-- Écran d'activation initial -->
-  <div id="overlay">
-    <div class="overlay-box">
-      <img src="assets/normal_1.png" alt="PixelBot" class="preview-sprite">
-      <h1>PIXEL-BOT v1.0</h1>
-      <p>Touche l'écran pour activer le micro et réveiller le compagnon de Justine.</p>
-      <span class="btn-start">▶ START</span>
-    </div>
-  </div>
-
-  <!-- Interface Principale -->
-  <main class="stage" id="stage">
-    <!-- Bulle de statut Pixel Art -->
-    <div class="status-badge" id="status-badge">Zzz...</div>
-
-    <!-- Conteneur du Sprite Pixel Art -->
-    <div class="sprite-container" id="sprite-container">
-      <img id="bot-sprite" src="assets/sleep_1.png" alt="Bot">
-      <div id="particles"></div>
+  <main class="cabinet" aria-label="PixelBot, compagnon de bureau">
+    <div class="topline">
+      <span class="brand">PIXEL<span>BOT</span></span>
+      <span class="status"><i id="status-dot"></i><span id="status-label">EN VEILLE</span></span>
     </div>
 
-    <!-- Jauge de son rétro discrète en bas -->
-    <div class="hud">
-      <div class="mic-bar-bg">
-        <div class="mic-bar-fill" id="mic-bar"></div>
+    <section class="stage">
+      <div class="scanlines"></div>
+      <div class="stars" aria-hidden="true">
+        <span>✦</span><span>·</span><span>✧</span><span>·</span><span>✦</span>
       </div>
-    </div>
-  </main>
+      <div id="particles" class="particles" aria-hidden="true"></div>
+      <div class="speech" id="speech" aria-live="polite">Zzz...</div>
+      <button class="pet-button" id="pet-button" aria-label="Caresser PixelBot">
+        <img id="pet" src="./assets/sleep_1.png" alt="Petit robot PixelBot endormi" draggable="false">
+      </button>
+      <div class="tap-hint">TOUCHE-MOI POUR ME CARESSER</div>
+      <div class="floor-glow"></div>
+    </section>
 
-  <script src="app.js"></script>
+    <section class="meter-panel">
+      <div class="meter-head"><span>SON AMBIANT</span><span id="volume-value">0%</span></div>
+      <div class="meter"><div id="meter-fill"></div><i class="threshold t1"></i><i class="threshold t2"></i></div>
+      <div class="meter-labels"><span>SILENCE</span><span>DOUX</span><span>FORT</span></div>
+    </section>
+
+    <section class="controls">
+      <button id="start-button" class="primary">▶ ACTIVER LE MICRO</button>
+      <button id="sound-button" class="secondary" aria-pressed="true">♫ SON ON</button>
+    </section>
+    <p class="notice" id="notice">Appuie sur ACTIVER pour autoriser le micro. Le son est analysé localement et n'est pas enregistré.</p>
+    <footer><span>PIXEL PET v1.0</span><span>MADE WITH ♥</span></footer>
+  </main>
+  <script src="./app.js"></script>
 </body>
 </html>
