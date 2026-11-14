@@ -1,45 +1,1517 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0b0e14">
-  <link rel="manifest" href="manifest.json">
-  <title>PixelBot - Compagnon de Bureau</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Neko 3DS — Édition Vivante</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#1e222d" />
+  <style>
+    :root {
+      --shell-bg: #222634;
+      --shell-Trim: #363c52;
+      --accent: #ff85a2;
+      --accent-soft: #ffdde6;
+      --ui-bg: #fdfaf6;
+      --ui-card: #ffffff;
+      --ui-border: #e6dccf;
+      --text-main: #4a3f35;
+      --text-muted: #8c7b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #12141c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Boîtier Nintendo 3DS / Desk Companion */
+    #console-3ds {
+      width: 100%;
+      height: 100%;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(145deg, #2b3042, #1b1e2b);
+      padding: 8px;
+      gap: 6px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+
+    /* ÉCRAN SUPÉRIEUR 3D (68% de l'espace pour être admiré de loin) */
+    #top-screen-frame {
+      position: relative;
+      flex: 6.8;
+      background: #000;
+      border-radius: 18px;
+      border: 4px solid #3c425c;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    #webgl-container {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Bandeau d'ambiance & Heure en haut de l'écran 3D */
+    #hud-top {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .hud-pill {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    #pet-mood-bubble {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 7px 14px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    #camera-hint {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(30, 34, 45, 0.65);
+      color: #fff;
+      padding: 6px 11px;
+      border-radius: 12px;
+      font-size: 11px;
+      pointer-events: auto;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Charnière 3DS */
+    #hinge {
+      height: 8px;
+      background: linear-gradient(90deg, #191c26 0%, #383f57 50%, #191c26 100%);
+      border-radius: 99px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+    }
+    .hinge-led {
+      width: 24px;
+      height: 3px;
+      border-radius: 4px;
+      background: #6ee7b7;
+      box-shadow: 0 0 8px #6ee7b7;
+    }
+
+    /* ÉCRAN TACTILE INFÉRIEUR (32% de la hauteur) */
+    #bottom-screen-frame {
+      flex: 3.2;
+      background: var(--ui-bg);
+      border-radius: 18px;
+      border: 4px solid #3c425c;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Barres de jauges 3DS */
+    .gauges-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .gauge-card {
+      background: var(--ui-card);
+      border: 1.5px solid var(--ui-border);
+      border-radius: 12px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .gauge-track {
+      width: 100%;
+      height: 7px;
+      background: #eee5d8;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* Boutons d'action tactiles */
+    .actions-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin: 6px 0;
+    }
+
+    .btn-3ds {
+      background: linear-gradient(180deg, #ffffff 0%, #f5efe6 100%);
+      border: 2px solid #dfd3c3;
+      border-bottom-width: 4px;
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 11px;
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .btn-3ds:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .btn-3ds svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent);
+      stroke-width: 2.2;
+      fill: none;
+    }
+
+    /* Barre de personnalisation (Robes, Espèces .GLB, Accessoires 3D) */
+    .customizer-bar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--ui-border);
+      padding-top: 6px;
+      font-size: 11px;
+    }
+
+    .select-3ds {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid var(--ui-border);
+      border-radius: 10px;
+      padding: 5px 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    /* Notification flottante */
+    #toast {
+      position: absolute;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(255, 133, 162, 0.95);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(255,133,162,0.4);
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+
+  <!-- Importation de Three.js et GLTFLoader via CDN officiel -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
 
-  <!-- Écran d'activation initial -->
-  <div id="overlay">
-    <div class="overlay-box">
-      <img src="assets/normal_1.png" alt="PixelBot" class="preview-sprite">
-      <h1>PIXEL-BOT v1.0</h1>
-      <p>Touche l'écran pour activer le micro et réveiller le compagnon de Justine.</p>
-      <span class="btn-start">▶ START</span>
+  <div id="console-3ds">
+    <!-- ÉCRAN DU HAUT : CHAMBRE 3D TEMPS RÉEL -->
+    <div id="top-screen-frame">
+      <div id="hud-top">
+        <div class="hud-pill">
+          <span id="pet-name-display" style="cursor:pointer;" title="Toucher pour renommer">Mochi</span>
+          <span style="color:#ff85a2;">•</span>
+          <span id="coins-display">150 ★</span>
+        </div>
+        <div class="hud-pill" id="time-display">
+          <span id="day-phase-dot" style="width:9px;height:9px;border-radius:50%;background:#fbbf24;display:inline-block;"></span>
+          <span id="clock-text">14:30</span>
+        </div>
+      </div>
+
+      <div id="toast">Miam ! +25 Faim</div>
+      <div id="pet-mood-bubble">Se promène tranquillement dans sa chambre...</div>
+      <button id="camera-hint" title="Changer l'éclairage ou recentrer">Mode Lumière : Auto (Heure réelle)</button>
+
+      <div id="webgl-container"></div>
+    </div>
+
+    <!-- CHARNIÈRE 3DS -->
+    <div id="hinge">
+      <div class="hinge-led"></div>
+    </div>
+
+    <!-- ÉCRAN DU BAS : COMMANDES TACTILES DOUCES -->
+    <div id="bottom-screen-frame">
+      <div class="gauges-grid">
+        <div class="gauge-card">
+          <div class="gauge-header"><span>Repas</span><span id="val-hunger">85%</span></div>
+          <div class="gauge-track"><div class="gauge-fill" id="bar-hunger" style="width:85%;background:#fb7185;"></div></div>
+        </div>
+        <div class="gauge-card">
+          <div class="gauge-header"><span>Bonheur</span><span id="val-fun">90%</span></div>
+          <div class="gauge-track"><div class="gauge-fill" id="bar-fun" style="width:90%;background:#fbbf24;"></div></div>
+        </div>
+        <div class="gauge-card">
+          <div class="gauge-header"><span>Énergie</span><span id="val-energy">80%</span></div>
+          <div class="gauge-track"><div class="gauge-fill" id="bar-energy" style="width:80%;background:#60a5fa;"></div></div>
+        </div>
+        <div class="gauge-card">
+          <div class="gauge-header"><span>Toilettage</span><span id="val-hygiene">95%</span></div>
+          <div class="gauge-track"><div class="gauge-fill" id="bar-hygiene" style="width:95%;background:#34d399;"></div></div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn-3ds" id="btn-feed">
+          <svg viewBox="0 0 24 24"><path d="M12 6c-3.87 0-7 3.13-7 7 0 2.38 1.19 4.47 3 5.74V21h8v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z"/><path d="M9 3h6"/></svg>
+          <span>Nourrir</span>
+        </button>
+        <button class="btn-3ds" id="btn-pet">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span>Caresser</span>
+        </button>
+        <button class="btn-3ds" id="btn-play">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 8.5c3 3 4 7 7 7"/><path d="M15.5 8.5c-3 3-4 7-7 7"/></svg>
+          <span>Pelote 3D</span>
+        </button>
+        <button class="btn-3ds" id="btn-wash">
+          <svg viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+          <span>Brosser</span>
+        </button>
+        <button class="btn-3ds" id="btn-sleep">
+          <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span>Sieste</span>
+        </button>
+      </div>
+
+      <!-- Sélecteurs 3D : Modèle, 11 Robes à motifs & Accessoires 3D -->
+      <div class="customizer-bar">
+        <select id="select-species" class="select-3ds" title="Modèle 3D">
+          <option value="proc_cat">Chat 3DS (Intégré)</option>
+          <option value="models/Cat.glb">Chat (models/Cat.glb)</option>
+          <option value="models/Fox.glb">Renard (models/Fox.glb)</option>
+          <option value="models/Shiba Inu.glb">Shiba Inu (models/Shiba Inu.glb)</option>
+          <option value="models/Husky.glb">Husky (models/Husky.glb)</option>
+          <option value="models/Deer.glb">Faon (models/Deer.glb)</option>
+          <option value="models/Alpaca.glb">Alpaga (models/Alpaca.glb)</option>
+        </select>
+
+        <select id="select-coat" class="select-3ds" title="11 Robes et motifs">
+          <option value="tuxedo">Robe : Smoking (Phénix)</option>
+          <option value="black">Robe : Noir Ébène (Tichat)</option>
+          <option value="ginger">Robe : Tigré Roux</option>
+          <option value="calico">Robe : Calico Tricolore</option>
+          <option value="siamese">Robe : Siamois Royal</option>
+          <option value="white">Robe : Blanc Neige</option>
+          <option value="grey_tabby">Robe : Tigré Argent</option>
+          <option value="russian">Robe : Bleu Russe</option>
+          <option value="cinnamon">Robe : Cannelle Doux</option>
+          <option value="sakura">Robe : Rose Pastel</option>
+          <option value="gold">Robe : Doré Céleste</option>
+        </select>
+
+        <select id="select-hat" class="select-3ds" title="Accessoire 3D attaché à la tête">
+          <option value="none">Sans accessoire</option>
+          <option value="crown">Couronne Royale 3D</option>
+          <option value="bowtie">Nœud Papillon Rouge</option>
+          <option value="glasses">Lunettes Rondes 3D</option>
+          <option value="halo">Auréole Céleste</option>
+          <option value="witch">Chapeau Magique</option>
+        </select>
+      </div>
     </div>
   </div>
 
-  <!-- Interface Principale -->
-  <main class="stage" id="stage">
-    <!-- Bulle de statut Pixel Art -->
-    <div class="status-badge" id="status-badge">Zzz...</div>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-    <!-- Conteneur du Sprite Pixel Art -->
-    <div class="sprite-container" id="sprite-container">
-      <img id="bot-sprite" src="assets/sleep_1.png" alt="Bot">
-      <div id="particles"></div>
-    </div>
+    // ============================================================================
+    // 1. ÉTAT DU JEU & SAUVEGARDE LOCALE (CONSERVE LA LOGIQUE NEKO)
+    // ============================================================================
+    const defaultState = {
+      name: 'Mochi',
+      coins: 150,
+      hunger: 85,
+      fun: 90,
+      energy: 85,
+      hygiene: 95,
+      coat: 'tuxedo',
+      hat: 'crown',
+      species: 'proc_cat',
+      lightingMode: 'auto' // 'auto', 'day', 'sunset', 'night'
+    };
 
-    <!-- Jauge de son rétro discrète en bas -->
-    <div class="hud">
-      <div class="mic-bar-bg">
-        <div class="mic-bar-fill" id="mic-bar"></div>
-      </div>
-    </div>
-  </main>
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save') || '{}'));
+    function saveState() {
+      localStorage.setItem('neko3ds_save', JSON.stringify(state));
+    }
 
-  <script src="app.js"></script>
+    // ============================================================================
+    // 2. INITIALISATION DE LA SCÈNE 3D THREE.JS (STYLE NINTENDO 3DS COZY)
+    // ============================================================================
+    const container = document.getElementById('webgl-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xdbeafe);
+    scene.fog = new THREE.FogExp2(0xdbeafe, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 3.6, 6.2);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0.8, 0);
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 3.2;
+    controls.maxDistance = 8.5;
+    controls.minPolarAngle = Math.PI / 6;
+    controls.maxPolarAngle = Math.PI / 2.15;
+
+    const gltfLoader = new GLTFLoader();
+
+    // ============================================================================
+    // 3. ÉCLAIRAGE DYNAMIQUE JOUR / GOLDEN HOUR / NUIT (POUR LE BUREAU 24/7)
+    // ============================================================================
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.85);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.4);
+    sunLight.position.set(4, 7, 3);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 1024;
+    sunLight.shadow.mapSize.height = 1024;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 20;
+    const d = 5;
+    sunLight.shadow.camera.left = -d;
+    sunLight.shadow.camera.right = d;
+    sunLight.shadow.camera.top = d;
+    sunLight.shadow.camera.bottom = -d;
+    sunLight.shadow.bias = -0.001;
+    scene.add(sunLight);
+
+    // Lampe de chevet chaude pour la nuit (s'allume le soir sur le bureau de Justine)
+    const nightLampLight = new THREE.PointLight(0xff9e44, 0, 7, 1.5);
+    nightLampLight.position.set(-2.4, 1.8, -2.0);
+    nightLampLight.castShadow = true;
+    scene.add(nightLampLight);
+
+    // Rayon de lumière de la fenêtre (Volumetric Sunbeam)
+    const sunbeamGeo = new THREE.ConeGeometry(1.8, 5.5, 32, 1, true);
+    const sunbeamMat = new THREE.MeshBasicMaterial({
+      color: 0xfff3c4,
+      transparent: true,
+      opacity: 0.13,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+    const sunbeam = new THREE.Mesh(sunbeamGeo, sunbeamMat);
+    sunbeam.position.set(1.5, 2.3, -1.6);
+    sunbeam.rotation.z = 0.45;
+    sunbeam.rotation.x = 0.35;
+    scene.add(sunbeam);
+
+    // ============================================================================
+    // 4. CONSTRUCTION DE LA CHAMBRE 3D (AVEC TES FICHIERS .GLB KENNEY / KAYKIT)
+    // ============================================================================
+    const roomGroup = new THREE.Group();
+    scene.add(roomGroup);
+
+    // Parquet chaleureux en lattes 3D
+    const floorCanvas = document.createElement('canvas');
+    floorCanvas.width = 512; floorCanvas.height = 512;
+    const fCtx = floorCanvas.getContext('2d');
+    fCtx.fillStyle = '#d6a87c';
+    fCtx.fillRect(0, 0, 512, 512);
+    fCtx.strokeStyle = '#bf8f63';
+    fCtx.lineWidth = 4;
+    for (let y = 0; y < 512; y += 64) {
+      fCtx.beginPath(); fCtx.moveTo(0, y); fCtx.lineTo(512, y); fCtx.stroke();
+      for (let x = (y % 128 === 0 ? 0 : 128); x < 512; x += 256) {
+        fCtx.beginPath(); fCtx.moveTo(x, y); fCtx.lineTo(x, y + 64); fCtx.stroke();
+      }
+    }
+    const floorTex = new THREE.CanvasTexture(floorCanvas);
+    floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
+    floorTex.repeat.set(3, 3);
+
+    const floorMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(4.8, 4.8, 0.25, 48),
+      new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.8 })
+    );
+    floorMesh.position.y = -0.125;
+    floorMesh.receiveShadow = true;
+    roomGroup.add(floorMesh);
+
+    // Murs pastel coin cosy
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.9 });
+    const backWall = new THREE.Mesh(new THREE.BoxGeometry(6.8, 4.0, 0.25), wallMat);
+    backWall.position.set(0, 2.0, -3.2);
+    backWall.receiveShadow = true;
+    roomGroup.add(backWall);
+
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.0, 6.8), wallMat);
+    leftWall.position.set(-3.3, 2.0, 0.1);
+    leftWall.receiveShadow = true;
+    roomGroup.add(leftWall);
+
+    // Fenêtre donnant sur le ciel (change de couleur selon l'heure + étoiles la nuit)
+    const skyMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
+    const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.6), skyMat);
+    windowGlass.position.set(1.2, 2.35, -3.05);
+    roomGroup.add(windowGlass);
+
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+    const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.25, 1.75, 0.08), frameMat);
+    winFrame.position.set(1.2, 2.35, -3.07);
+    roomGroup.add(winFrame);
+
+    // Fonction utilitaire : Charge un meuble .GLB/.GLTF de tes packs, ou crée son équivalent 3D s'il n'est pas encore copié
+    function loadFurnitureOrFallback(url, pos, rotY, scale, fallbackBuilder) {
+      gltfLoader.load(
+        url,
+        (gltf) => {
+          const model = gltf.scene;
+          model.position.set(pos[0], pos[1], pos[2]);
+          model.rotation.y = rotY;
+          model.scale.setScalar(scale);
+          model.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+          roomGroup.add(model);
+        },
+        undefined,
+        () => {
+          const fallback = fallbackBuilder();
+          fallback.position.set(pos[0], pos[1], pos[2]);
+          fallback.rotation.y = rotY;
+          roomGroup.add(fallback);
+        }
+      );
+    }
+
+    // 1. Tapis rond douillet au centre (rugRound.glb)
+    loadFurnitureOrFallback('models/rugRound.glb', [0, 0.01, 0.2], 0, 2.2, () => {
+      const g = new THREE.Group();
+      const rug = new THREE.Mesh(
+        new THREE.CylinderGeometry(2.1, 2.1, 0.04, 36),
+        new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.95 })
+      );
+      const inner = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.65, 1.65, 0.045, 36),
+        new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 })
+      );
+      rug.receiveShadow = inner.receiveShadow = true;
+      g.add(rug, inner);
+      return g;
+    });
+
+    // 2. Coussin / Lit moelleux du chat (pillowBlue.glb)
+    loadFurnitureOrFallback('models/pillowBlue.glb', [-1.8, 0.02, 0.9], 0.4, 1.8, () => {
+      const g = new THREE.Group();
+      const base = new THREE.Mesh(
+        new THREE.TorusGeometry(0.62, 0.22, 16, 32),
+        new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 })
+      );
+      base.rotation.x = Math.PI / 2;
+      base.position.y = 0.2;
+      base.castShadow = base.receiveShadow = true;
+      const pad = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.58, 0.58, 0.18, 24),
+        new THREE.MeshStandardMaterial({ color: 0xede9fe, roughness: 0.9 })
+      );
+      pad.position.y = 0.12;
+      pad.receiveShadow = true;
+      g.add(base, pad);
+      return g;
+    });
+
+    // 3. Canapé cosy au fond (loungeSofa.glb)
+    loadFurnitureOrFallback('models/loungeSofa.glb', [-0.9, 0, -2.35], 0, 1.7, () => {
+      const g = new THREE.Group();
+      const mat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.45, 0.95), mat);
+      seat.position.y = 0.25;
+      const back = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.95, 0.3), mat);
+      back.position.set(0, 0.65, -0.35);
+      seat.castShadow = back.castShadow = seat.receiveShadow = true;
+      g.add(seat, back);
+      return g;
+    });
+
+    // 4. Lampadaire d'ambiance (lampRoundFloor.glb)
+    loadFurnitureOrFallback('models/lampRoundFloor.glb', [-2.4, 0, -2.0], 0, 1.8, () => {
+      const g = new THREE.Group();
+      const pole = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.05, 0.08, 1.7, 12),
+        new THREE.MeshStandardMaterial({ color: 0x78350f })
+      );
+      pole.position.y = 0.85;
+      const shade = new THREE.Mesh(
+        new THREE.ConeGeometry(0.42, 0.5, 20, 1, true),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfef08a, emissiveIntensity: 0.4, side: THREE.DoubleSide })
+      );
+      shade.position.y = 1.75;
+      g.add(pole, shade);
+      return g;
+    });
+
+    // 5. Plante verte en pot (pottedPlant.glb)
+    loadFurnitureOrFallback('models/pottedPlant.glb', [2.3, 0, -2.2], 0, 2.0, () => {
+      const g = new THREE.Group();
+      const pot = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.32, 0.24, 0.5, 16),
+        new THREE.MeshStandardMaterial({ color: 0xea580c, roughness: 0.7 })
+      );
+      pot.position.y = 0.25;
+      pot.castShadow = true;
+      const leavesMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.6 });
+      for (let i = 0; i < 5; i++) {
+        const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), leavesMat);
+        leaf.position.set(Math.cos(i * 1.2) * 0.2, 0.65 + (i % 2) * 0.2, Math.sin(i * 1.2) * 0.2);
+        leaf.castShadow = true;
+        g.add(leaf);
+      }
+      g.add(pot);
+      return g;
+    });
+
+    // 6. Gamelle 3D qui se remplit quand on nourrit le compagnon
+    const bowlGroup = new THREE.Group();
+    bowlGroup.position.set(1.95, 0, 0.85);
+    const bowlOuter = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.36, 0.44, 0.18, 24),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.4 })
+    );
+    bowlOuter.position.y = 0.09;
+    bowlOuter.castShadow = bowlOuter.receiveShadow = true;
+    const foodMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.28, 16, 12),
+      new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.9 })
+    );
+    foodMesh.scale.set(1, 0.45, 1);
+    foodMesh.position.y = 0.14;
+    bowlGroup.add(bowlOuter, foodMesh);
+    roomGroup.add(bowlGroup);
+
+    // 7. Pelote de laine 3D physique pour jouer
+    const yarnBall = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22, 20, 20),
+      new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.7 })
+    );
+    yarnBall.position.set(0.9, 0.22, 1.4);
+    yarnBall.castShadow = true;
+    scene.add(yarnBall);
+    const yarnVelocity = new THREE.Vector3(0, 0, 0);
+
+    // ============================================================================
+    // 5. SYSTÈME DE PARTICULES 3D (POUSSIÈRES DORÉES + CŒURS + Zzz)
+    // ============================================================================
+    const dustCount = 55;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) {
+      dustPositions[i * 3] = (Math.random() - 0.5) * 6;
+      dustPositions[i * 3 + 1] = Math.random() * 3.5 + 0.3;
+      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 5;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xfffbeb,
+      size: 0.06,
+      transparent: true,
+      opacity: 0.75
+    });
+    const dustParticles = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustParticles);
+
+    // Particules d'émotions (Cœurs / Bulles / Notes)
+    const floatingParticles = [];
+    function spawnParticles3D(colorHex, count = 6) {
+      for (let i = 0; i < count; i++) {
+        const mesh = new THREE.Mesh(
+          new THREE.SphereGeometry(0.08, 10, 10),
+          new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 1 })
+        );
+        mesh.position.copy(petRoot.position);
+        mesh.position.y += 0.9 + Math.random() * 0.3;
+        mesh.position.x += (Math.random() - 0.5) * 0.6;
+        mesh.position.z += (Math.random() - 0.5) * 0.6;
+        scene.add(mesh);
+        floatingParticles.push({ mesh, life: 1.0, vy: 0.8 + Math.random() * 0.5 });
+      }
+    }
+
+    // ============================================================================
+    // 6. GÉNÉRATEUR DES 11 TEXTURES DE ROBES (AVEC VRAIS MOTIFS 3D !)
+    // ============================================================================
+    function generateCoatTexture(coatId) {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+
+      const palettes = {
+        tuxedo:     { base: '#1e1b18', secondary: '#ffffff', pattern: 'tuxedo' },
+        black:      { base: '#18181b', secondary: '#27272a', pattern: 'solid' },
+        ginger:     { base: '#f97316', secondary: '#c2410c', pattern: 'stripes' },
+        calico:     { base: '#ffffff', secondary: '#ea580c', tertiary: '#1e1b18', pattern: 'spots' },
+        siamese:    { base: '#fef3c7', secondary: '#451a03', pattern: 'points' },
+        white:      { base: '#f8fafc', secondary: '#f1f5f9', pattern: 'solid' },
+        grey_tabby: { base: '#94a3b8', secondary: '#334155', pattern: 'stripes' },
+        russian:    { base: '#64748b', secondary: '#475569', pattern: 'solid' },
+        cinnamon:   { base: '#b45309', secondary: '#78350f', pattern: 'stripes' },
+        sakura:     { base: '#fbcfe8', secondary: '#f472b6', pattern: 'spots' },
+        gold:       { base: '#fde047', secondary: '#ca8a04', pattern: 'stripes' }
+      };
+
+      const p = palettes[coatId] || palettes.tuxedo;
+      ctx.fillStyle = p.base;
+      ctx.fillRect(0, 0, 256, 256);
+
+      if (p.pattern === 'tuxedo') {
+        // Plastron blanc et bout des pattes blancs (façon Phénix)
+        ctx.fillStyle = p.secondary;
+        ctx.beginPath();
+        ctx.ellipse(128, 160, 55, 75, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(0, 210, 256, 46);
+      } else if (p.pattern === 'stripes') {
+        ctx.fillStyle = p.secondary;
+        for (let y = 20; y < 240; y += 28) {
+          ctx.fillRect(10, y, 236, 10);
+        }
+      } else if (p.pattern === 'spots') {
+        ctx.fillStyle = p.secondary;
+        const spots = [[60,60,35],[180,80,40],[90,170,38],[190,190,30]];
+        spots.forEach(([x,y,r]) => {
+          ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+        });
+        if (p.tertiary) {
+          ctx.fillStyle = p.tertiary;
+          [[140,50,30],[50,150,32],[150,210,28]].forEach(([x,y,r]) => {
+            ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+          });
+        }
+      } else if (p.pattern === 'points') {
+        const grad = ctx.createLinearGradient(0, 0, 0, 256);
+        grad.addColorStop(0, p.secondary);
+        grad.addColorStop(0.4, p.base);
+        grad.addColorStop(0.85, p.base);
+        grad.addColorStop(1, p.secondary);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 256, 256);
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    // ============================================================================
+    // 7. MODÉLISATION 3D DES ACCESSOIRES (S'ATTACHENT À L'OS DE LA TÊTE !)
+    // ============================================================================
+    const hatGroup = new THREE.Group();
+
+    function buildAccessory3D(hatType) {
+      while (hatGroup.children.length > 0) {
+        hatGroup.remove(hatGroup.children[0]);
+      }
+      if (hatType === 'none') return;
+
+      if (hatType === 'crown') {
+        const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.6, roughness: 0.25 });
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.19, 0.14, 16), goldMat);
+        base.position.y = 0.07;
+        hatGroup.add(base);
+        for (let i = 0; i < 5; i++) {
+          const a = (i / 5) * Math.PI * 2;
+          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.14, 8), goldMat);
+          spike.position.set(Math.cos(a) * 0.18, 0.18, Math.sin(a) * 0.18);
+          hatGroup.add(spike);
+        }
+      } else if (hatType === 'bowtie') {
+        const redMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 });
+        const center = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), redMat);
+        const leftWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
+        leftWing.rotation.z = -Math.PI / 2;
+        leftWing.position.x = -0.1;
+        const rightWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
+        rightWing.rotation.z = Math.PI / 2;
+        rightWing.position.x = 0.1;
+        const bow = new THREE.Group();
+        bow.add(center, leftWing, rightWing);
+        bow.position.set(0, -0.42, 0.34); // Sous le menton
+        hatGroup.add(bow);
+      } else if (hatType === 'glasses') {
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5, roughness: 0.3 });
+        const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
+        const g = new THREE.Group();
+        [-0.17, 0.17].forEach((x) => {
+          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.018, 12, 24), frameMat);
+          rim.position.set(x, -0.1, 0.41);
+          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.1, 20), glassMat);
+          lens.position.set(x, -0.1, 0.41);
+          g.add(rim, lens);
+        });
+        const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.14), frameMat);
+        bridge.rotation.z = Math.PI / 2;
+        bridge.position.set(0, -0.1, 0.41);
+        g.add(bridge);
+        hatGroup.add(g);
+      } else if (hatType === 'halo') {
+        const halo = new THREE.Mesh(
+          new THREE.TorusGeometry(0.28, 0.035, 16, 36),
+          new THREE.MeshBasicMaterial({ color: 0xfef08a })
+        );
+        halo.rotation.x = Math.PI / 2;
+        halo.position.y = 0.26;
+        hatGroup.add(halo);
+      } else if (hatType === 'witch') {
+        const hatMat = new THREE.MeshStandardMaterial({ color: 0x3b0764, roughness: 0.8 });
+        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.03, 24), hatMat);
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.55, 24), hatMat);
+        cone.position.y = 0.28;
+        hatGroup.add(brim, cone);
+      }
+    }
+
+    // ============================================================================
+    // 8. COMPAGNON 3D (MODÈLE .GLB EXTERNE OU CHAT 3DS LOW-POLY INTÉGRÉ)
+    // ============================================================================
+    const petRoot = new THREE.Group();
+    scene.add(petRoot);
+
+    let mixer = null;
+    let animationsMap = {};
+    let currentAction = null;
+    let proceduralParts = null;
+    let petBodyMeshes = [];
+
+    // Création du Chat 3DS Chibi Low-Poly intégré (Style Nintendogs + Cats)
+    function createProceduralCat3DS() {
+      const group = new THREE.Group();
+      const coatTex = generateCoatTexture(state.coat);
+      const furMat = new THREE.MeshStandardMaterial({ map: coatTex, roughness: 0.75 });
+      const pinkMat = new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.6 });
+      const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.15 });
+      const shineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+      petBodyMeshes = [];
+
+      // Corps moelleux
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.34, 0.42, 16, 24), furMat);
+      body.rotation.x = Math.PI / 2;
+      body.position.set(0, 0.48, 0);
+      body.castShadow = body.receiveShadow = true;
+      group.add(body);
+      petBodyMeshes.push(body);
+
+      // Groupe Tête (Chibi 3DS : grosse tête expressive)
+      const headGroup = new THREE.Group();
+      headGroup.position.set(0, 0.86, 0.35);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 24), furMat);
+      head.scale.set(1.08, 0.96, 0.98);
+      head.castShadow = true;
+      headGroup.add(head);
+      petBodyMeshes.push(head);
+
+      // Oreilles de chat
+      [-0.25, 0.25].forEach((x, idx) => {
+        const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.34, 16), furMat);
+        ear.position.set(x, 0.38, -0.02);
+        ear.rotation.z = idx === 0 ? 0.35 : -0.35;
+        ear.castShadow = true;
+        const innerEar = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.22, 12), pinkMat);
+        innerEar.position.set(x * 0.96, 0.36, 0.05);
+        innerEar.rotation.z = ear.rotation.z;
+        headGroup.add(ear, innerEar);
+        petBodyMeshes.push(ear);
+      });
+
+      // Grands yeux brillants style 3DS
+      const eyesGroup = new THREE.Group();
+      [-0.16, 0.16].forEach((x) => {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.072, 16, 16), eyeMat);
+        eye.position.set(x, 0.04, 0.37);
+        const glint = new THREE.Mesh(new THREE.SphereGeometry(0.024, 8, 8), shineMat);
+        glint.position.set(x + 0.022, 0.065, 0.43);
+        eyesGroup.add(eye, glint);
+      });
+      headGroup.add(eyesGroup);
+
+      // Petit museau rose
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.042, 12, 12), pinkMat);
+      nose.scale.set(1.3, 0.9, 0.9);
+      nose.position.set(0, -0.04, 0.42);
+      headGroup.add(nose);
+
+      // Attache l'accessoire 3D au sommet de la tête
+      hatGroup.position.set(0, 0.39, 0);
+      hatGroup.scale.setScalar(1);
+      headGroup.add(hatGroup);
+
+      group.add(headGroup);
+
+      // 4 Pattes articulées
+      const legs = [];
+      [
+        [-0.2, 0.22, 0.25],
+        [0.2, 0.22, 0.25],
+        [-0.2, 0.22, -0.25],
+        [0.2, 0.22, -0.25]
+      ].forEach(([lx, ly, lz]) => {
+        const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.24, 12, 16), furMat);
+        leg.position.set(lx, ly, lz);
+        leg.castShadow = true;
+        group.add(leg);
+        legs.push(leg);
+        petBodyMeshes.push(leg);
+      });
+
+      // Queue animée
+      const tailPivot = new THREE.Group();
+      tailPivot.position.set(0, 0.55, -0.38);
+      const tail = new THREE.Mesh(new THREE.CapsuleGeometry(0.065, 0.48, 12, 16), furMat);
+      tail.position.set(0, 0.2, -0.15);
+      tail.rotation.x = -0.8;
+      tail.castShadow = true;
+      tailPivot.add(tail);
+      group.add(tailPivot);
+      petBodyMeshes.push(tail);
+
+      proceduralParts = { group, headGroup, eyesGroup, legs, tailPivot, body };
+      return group;
+    }
+
+    // Charge soit le Chat 3DS intégré, soit un fichier .GLB de ton dossier models/
+    function loadPetModel(speciesUrl) {
+      while (petRoot.children.length > 0) {
+        petRoot.remove(petRoot.children[0]);
+      }
+      mixer = null;
+      animationsMap = {};
+      proceduralParts = null;
+
+      if (speciesUrl === 'proc_cat') {
+        const cat = createProceduralCat3DS();
+        petRoot.add(cat);
+        buildAccessory3D(state.hat);
+        applyCoatToMeshes(state.coat);
+        return;
+      }
+
+      gltfLoader.load(
+        speciesUrl,
+        (gltf) => {
+          const model = gltf.scene;
+          // Normalise la taille du modèle .glb
+          const box = new THREE.Box3().setFromObject(model);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const scaleFactor = 1.35 / Math.max(size.x, size.y, size.z, 0.1);
+          model.scale.setScalar(scaleFactor);
+
+          petBodyMeshes = [];
+          let headBone = null;
+
+          model.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+              petBodyMeshes.push(child);
+            }
+            if (child.isBone && /head/i.test(child.name) && !headBone) {
+              headBone = child;
+            }
+          });
+
+          if (headBone) {
+            hatGroup.position.set(0, 0.35, 0);
+            hatGroup.scale.setScalar(1 / scaleFactor * 0.6);
+            headBone.add(hatGroup);
+          } else {
+            hatGroup.position.set(0, 1.25, 0.35);
+            hatGroup.scale.setScalar(1);
+            petRoot.add(hatGroup);
+          }
+
+          petRoot.add(model);
+          buildAccessory3D(state.hat);
+          applyCoatToMeshes(state.coat);
+
+          if (gltf.animations && gltf.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(model);
+            gltf.animations.forEach((clip) => {
+              animationsMap[clip.name.toLowerCase()] = mixer.clipAction(clip);
+            });
+            playGLBAnimation('idle');
+          }
+        },
+        undefined,
+        () => {
+          showToast('Fichier ' + speciesUrl + ' absent : Chat 3DS activé');
+          const cat = createProceduralCat3DS();
+          petRoot.add(cat);
+          buildAccessory3D(state.hat);
+        }
+      );
+    }
+
+    function playGLBAnimation(keyword) {
+      if (!mixer) return;
+      const keys = Object.keys(animationsMap);
+      const match = keys.find((k) => k.includes(keyword)) || keys[0];
+      if (match && animationsMap[match] !== currentAction) {
+        if (currentAction) currentAction.fadeOut(0.25);
+        currentAction = animationsMap[match];
+        currentAction.reset().fadeIn(0.25).play();
+      }
+    }
+
+    function applyCoatToMeshes(coatId) {
+      const tex = generateCoatTexture(coatId);
+      petBodyMeshes.forEach((mesh) => {
+        if (mesh.material) {
+          mesh.material = mesh.material.clone();
+          mesh.material.map = tex;
+          mesh.material.color.setHex(0xffffff);
+          mesh.material.needsUpdate = true;
+        }
+      });
+    }
+
+    // ============================================================================
+    // 9. IA AUTONOME "VIVANTE 24/7" (MARCHE, REPAS, JEU, SIESTE, REGARD)
+    // ============================================================================
+    const ai = {
+      mode: 'idle', // 'idle', 'walk', 'eat', 'sleep', 'play', 'happy'
+      timer: 4,
+      targetPos: new THREE.Vector3(0, 0, 0),
+      walkSpeed: 1.15
+    };
+
+    const moodTexts = {
+      idle: 'Observe tranquillement la chambre...',
+      walk: 'Se dégourdit les pattes sur le tapis...',
+      eat: 'Savoure ses croquettes avec appétit !',
+      sleep: 'Fait une douce sieste sur son coussin... Zzz',
+      play: 'Joue joyeusement avec sa pelote de laine !',
+      happy: 'Ronronne de bonheur sous tes caresses ♥'
+    };
+
+    function setAIMode(newMode, duration = 6) {
+      ai.mode = newMode;
+      ai.timer = duration;
+      document.getElementById('pet-mood-bubble').textContent = moodTexts[newMode] || moodTexts.idle;
+
+      if (newMode === 'walk') playGLBAnimation('walk');
+      else if (newMode === 'eat') playGLBAnimation('eat');
+      else if (newMode === 'sleep') playGLBAnimation('death'); // Souvent l'état couché dans les packs Quaternius
+      else if (newMode === 'happy' || newMode === 'play') playGLBAnimation('jump');
+      else playGLBAnimation('idle');
+    }
+
+    function chooseNextAutonomousBehavior() {
+      const hour = new Date().getHours();
+      const isNight = (state.lightingMode === 'night') || (state.lightingMode === 'auto' && (hour >= 22 || hour < 7));
+
+      if (isNight || state.energy < 25) {
+        ai.targetPos.set(-1.8, 0, 0.9); // Va vers son coussin
+        setAIMode('walk', 5);
+        ai.nextAfterWalk = 'sleep';
+        return;
+      }
+
+      const roll = Math.random();
+      if (roll < 0.42) {
+        // Se promène vers un point aléatoire de la pièce
+        ai.targetPos.set((Math.random() - 0.5) * 3.4, 0, (Math.random() - 0.3) * 2.6);
+        setAIMode('walk', 6);
+        ai.nextAfterWalk = 'idle';
+      } else if (roll < 0.65) {
+        // Va jouer avec la pelote de laine
+        ai.targetPos.copy(yarnBall.position);
+        setAIMode('walk', 5);
+        ai.nextAfterWalk = 'play';
+      } else if (roll < 0.82 && state.hunger < 90) {
+        // Va voir sa gamelle
+        ai.targetPos.set(1.55, 0, 0.85);
+        setAIMode('walk', 5);
+        ai.nextAfterWalk = 'eat';
+      } else {
+        setAIMode('idle', 5 + Math.random() * 4);
+      }
+    }
+
+    // ============================================================================
+    // 10. INTERACTION TACTILE RAYCASTER (CLIQUER SUR LE CHAT OU LA PELOTE 3D)
+    // ============================================================================
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      const hitsPet = raycaster.intersectObjects(petRoot.children, true);
+      if (hitsPet.length > 0) {
+        petCompanion();
+        return;
+      }
+
+      const hitsYarn = raycaster.intersectObject(yarnBall);
+      if (hitsYarn.length > 0) {
+        throwYarnBall();
+      }
+    });
+
+    // ============================================================================
+    // 11. ACTIONS DES BOUTONS & MISE À JOUR DES JAUGES
+    // ============================================================================
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function updateHUD() {
+      document.getElementById('pet-name-display').textContent = state.name;
+      document.getElementById('coins-display').textContent = `${state.coins} ★`;
+
+      ['hunger', 'fun', 'energy', 'hygiene'].forEach((k) => {
+        const val = Math.round(Math.max(0, Math.min(100, state[k])));
+        document.getElementById(`val-${k}`).textContent = `${val}%`;
+        document.getElementById(`bar-${k}`).style.width = `${val}%`;
+      });
+
+      foodMesh.visible = state.hunger > 20;
+    }
+
+    function petCompanion() {
+      state.fun = Math.min(100, state.fun + 12);
+      state.coins += 5;
+      setAIMode('happy', 3.5);
+      spawnParticles3D(0xff6b8b, 8);
+      showToast(`Ronronnement de ${state.name} ♥ (+5 ★)`);
+      updateHUD();
+      saveState();
+    }
+
+    function throwYarnBall() {
+      yarnVelocity.set((Math.random() - 0.5) * 4.5, 0, (Math.random() - 0.5) * 4.0);
+      state.fun = Math.min(100, state.fun + 18);
+      state.energy = Math.max(10, state.energy - 5);
+      ai.targetPos.copy(yarnBall.position);
+      setAIMode('walk', 4);
+      ai.nextAfterWalk = 'play';
+      spawnParticles3D(0xfbbf24, 6);
+      showToast('Pelote lancée ! +18 Bonheur');
+      updateHUD();
+      saveState();
+    }
+
+    document.getElementById('btn-feed').addEventListener('click', () => {
+      state.hunger = Math.min(100, state.hunger + 25);
+      state.coins += 5;
+      ai.targetPos.set(1.5, 0, 0.85);
+      setAIMode('walk', 4);
+      ai.nextAfterWalk = 'eat';
+      spawnParticles3D(0xfb7185, 7);
+      showToast('Gamelle remplie ! +25 Repas');
+      updateHUD();
+      saveState();
+    });
+
+    document.getElementById('btn-pet').addEventListener('click', petCompanion);
+    document.getElementById('btn-play').addEventListener('click', throwYarnBall);
+
+    document.getElementById('btn-wash').addEventListener('click', () => {
+      state.hygiene = 100;
+      state.fun = Math.min(100, state.fun + 8);
+      setAIMode('happy', 3);
+      spawnParticles3D(0x38bdf8, 10);
+      showToast('Pelage tout doux et brillant !');
+      updateHUD();
+      saveState();
+    });
+
+    document.getElementById('btn-sleep').addEventListener('click', () => {
+      ai.targetPos.set(-1.8, 0, 0.9);
+      setAIMode('walk', 4);
+      ai.nextAfterWalk = 'sleep';
+      state.energy = Math.min(100, state.energy + 30);
+      showToast('Direction le coussin pour une sieste...');
+      updateHUD();
+      saveState();
+    });
+
+    // Sélecteurs de personnalisation
+    const selectSpecies = document.getElementById('select-species');
+    const selectCoat = document.getElementById('select-coat');
+    const selectHat = document.getElementById('select-hat');
+
+    selectSpecies.value = state.species;
+    selectCoat.value = state.coat;
+    selectHat.value = state.hat;
+
+    selectSpecies.addEventListener('change', (e) => {
+      state.species = e.target.value;
+      loadPetModel(state.species);
+      saveState();
+    });
+
+    selectCoat.addEventListener('change', (e) => {
+      state.coat = e.target.value;
+      applyCoatToMeshes(state.coat);
+      saveState();
+    });
+
+    selectHat.addEventListener('change', (e) => {
+      state.hat = e.target.value;
+      buildAccessory3D(state.hat);
+      saveState();
+    });
+
+    // Renommer le compagnon
+    document.getElementById('pet-name-display').addEventListener('click', () => {
+      const newName = prompt('Comment s\'appelle ton compagnon ?', state.name);
+      if (newName && newName.trim()) {
+        state.name = newName.trim().slice(0, 16);
+        updateHUD();
+        saveState();
+      }
+    });
+
+    // ============================================================================
+    // 12. CYCLE LUMIÈRE TEMPS RÉEL (MATIN / JOUR / GOLDEN HOUR / NUIT)
+    // ============================================================================
+    const lightingModes = ['auto', 'day', 'sunset', 'night'];
+    const cameraHintBtn = document.getElementById('camera-hint');
+
+    function applyEnvironmentLighting() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('clock-text').textContent = `${hh}:${mm}`;
+
+      let mode = state.lightingMode;
+      if (mode === 'auto') {
+        const h = now.getHours();
+        if (h >= 7 && h < 17) mode = 'day';
+        else if (h >= 17 && h < 21) mode = 'sunset';
+        else mode = 'night';
+      }
+
+      const dot = document.getElementById('day-phase-dot');
+      if (mode === 'day') {
+        scene.background.setHex(0xdbeafe);
+        scene.fog.color.setHex(0xdbeafe);
+        skyMat.color.setHex(0x7dd3fc);
+        hemiLight.intensity = 0.9;
+        sunLight.color.setHex(0xfffbeb);
+        sunLight.intensity = 1.45;
+        nightLampLight.intensity = 0;
+        sunbeam.visible = true;
+        sunbeamMat.color.setHex(0xfff3c4);
+        dot.style.background = '#fbbf24';
+      } else if (mode === 'sunset') {
+        scene.background.setHex(0xfed7aa);
+        scene.fog.color.setHex(0xfed7aa);
+        skyMat.color.setHex(0xfb923c);
+        hemiLight.intensity = 0.65;
+        sunLight.color.setHex(0xf97316);
+        sunLight.intensity = 1.3;
+        nightLampLight.intensity = 1.2;
+        sunbeam.visible = true;
+        sunbeamMat.color.setHex(0xfdba74);
+        dot.style.background = '#f97316';
+      } else {
+        // Mode Nuit doux pour ne pas éblouir Justine sur son bureau
+        scene.background.setHex(0x1e1b4b);
+        scene.fog.color.setHex(0x1e1b4b);
+        skyMat.color.setHex(0x0f172a);
+        hemiLight.intensity = 0.28;
+        sunLight.color.setHex(0x818cf8);
+        sunLight.intensity = 0.35;
+        nightLampLight.intensity = 2.6;
+        sunbeam.visible = false;
+        dot.style.background = '#818cf8';
+      }
+    }
+
+    cameraHintBtn.addEventListener('click', () => {
+      const idx = (lightingModes.indexOf(state.lightingMode) + 1) % lightingModes.length;
+      state.lightingMode = lightingModes[idx];
+      const labels = {
+        auto: 'Mode Lumière : Auto (Heure réelle)',
+        day: 'Mode Lumière : Soleil de Midi',
+        sunset: 'Mode Lumière : Golden Hour',
+        night: 'Mode Lumière : Veilleuse de Nuit'
+      };
+      cameraHintBtn.textContent = labels[state.lightingMode];
+      applyEnvironmentLighting();
+      saveState();
+    });
+
+    // ============================================================================
+    // 13. BOUCLE D'ANIMATION 60 FPS (MOUVEMENTS FLUIDES & CAMÉRA VIVANTE)
+    // ============================================================================
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.1);
+      const elapsed = clock.getElapsedTime();
+
+      if (mixer) mixer.update(dt);
+
+      // 1. Déplacement autonome et orientation douce du compagnon
+      ai.timer -= dt;
+      if (ai.mode === 'walk') {
+        const dir = new THREE.Vector3().subVectors(ai.targetPos, petRoot.position);
+        dir.y = 0;
+        const dist = dir.length();
+        if (dist > 0.12) {
+          dir.normalize();
+          petRoot.position.addScaledVector(dir, ai.walkSpeed * dt);
+          const targetAngle = Math.atan2(dir.x, dir.z);
+          petRoot.rotation.y = THREE.MathUtils.lerp(petRoot.rotation.y, targetAngle, 0.12);
+        } else {
+          setAIMode(ai.nextAfterWalk || 'idle', 6);
+        }
+      } else if (ai.mode === 'play') {
+        // Donne des petits coups de patte dans la pelote
+        const toBall = new THREE.Vector3().subVectors(yarnBall.position, petRoot.position);
+        if (toBall.length() < 0.75) {
+          yarnVelocity.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
+        }
+      }
+
+      if (ai.timer <= 0) {
+        chooseNextAutonomousBehavior();
+      }
+
+      // 2. Animation procédurale du Chat 3DS intégré (respiration, queue, pattes, dodo)
+      if (proceduralParts) {
+        const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
+        tailPivot.rotation.z = Math.sin(elapsed * 3.5) * 0.35;
+
+        if (ai.mode === 'walk') {
+          legs[0].rotation.x = Math.sin(elapsed * 10) * 0.45;
+          legs[1].rotation.x = -Math.sin(elapsed * 10) * 0.45;
+          legs[2].rotation.x = -Math.sin(elapsed * 10) * 0.45;
+          legs[3].rotation.x = Math.sin(elapsed * 10) * 0.45;
+          body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 10)) * 0.04;
+          headGroup.position.y = 0.86 + Math.abs(Math.sin(elapsed * 10)) * 0.04;
+          eyesGroup.scale.y = 1;
+        } else if (ai.mode === 'sleep') {
+          // Couché en boule et respire doucement
+          body.position.y = 0.26 + Math.sin(elapsed * 2) * 0.015;
+          headGroup.position.y = 0.46;
+          headGroup.rotation.x = 0.25;
+          eyesGroup.scale.y = 0.1; // Yeux fermés
+          legs.forEach((l) => (l.rotation.x = Math.PI / 2.2));
+        } else if (ai.mode === 'eat') {
+          headGroup.position.y = 0.62 + Math.sin(elapsed * 12) * 0.06;
+          headGroup.rotation.x = 0.45;
+          eyesGroup.scale.y = 1;
+        } else if (ai.mode === 'happy' || ai.mode === 'play') {
+          body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
+          headGroup.position.y = 0.88 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
+          headGroup.rotation.z = Math.sin(elapsed * 6) * 0.15;
+          eyesGroup.scale.y = 0.35; // Yeux joyeux plissés
+        } else {
+          // Repos vivant : respire et regarde autour de lui
+          body.position.y = 0.48 + Math.sin(elapsed * 2.5) * 0.015;
+          headGroup.position.y = 0.86 + Math.sin(elapsed * 2.5) * 0.015;
+          headGroup.rotation.y = Math.sin(elapsed * 0.9) * 0.28;
+          headGroup.rotation.x = 0;
+          headGroup.rotation.z = 0;
+          legs.forEach((l) => (l.rotation.x = 0));
+          // Clignement naturel des yeux toutes les 4 secondes
+          eyesGroup.scale.y = (Math.sin(elapsed * 1.6) > 0.96) ? 0.08 : 1;
+        }
+      }
+
+      // 3. Physique de la pelote de laine 3D
+      if (yarnVelocity.lengthSq() > 0.001) {
+        yarnBall.position.addScaledVector(yarnVelocity, dt);
+        yarnBall.rotation.x += yarnVelocity.z * dt * 3;
+        yarnBall.rotation.z -= yarnVelocity.x * dt * 3;
+        yarnVelocity.multiplyScalar(0.95);
+        // Rebonds dans les limites du tapis
+        if (Math.abs(yarnBall.position.x) > 2.2) yarnVelocity.x *= -0.8;
+        if (yarnBall.position.z > 2.1 || yarnBall.position.z < -1.5) yarnVelocity.z *= -0.8;
+      }
+
+      // 4. Particules de poussière dorée flottante
+      const posArr = dustGeo.attributes.position.array;
+      for (let i = 0; i < dustCount; i++) {
+        posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.0015;
+        posArr[i * 3] += Math.cos(elapsed * 0.5 + i) * 0.001;
+      }
+      dustGeo.attributes.position.needsUpdate = true;
+
+      // 5. Particules d'émotions (Cœurs / Bulles)
+      for (let i = floatingParticles.length - 1; i >= 0; i--) {
+        const p = floatingParticles[i];
+        p.life -= dt * 0.8;
+        p.mesh.position.y += p.vy * dt;
+        p.mesh.material.opacity = Math.max(0, p.life);
+        if (p.life <= 0) {
+          scene.remove(p.mesh);
+          floatingParticles.splice(i, 1);
+        }
+      }
+
+      // 6. Respiration douce de la caméra (pour que l'écran soit toujours vivant de loin)
+      camera.position.x += Math.sin(elapsed * 0.35) * 0.0012;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // ============================================================================
+    // 14. DÉMARRAGE, ÉVOLUTION DES JAUGES & REDIMENSIONNEMENT
+    // ============================================================================
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // Diminution très douce des jauges (pensé pour rester allumé toute la journée)
+    setInterval(() => {
+      state.hunger = Math.max(10, state.hunger - 0.4);
+      state.fun = Math.max(10, state.fun - 0.35);
+      state.hygiene = Math.max(10, state.hygiene - 0.25);
+      if (ai.mode === 'sleep') {
+        state.energy = Math.min(100, state.energy + 1.5);
+      } else {
+        state.energy = Math.max(10, state.energy - 0.3);
+      }
+      updateHUD();
+      applyEnvironmentLighting();
+      saveState();
+    }, 30000);
+
+    // Empêcher la mise en veille de l'écran sur le smartphone de Justine (Wake Lock API)
+    async function keepScreenAwake() {
+      try {
+        if ('wakeLock' in navigator) {
+          await navigator.wakeLock.request('screen');
+        }
+      } catch (_) {}
+    }
+    document.addEventListener('click', keepScreenAwake, { once: true });
+
+    // Initialisation
+    loadPetModel(state.species);
+    applyEnvironmentLighting();
+    updateHUD();
+    animate();
+  </script>
 </body>
 </html>
