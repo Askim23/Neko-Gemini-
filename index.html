@@ -67,7 +67,6 @@
       z-index: 1;
     }
 
-    /* Interface superposée sur l'écran 3D avec z-index élevé pour garantir le clic */
     #hud-top {
       position: absolute;
       top: 10px;
@@ -158,7 +157,7 @@
       box-shadow: 0 0 8px #6ee7b7;
     }
 
-    /* ÉCRAN TACTILE INFÉRIEUR (35% de la hauteur, z-index isolé) */
+    /* ÉCRAN TACTILE INFÉRIEUR */
     #bottom-screen-frame {
       position: relative;
       z-index: 40;
@@ -211,7 +210,6 @@
       transition: width 0.4s ease;
     }
 
-    /* 6 Boutons d'action tactiles (incluant Déco Salon !) */
     .actions-row {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -250,7 +248,6 @@
       pointer-events: none;
     }
 
-    /* Barre de personnalisation (3 menus déroulants + utilisables au doigt et à la souris) */
     .customizer-bar {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -326,7 +323,7 @@
       <div id="toast">Prêt !</div>
 
       <div id="hud-bottom-controls">
-        <div id="pet-mood-bubble">Explore tranquillement son grand salon...</div>
+        <div id="pet-mood-bubble">Se repose paisiblement dans le salon...</div>
         <div class="top-overlay-btns">
           <button type="button" class="overlay-btn" id="btn-deco-top">🎨 Déco : Pastel</button>
           <button type="button" class="overlay-btn" id="camera-hint">☀️ Lumière : Auto</button>
@@ -448,9 +445,9 @@
       roomTheme: 0
     };
 
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v3') || '{}'));
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v4') || '{}'));
     function saveState() {
-      localStorage.setItem('neko3ds_save_v3', JSON.stringify(state));
+      localStorage.setItem('neko3ds_save_v4', JSON.stringify(state));
     }
 
     function showToast(msg) {
@@ -467,10 +464,10 @@
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xdbeafe);
-    scene.fog = new THREE.FogExp2(0xdbeafe, 0.018);
+    scene.fog = new THREE.FogExp2(0xdbeafe, 0.016);
 
     const camera = new THREE.PerspectiveCamera(48, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(3.2, 5.2, 8.8);
+    camera.position.set(3.4, 5.4, 9.2);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -482,12 +479,12 @@
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 1.0, -0.3);
+    controls.target.set(0, 1.0, -0.2);
     controls.enablePan = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
     controls.minDistance = 3.5;
-    controls.maxDistance = 16.0;
+    controls.maxDistance = 16.5;
     controls.minPolarAngle = Math.PI / 7;
     controls.maxPolarAngle = Math.PI / 2.25;
     controls.minAzimuthAngle = -Math.PI / 6;
@@ -501,7 +498,8 @@
         `models/${cleanName}`,
         `./${cleanName}`,
         `Animated Animal Pack-glb/${cleanName}`,
-        `Models/GLTF format/${cleanName}`
+        `Models/GLTF format/${cleanName}`,
+        `KayKit_Furniture_Bits_1.0_FREE/Assets/gltf/${cleanName}`
       ];
 
       let index = 0;
@@ -528,7 +526,7 @@
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
-    sunLight.position.set(5, 8, 5);
+    sunLight.position.set(5, 8.5, 5);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 1024;
     sunLight.shadow.mapSize.height = 1024;
@@ -545,6 +543,10 @@
     nightLampLight.castShadow = true;
     scene.add(nightLampLight);
 
+    const deskLampLight = new THREE.PointLight(0xfef08a, 0.5, 4, 1.8);
+    deskLampLight.position.set(1.3, 1.8, -3.3);
+    scene.add(deskLampLight);
+
     const sunbeam = new THREE.Mesh(
       new THREE.ConeGeometry(2.1, 6.2, 32, 1, true),
       new THREE.MeshBasicMaterial({
@@ -556,22 +558,22 @@
         blending: THREE.AdditiveBlending
       })
     );
-    sunbeam.position.set(0.9, 2.5, -2.0);
+    sunbeam.position.set(0.5, 2.5, -2.0);
     sunbeam.rotation.z = 0.38;
     sunbeam.rotation.x = 0.35;
     scene.add(sunbeam);
 
     // ============================================================================
-    // 4. SALON 3D COMPLET & SYSTÈME DE DÉCORATION INTERACTIF (4 THÈMES)
+    // 4. SALON 3D ULTRA-COMPLET (NOUVEAUX MEUBLES + 4 THÈMES DE DÉCO)
     // ============================================================================
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
 
     const roomThemes = [
-      { name: 'Pastel', wall: 0xfef3c7, floor: '#d6a87c', rug1: 0xffb3c6, rug2: 0xffe5ec, sofa: 0xfbbf24, blanket: 0xf472b6 },
-      { name: 'Sakura', wall: 0xfce7f3, floor: '#e2b897', rug1: 0xf472b6, rug2: 0xfdf2f8, sofa: 0xa78bfa, blanket: 0xfb7185 },
-      { name: 'Forêt',  wall: 0xdcfce7, floor: '#b07d4f', rug1: 0x34d399, rug2: 0xecfdf5, sofa: 0xd97706, blanket: 0x10b981 },
-      { name: 'Céleste', wall: 0xe0e7ff, floor: '#94a3b8', rug1: 0x60a5fa, rug2: 0xeff6ff, sofa: 0x818cf8, blanket: 0x38bdf8 }
+      { name: 'Pastel',  wall: 0xfef3c7, floor: '#d6a87c', rug1: 0xffb3c6, rug2: 0xffe5ec, sofa: 0xfbbf24, blanket: 0xf472b6, chair: 0x38bdf8 },
+      { name: 'Sakura',  wall: 0xfce7f3, floor: '#e2b897', rug1: 0xf472b6, rug2: 0xfdf2f8, sofa: 0xa78bfa, blanket: 0xfb7185, chair: 0xf472b6 },
+      { name: 'Forêt',   wall: 0xdcfce7, floor: '#b07d4f', rug1: 0x34d399, rug2: 0xecfdf5, sofa: 0xd97706, blanket: 0x10b981, chair: 0x22c55e },
+      { name: 'Céleste', wall: 0xe0e7ff, floor: '#94a3b8', rug1: 0x60a5fa, rug2: 0xeff6ff, sofa: 0x818cf8, blanket: 0x38bdf8, chair: 0xc084fc }
     ];
 
     function makeFloorTexture(hexColor) {
@@ -600,7 +602,11 @@
     const rug2Mat = new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 });
     const sofaMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
     const blanketMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.85 });
+    const accentChairMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.75 });
     const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
+    const lightWoodMat = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.65 });
+    const sheetMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
 
     function applyRoomTheme(themeIdx) {
       const t = roomThemes[themeIdx % roomThemes.length];
@@ -611,71 +617,79 @@
       rug2Mat.color.setHex(t.rug2);
       sofaMat.color.setHex(t.sofa);
       blanketMat.color.setHex(t.blanket);
+      accentChairMat.color.setHex(t.chair);
       document.getElementById('btn-deco-top').textContent = `🎨 Déco : ${t.name}`;
     }
 
-    const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.3, 8.4), floorMat);
+    const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(8.8, 0.3, 8.8), floorMat);
     floorMesh.position.set(0, -0.15, 0);
     floorMesh.receiveShadow = true;
     roomGroup.add(floorMesh);
 
-    const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 4.4, 0.25), wallMat);
-    backWall.position.set(0, 2.2, -4.08);
+    const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.8, 4.5, 0.25), wallMat);
+    backWall.position.set(0, 2.25, -4.28);
     backWall.receiveShadow = true;
     roomGroup.add(backWall);
 
-    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.4, 8.4), wallMat);
-    leftWall.position.set(-4.08, 2.2, 0);
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.5, 8.8), wallMat);
+    leftWall.position.set(-4.28, 2.25, 0);
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
+    // Grande Fenêtre avec paysage + rideaux
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x7dd3fc });
-    const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.7), skyMat);
-    windowGlass.position.set(0.4, 2.55, -3.93);
+    const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.65), skyMat);
+    windowGlass.position.set(0.1, 2.6, -4.12);
     roomGroup.add(windowGlass);
 
-    const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.9, 0.08), baseboardMat);
-    winFrame.position.set(0.4, 2.55, -3.95);
-    const barH = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.06, 0.12), baseboardMat);
-    barH.position.set(0.4, 2.55, -3.92);
-    const barV = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.8, 0.12), baseboardMat);
-    barV.position.set(0.4, 2.55, -3.92);
+    const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.85, 0.08), baseboardMat);
+    winFrame.position.set(0.1, 2.6, -4.14);
+    const barH = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.12), baseboardMat);
+    barH.position.set(0.1, 2.6, -4.11);
+    const barV = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.75, 0.12), baseboardMat);
+    barV.position.set(0.1, 2.6, -4.11);
     roomGroup.add(winFrame, barH, barV);
+
+    // Rideaux doux de chaque côté de la fenêtre
+    [-1.25, 1.45].forEach((cx) => {
+      const curtain = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.24, 2.1, 16), rug2Mat);
+      curtain.position.set(cx, 2.55, -4.02);
+      curtain.castShadow = true;
+      roomGroup.add(curtain);
+    });
 
     // Guirlande lumineuse
     const bulbGeo = new THREE.SphereGeometry(0.065, 10, 10);
     const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffe484 });
     for (let i = 0; i < 11; i++) {
       const b1 = new THREE.Mesh(bulbGeo, bulbMat);
-      b1.position.set(-3.6 + i * 0.72, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.9);
+      b1.position.set(-3.8 + i * 0.76, 3.95 - Math.sin((i / 10) * Math.PI) * 0.25, -4.1);
       const b2 = new THREE.Mesh(bulbGeo, bulbMat);
-      b2.position.set(-3.9, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.6 + i * 0.72);
+      b2.position.set(-4.1, 3.95 - Math.sin((i / 10) * Math.PI) * 0.25, -3.8 + i * 0.76);
       roomGroup.add(b1, b2);
     }
 
-    // Tapis central personnalisable
-    const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 0.03, 40), rug1Mat);
-    const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 1.95, 0.035, 40), rug2Mat);
-    r1.position.set(0, 0.015, 0.3);
-    r2.position.set(0, 0.02, 0.3);
+    // 1. Tapis central + Tapis de lecture
+    const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.03, 40), rug1Mat);
+    const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 1.85, 0.035, 40), rug2Mat);
+    r1.position.set(-0.1, 0.015, 0.4);
+    r2.position.set(-0.1, 0.02, 0.4);
     r1.receiveShadow = r2.receiveShadow = true;
     roomGroup.add(r1, r2);
 
-    // Lit douillet dans le coin droit
+    // 2. Grand Lit douillet dans le coin droit
     const bedGroup = new THREE.Group();
-    bedGroup.position.set(2.4, 0, -2.2);
-    const woodMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
-    const sheetMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 2.6), woodMat);
+    bedGroup.position.set(2.8, 0, -2.5);
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.35, 2.6), woodMat);
     frame.position.y = 0.175;
-    const headBoard = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.25, 0.2), woodMat);
+    const headBoard = new THREE.Mesh(new THREE.BoxGeometry(2.15, 1.25, 0.2), woodMat);
     headBoard.position.set(0, 0.625, -1.25);
-    const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.32, 2.45), sheetMat);
+    const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.32, 2.45), sheetMat);
     mattress.position.y = 0.42;
-    const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.07, 0.34, 1.65), blanketMat);
+    const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.34, 1.65), blanketMat);
     duvet.position.set(0, 0.43, 0.4);
-    [-0.52, 0.52].forEach((px) => {
-      const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.16, 0.48), sheetMat);
+    [-0.5, 0.5].forEach((px) => {
+      const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.16, 0.48), sheetMat);
       pillow.position.set(px, 0.64, -0.82);
       pillow.rotation.x = 0.15;
       bedGroup.add(pillow);
@@ -683,66 +697,185 @@
     [frame, headBoard, mattress, duvet].forEach((m) => { m.castShadow = m.receiveShadow = true; bedGroup.add(m); });
     roomGroup.add(bedGroup);
 
-    // Canapé moelleux au fond
+    // 3. NOUVEAU : Table de chevet (sideTableDrawers) + Radio rétro + Réveil à côté du lit
+    const nightStand = new THREE.Group();
+    nightStand.position.set(1.35, 0, -3.55);
+    const nsBox = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.62, 0.58), woodMat);
+    nsBox.position.y = 0.31;
+    const drawer1 = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.2, 0.04), lightWoodMat);
+    drawer1.position.set(0, 0.44, 0.29);
+    const drawer2 = drawer1.clone();
+    drawer2.position.y = 0.18;
+    // Petite Radio vintage dessus
+    const radioBody = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.16), new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 }));
+    radioBody.position.set(-0.08, 0.72, 0);
+    const radioDial = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.04, 12), sheetMat);
+    radioDial.rotation.x = Math.PI / 2;
+    radioDial.position.set(0.02, 0.72, 0.08);
+    nightStand.add(nsBox, drawer1, drawer2, radioBody, radioDial);
+    nightStand.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    roomGroup.add(nightStand);
+
+    // 4. Canapé moelleux au fond + Coussins décoratifs
     const sofaGroup = new THREE.Group();
-    sofaGroup.position.set(-0.6, 0, -3.1);
-    const seat = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 0.95), sofaMat);
+    sofaGroup.position.set(-1.35, 0, -3.35);
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.45, 0.95), sofaMat);
     seat.position.y = 0.25;
-    const back = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.0, 0.28), sofaMat);
+    const back = new THREE.Mesh(new THREE.BoxGeometry(2.3, 1.0, 0.28), sofaMat);
     back.position.set(0, 0.65, -0.35);
     const armL = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.98), sofaMat);
-    armL.position.set(-1.1, 0.4, 0);
+    armL.position.set(-1.05, 0.4, 0);
     const armR = armL.clone();
-    armR.position.x = 1.1;
-    [seat, back, armL, armR].forEach((m) => { m.castShadow = m.receiveShadow = true; sofaGroup.add(m); });
+    armR.position.x = 1.05;
+    // Coussins sur le canapé
+    const throwPillow1 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.16), blanketMat);
+    throwPillow1.position.set(-0.68, 0.62, -0.1);
+    throwPillow1.rotation.z = 0.2;
+    const throwPillow2 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.16), accentChairMat);
+    throwPillow2.position.set(0.68, 0.62, -0.1);
+    throwPillow2.rotation.z = -0.2;
+    [seat, back, armL, armR, throwPillow1, throwPillow2].forEach((m) => { m.castShadow = m.receiveShadow = true; sofaGroup.add(m); });
     roomGroup.add(sofaGroup);
 
-    // Table basse + Tasse + Livre
+    // 5. Table basse + Plateau de thé + Assiette de biscuits + Livres
     const coffeeGroup = new THREE.Group();
-    coffeeGroup.position.set(-0.6, 0, -1.6);
-    const cTop = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), woodMat);
+    coffeeGroup.position.set(-1.35, 0, -1.85);
+    const cTop = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), lightWoodMat);
     cTop.position.y = 0.42;
-    const cBase = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.35, 0.4, 16), woodMat);
+    const cBase = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.36, 0.4, 16), woodMat);
     cBase.position.y = 0.2;
-    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 16), sheetMat);
-    cup.position.set(0.2, 0.52, 0.1);
-    coffeeGroup.add(cTop, cBase, cup);
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.14, 16), sheetMat);
+    cup.position.set(0.22, 0.52, 0.12);
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.03, 18), sheetMat);
+    plate.position.set(-0.18, 0.47, 0.15);
+    const cookie = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.03, 12), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+    cookie.position.set(-0.18, 0.5, 0.15);
+    coffeeGroup.add(cTop, cBase, cup, plate, cookie);
+    coffeeGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
     roomGroup.add(coffeeGroup);
 
-    // Grande Bibliothèque à gauche
+    // 6. NOUVEAU : Fauteuil cosy (Armchair) + Pouf repose-pieds (Ottoman)
+    const armchairGroup = new THREE.Group();
+    armchairGroup.position.set(0.45, 0, -1.85);
+    armchairGroup.rotation.y = -0.55;
+    const acSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.48, 0.38, 24), accentChairMat);
+    acSeat.position.y = 0.22;
+    const acBack = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.55, 24, 1, true, Math.PI * 0.8, Math.PI * 1.4), accentChairMat);
+    acBack.material.side = THREE.DoubleSide;
+    acBack.position.y = 0.52;
+    const ottoman = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.24, 20), rug1Mat);
+    ottoman.position.set(0, 0.12, 0.72);
+    armchairGroup.add(acSeat, acBack, ottoman);
+    armchairGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    roomGroup.add(armchairGroup);
+
+    // 7. NOUVEAU : Bureau (Desk) + Chaise de bureau + Ordinateur portable (Laptop) + Lampe de bureau
+    const deskGroup = new THREE.Group();
+    deskGroup.position.set(-3.45, 0, 0.15);
+    deskGroup.rotation.y = Math.PI / 2;
+    const deskTop = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.08, 0.75), lightWoodMat);
+    deskTop.position.y = 0.78;
+    const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.78, 10);
+    [[-0.68, -0.3], [0.68, -0.3], [-0.68, 0.3], [0.68, 0.3]].forEach(([lx, lz]) => {
+      const leg = new THREE.Mesh(legGeo, woodMat);
+      leg.position.set(lx, 0.39, lz);
+      deskGroup.add(leg);
+    });
+    // Laptop ouvert sur le bureau
+    const lapBase = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.02, 0.3), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    lapBase.position.set(0, 0.83, 0.04);
+    const lapScreen = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.02), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+    lapScreen.position.set(0, 0.96, -0.1);
+    lapScreen.rotation.x = -0.2;
+    const lapDisplay = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.24), new THREE.MeshBasicMaterial({ color: 0x60a5fa }));
+    lapDisplay.position.set(0, 0.96, -0.088);
+    lapDisplay.rotation.x = -0.2;
+    // Chaise de bureau
+    const dChairSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.08, 18), blanketMat);
+    dChairSeat.position.set(0, 0.48, 0.58);
+    const dChairPole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 0.48, 10), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    dChairPole.position.set(0, 0.24, 0.58);
+    const dChairBack = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.07), blanketMat);
+    dChairBack.position.set(0, 0.74, 0.82);
+    deskGroup.add(deskTop, lapBase, lapScreen, lapDisplay, dChairSeat, dChairPole, dChairBack);
+    deskGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    roomGroup.add(deskGroup);
+
+    // 8. Grande Bibliothèque à gauche (au fond)
     const bookGroup = new THREE.Group();
-    bookGroup.position.set(-3.4, 0, -1.2);
+    bookGroup.position.set(-3.55, 0, -1.75);
     bookGroup.rotation.y = Math.PI / 2;
-    const bBody = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.2, 0.48), woodMat);
-    bBody.position.y = 1.1;
-    bBody.castShadow = bBody.receiveShadow = true;
+    const bBody = new THREE.Mesh(new THREE.BoxGeometry(1.45, 2.25, 0.46), woodMat);
+    bBody.position.y = 1.125;
     bookGroup.add(bBody);
     const bColors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0xa855f7, 0xec4899];
     for (let row = 0; row < 3; row++) {
       for (let b = 0; b < 6; b++) {
-        const bk = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.36, 0.32), new THREE.MeshStandardMaterial({ color: bColors[(row + b) % bColors.length] }));
-        bk.position.set(-0.5 + b * 0.19, 0.55 + row * 0.6, 0.12);
+        const bk = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.36, 0.32), new THREE.MeshStandardMaterial({ color: bColors[(row + b) % bColors.length] }));
+        bk.position.set(-0.48 + b * 0.18, 0.55 + row * 0.6, 0.11);
         bookGroup.add(bk);
       }
     }
+    bookGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
     roomGroup.add(bookGroup);
 
-    // Meuble TV + Écran
+    // 9. Meuble TV + Console + Horloge murale à gauche (premier plan)
     const tvGroup = new THREE.Group();
-    tvGroup.position.set(-3.35, 0, 1.6);
+    tvGroup.position.set(-3.5, 0, 2.1);
     tvGroup.rotation.y = Math.PI / 2;
-    const tvStand = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.55), woodMat);
-    tvStand.position.y = 0.25;
-    const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.85, 0.1), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
-    tvFrame.position.y = 0.98;
-    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(1.22, 0.72), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-    tvScreen.position.set(0, 0.98, 0.055);
+    const tvStand = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.48, 0.52), woodMat);
+    tvStand.position.y = 0.24;
+    const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.82, 0.09), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+    tvFrame.position.y = 0.94;
+    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(1.18, 0.7), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+    tvScreen.position.set(0, 0.94, 0.05);
     tvGroup.add(tvStand, tvFrame, tvScreen);
     roomGroup.add(tvGroup);
 
-    // Arbre à chat 3 étages
+    // Horloge murale au-dessus de la télé + Étagères avec petits cactus
+    const wallClock = new THREE.Group();
+    wallClock.position.set(-4.12, 2.75, 2.1);
+    wallClock.rotation.y = Math.PI / 2;
+    const clockRim = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.06, 24), woodMat);
+    clockRim.rotation.x = Math.PI / 2;
+    const clockFace = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.07, 24), sheetMat);
+    clockFace.rotation.x = Math.PI / 2;
+    wallClock.add(clockRim, clockFace);
+    roomGroup.add(wallClock);
+
+    // Étagère murale avec petites plantes succulentes (cactus_small_A)
+    const wallShelf = new THREE.Group();
+    wallShelf.position.set(-4.0, 2.35, 0.15);
+    const shelfBoard = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.05, 1.3), lightWoodMat);
+    [-0.38, 0, 0.38].forEach((sz, idx) => {
+      const miniPot = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xea580c }));
+      miniPot.position.set(0, 0.09, sz);
+      const cactus = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), new THREE.MeshStandardMaterial({ color: idx === 1 ? 0x10b981 : 0x22c55e }));
+      cactus.scale.y = 1.5;
+      cactus.position.set(0, 0.22, sz);
+      wallShelf.add(miniPot, cactus);
+    });
+    wallShelf.add(shelfBoard);
+    roomGroup.add(wallShelf);
+
+    // 10. NOUVEAU : Ventilateur de plafond animé (ceilingFan)
+    const ceilingFanGroup = new THREE.Group();
+    ceilingFanGroup.position.set(0, 4.15, 0);
+    const fanHub = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.18, 16), woodMat);
+    ceilingFanGroup.add(fanHub);
+    for (let i = 0; i < 4; i++) {
+      const bladePivot = new THREE.Group();
+      bladePivot.rotation.y = (i / 4) * Math.PI * 2;
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.025, 0.22), lightWoodMat);
+      blade.position.x = 0.58;
+      bladePivot.add(blade);
+      ceilingFanGroup.add(bladePivot);
+    }
+    roomGroup.add(ceilingFanGroup);
+
+    // 11. Arbre à chat 3 étages + Carton à chat avec Ours en peluche (cardboardBoxOpen + bear)
     const catTree = new THREE.Group();
-    catTree.position.set(2.85, 0, 1.65);
+    catTree.position.set(2.95, 0, 1.15);
     const sisalMat = new THREE.MeshStandardMaterial({ color: 0xd6b88d, roughness: 0.95 });
     const treeBase = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 1.1), rug1Mat);
     treeBase.position.y = 0.06;
@@ -757,9 +890,28 @@
     [treeBase, pole1, pole2, plat1, plat2].forEach((m) => { m.castShadow = m.receiveShadow = true; catTree.add(m); });
     roomGroup.add(catTree);
 
-    // Coussin de sieste
+    // Petit carton ouvert avec ours en peluche dedans !
+    const boxGroup = new THREE.Group();
+    boxGroup.position.set(2.85, 0, 2.55);
+    boxGroup.rotation.y = -0.35;
+    const cardboardMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.9 });
+    const cBox = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.36, 0.58), cardboardMat);
+    cBox.position.y = 0.18;
+    // Ours en peluche assis dans le carton
+    const bearMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.85 });
+    const bearHead = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 14), bearMat);
+    bearHead.position.set(0, 0.44, 0);
+    const bearEarL = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), bearMat);
+    bearEarL.position.set(-0.12, 0.56, 0);
+    const bearEarR = bearEarL.clone();
+    bearEarR.position.x = 0.12;
+    boxGroup.add(cBox, bearHead, bearEarL, bearEarR);
+    boxGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    roomGroup.add(boxGroup);
+
+    // 12. Coussin de sieste + Gamelles + Pelote de laine
     const bedPadGroup = new THREE.Group();
-    bedPadGroup.position.set(-1.8, 0.02, 1.5);
+    bedPadGroup.position.set(-1.75, 0.02, 1.65);
     const pBase = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.22, 16, 32), new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 }));
     pBase.rotation.x = Math.PI / 2;
     pBase.position.y = 0.2;
@@ -768,9 +920,8 @@
     bedPadGroup.add(pBase, pPad);
     roomGroup.add(bedPadGroup);
 
-    // Gamelles de croquettes et d'eau
     const bowlGroup = new THREE.Group();
-    bowlGroup.position.set(1.6, 0, 2.2);
+    bowlGroup.position.set(1.2, 0, 2.55);
     const bowlOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.42, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.4 }));
     bowlOuter.position.y = 0.09;
     const foodMesh = new THREE.Mesh(new THREE.SphereGeometry(0.27, 16, 12), new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.9 }));
@@ -783,12 +934,11 @@
     bowlGroup.add(bowlOuter, foodMesh, waterBowl, waterSurface);
     roomGroup.add(bowlGroup);
 
-    // Pelote de laine 3D
     const yarnBall = new THREE.Mesh(
       new THREE.SphereGeometry(0.23, 20, 20),
       new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.65 })
     );
-    yarnBall.position.set(0.8, 0.23, 1.1);
+    yarnBall.position.set(0.6, 0.23, 1.1);
     yarnBall.castShadow = true;
     scene.add(yarnBall);
     const yarnVelocity = new THREE.Vector3(0, 0, 0);
@@ -943,7 +1093,7 @@
     }
 
     // ============================================================================
-    // 7. CHARGEMENT CORRIGÉ DES MODÈLES .GLB (CORRIGE LES SKINNEDMESH INVISIBLES)
+    // 7. COMPAGNONS 3D AVEC ANIMATIONS NATURELLES (FINI L'EFFET DE DANSE !)
     // ============================================================================
     const petRoot = new THREE.Group();
     scene.add(petRoot);
@@ -954,6 +1104,8 @@
     let proceduralParts = null;
     let petBodyMeshes = [];
     let activeHeadTarget = null;
+    let headLookTargetY = 0;
+    let nextHeadLookChange = 0;
 
     function createProceduralCat3DS() {
       const group = new THREE.Group();
@@ -1038,7 +1190,6 @@
       return group;
     }
 
-    // Calcul robuste de la vraie taille d'un modèle SkinnedMesh .GLB (évite le bug du scale 0.001x)
     function computeAccurateGLBBounds(root) {
       root.updateMatrixWorld(true);
       const box = new THREE.Box3();
@@ -1046,7 +1197,6 @@
 
       root.traverse((child) => {
         if (child.isMesh && child.geometry) {
-          // Désactive impérativement le frustum culling qui cache les SkinnedMesh !
           child.frustumCulled = false;
           child.castShadow = true;
           child.receiveShadow = true;
@@ -1072,9 +1222,7 @@
         }
       });
 
-      if (box.isEmpty()) {
-        box.setFromObject(root);
-      }
+      if (box.isEmpty()) box.setFromObject(root);
       return box;
     }
 
@@ -1097,32 +1245,29 @@
       loadSmartGLTF(
         speciesName,
         (gltf) => {
-          // Clone proprement le SkinnedMesh avec SkeletonUtils
           const model = SkeletonUtils.clone(gltf.scene);
           petBodyMeshes = [];
 
-          // Démarre d'abord l'animation Idle pour que le squelette prenne sa vraie pose !
           if (gltf.animations && gltf.animations.length > 0) {
             mixer = new THREE.AnimationMixer(model);
             gltf.animations.forEach((clip) => {
-              animationsMap[clip.name.toLowerCase()] = mixer.clipAction(clip);
+              // Enregistre le nom court sans le préfixe "AnimalArmature|"
+              const cleanClipName = clip.name.split('|').pop().toLowerCase().trim();
+              animationsMap[cleanClipName] = mixer.clipAction(clip);
             });
             playGLBAnimation('idle');
             mixer.update(0.016);
           }
 
-          // Mesure la taille exacte une fois le squelette en pose
           const rawBox = computeAccurateGLBBounds(model);
           const size = new THREE.Vector3();
           rawBox.getSize(size);
           let maxDim = Math.max(size.x, size.y, size.z);
           if (!isFinite(maxDim) || maxDim < 0.01 || maxDim > 5000) maxDim = 3.5;
 
-          const targetHeight = 1.45;
-          const scaleFactor = targetHeight / maxDim;
+          const scaleFactor = 1.45 / maxDim;
           model.scale.setScalar(scaleFactor);
 
-          // Recalcule la boîte après mise à l'échelle pour poser les pattes pile sur le sol (y=0)
           const finalBox = computeAccurateGLBBounds(model);
           const center = new THREE.Vector3();
           finalBox.getCenter(center);
@@ -1130,7 +1275,6 @@
           model.position.z = -center.z;
           model.position.y = isFinite(finalBox.min.y) ? -finalBox.min.y : 0;
 
-          // Cherche l'os de la tête pour faire suivre la couronne
           let headBone = null;
           model.traverse((child) => {
             if (child.isMesh) {
@@ -1154,11 +1298,9 @@
           petRoot.add(hatGroup);
 
           buildAccessory3D(state.hat);
-          if (state.coat !== 'original') {
-            applyCoatToMeshes(state.coat);
-          }
+          if (state.coat !== 'original') applyCoatToMeshes(state.coat);
 
-          showToast(`Compagnon 3D "${speciesName.replace('.glb', '')}" affiché !`);
+          showToast(`Compagnon 3D "${speciesName.replace('.glb', '')}" prêt !`);
         },
         () => {
           showToast(`"${speciesName}" non trouvé → Chat 3DS activé`);
@@ -1169,31 +1311,56 @@
       );
     }
 
+    // Sélectionne l'animation la plus calme et ajuste sa vitesse (timeScale) pour éviter l'effet de danse !
     function playGLBAnimation(keyword) {
       if (!mixer) return;
       const keys = Object.keys(animationsMap);
       if (keys.length === 0) return;
 
-      const synonyms = {
-        idle: ['idle', 'stand', 'breathe', 'rest'],
-        walk: ['walk', 'run', 'gallop', 'trot', 'move'],
-        eat: ['eat', 'bite', 'attack', 'peck'],
-        death: ['death', 'sleep', 'lie', 'sit', 'rest'],
-        jump: ['jump', 'bounce', 'gallop', 'walk']
-      };
-
-      const targets = synonyms[keyword] || [keyword];
       let match = null;
-      for (const t of targets) {
-        match = keys.find((k) => k.includes(t));
-        if (match) break;
+      if (keyword === 'idle') {
+        // Priorise l'Idle exact (sans _2 ni hitreaction) pour que l'animal reste calme !
+        match = keys.find((k) => k === 'idle') ||
+                keys.find((k) => k.startsWith('idle') && !k.includes('hit') && !k.includes('2')) ||
+                keys.find((k) => k.includes('idle'));
+      } else if (keyword === 'walk') {
+        match = keys.find((k) => k === 'walk') || keys.find((k) => k.includes('walk')) || keys.find((k) => k.includes('run'));
+      } else if (keyword === 'eat') {
+        match = keys.find((k) => k.includes('eat')) || keys.find((k) => k.includes('bite')) || keys.find((k) => k === 'idle');
+      } else if (keyword === 'death') {
+        match = keys.find((k) => k.includes('death')) || keys.find((k) => k.includes('sleep')) || keys.find((k) => k === 'idle');
+      } else if (keyword === 'jump') {
+        match = keys.find((k) => k.includes('jump')) || keys.find((k) => k.includes('idle_2')) || keys.find((k) => k === 'idle');
       }
-      if (!match) match = keys[0];
 
-      if (match && animationsMap[match] !== currentAction) {
-        if (currentAction) currentAction.fadeOut(0.25);
-        currentAction = animationsMap[match];
-        currentAction.reset().fadeIn(0.25).play();
+      if (!match) match = keys[0];
+      const nextAction = animationsMap[match];
+      if (!nextAction) return;
+
+      // Réglage de la vitesse et du bouclage pour un rendu naturel et doux
+      if (keyword === 'idle') {
+        nextAction.timeScale = 0.42; // Respiration très calme, plus aucune danse frénétique !
+        nextAction.setLoop(THREE.LoopRepeat);
+      } else if (keyword === 'walk') {
+        nextAction.timeScale = 0.78; // Pas de marche naturel
+        nextAction.setLoop(THREE.LoopRepeat);
+      } else if (keyword === 'death') {
+        nextAction.timeScale = 0.5;
+        nextAction.setLoop(THREE.LoopOnce);
+        nextAction.clampWhenFinished = true; // Reste couché pendant la sieste !
+      } else if (keyword === 'jump') {
+        nextAction.timeScale = 0.75;
+        nextAction.setLoop(THREE.LoopOnce);
+        nextAction.clampWhenFinished = false;
+      } else {
+        nextAction.timeScale = 0.65;
+        nextAction.setLoop(THREE.LoopRepeat);
+      }
+
+      if (nextAction !== currentAction) {
+        if (currentAction) currentAction.fadeOut(0.5);
+        currentAction = nextAction;
+        currentAction.reset().fadeIn(0.5).play();
       }
     }
 
@@ -1219,25 +1386,26 @@
     }
 
     // ============================================================================
-    // 8. IA AUTONOME "VIVANTE 24/7"
+    // 8. IA AUTONOME APAISÉE (PAUSE LONGUE AU REPOS + PROMENADES DOUCES)
     // ============================================================================
     const ai = {
-      mode: 'idle',
-      timer: 4,
+      mode: 'sit', // 'sit', 'idle', 'walk', 'eat', 'sleep', 'play', 'happy'
+      timer: 8,
       targetPos: new THREE.Vector3(0, 0, 0),
-      walkSpeed: 1.25
+      walkSpeed: 0.95 // Marche tranquille en intérieur
     };
 
     const moodTexts = {
-      idle: 'Observe tranquillement son grand salon...',
-      walk: 'Se promène entre les meubles de la chambre...',
+      sit: 'Est assis tranquillement et observe la pièce...',
+      idle: 'Profite du calme de son salon...',
+      walk: 'Flâne tranquillement entre les meubles...',
       eat: 'Savoure ses croquettes près de la gamelle d\'eau !',
       sleep: 'Dort paisiblement sur son coussin moelleux... Zzz',
       play: 'Joue avec sa pelote de laine sur le tapis !',
       happy: 'Ronronne de bonheur sous tes caresses ♥'
     };
 
-    function setAIMode(newMode, duration = 6) {
+    function setAIMode(newMode, duration = 8) {
       ai.mode = newMode;
       ai.timer = duration;
       document.getElementById('pet-mood-bubble').textContent = moodTexts[newMode] || moodTexts.idle;
@@ -1254,27 +1422,29 @@
       const isNight = (state.lightingMode === 'night') || (state.lightingMode === 'auto' && (hour >= 22 || hour < 7));
 
       if (isNight || state.energy < 25) {
-        ai.targetPos.set(-1.8, 0, 1.5);
-        setAIMode('walk', 5);
+        ai.targetPos.set(-1.75, 0, 1.65);
+        setAIMode('walk', 6);
         ai.nextAfterWalk = 'sleep';
         return;
       }
 
       const roll = Math.random();
-      if (roll < 0.45) {
-        ai.targetPos.set((Math.random() - 0.5) * 4.2, 0, (Math.random() - 0.2) * 3.8);
+      if (roll < 0.35) {
+        // Marche calmement vers un coin du salon puis s'assoit longuement
+        ai.targetPos.set((Math.random() - 0.5) * 3.8, 0, (Math.random() - 0.1) * 3.4);
         setAIMode('walk', 6);
-        ai.nextAfterWalk = 'idle';
-      } else if (roll < 0.7) {
+        ai.nextAfterWalk = 'sit';
+      } else if (roll < 0.52) {
         ai.targetPos.copy(yarnBall.position);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'play';
-      } else if (roll < 0.85 && state.hunger < 92) {
-        ai.targetPos.set(1.6, 0, 1.9);
+      } else if (roll < 0.65 && state.hunger < 92) {
+        ai.targetPos.set(1.2, 0, 2.2);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'eat';
       } else {
-        setAIMode('idle', 5 + Math.random() * 4);
+        // Reste assis/posé calmement pendant 9 à 14 secondes
+        setAIMode('sit', 9 + Math.random() * 5);
       }
     }
 
@@ -1313,7 +1483,7 @@
     function petCompanion() {
       state.fun = Math.min(100, state.fun + 12);
       state.coins += 5;
-      setAIMode('happy', 3.5);
+      setAIMode('happy', 2.2);
       spawnParticles3D(0xff6b8b, 8);
       showToast(`Ronronnement de ${state.name} ♥ (+5 ★)`);
       updateHUD();
@@ -1321,7 +1491,7 @@
     }
 
     function throwYarnBall() {
-      yarnVelocity.set((Math.random() - 0.5) * 5.0, 0, (Math.random() - 0.5) * 4.5);
+      yarnVelocity.set((Math.random() - 0.5) * 4.8, 0, (Math.random() - 0.5) * 4.2);
       state.fun = Math.min(100, state.fun + 18);
       state.energy = Math.max(10, state.energy - 5);
       ai.targetPos.copy(yarnBall.position);
@@ -1344,7 +1514,7 @@
     document.getElementById('btn-feed').addEventListener('click', () => {
       state.hunger = Math.min(100, state.hunger + 25);
       state.coins += 5;
-      ai.targetPos.set(1.6, 0, 1.9);
+      ai.targetPos.set(1.2, 0, 2.2);
       setAIMode('walk', 4);
       ai.nextAfterWalk = 'eat';
       spawnParticles3D(0xfb7185, 7);
@@ -1359,7 +1529,7 @@
     document.getElementById('btn-wash').addEventListener('click', () => {
       state.hygiene = 100;
       state.fun = Math.min(100, state.fun + 8);
-      setAIMode('happy', 3);
+      setAIMode('happy', 2.2);
       spawnParticles3D(0x38bdf8, 10);
       showToast('Pelage tout doux et brillant !');
       updateHUD();
@@ -1367,7 +1537,7 @@
     });
 
     document.getElementById('btn-sleep').addEventListener('click', () => {
-      ai.targetPos.set(-1.8, 0, 1.5);
+      ai.targetPos.set(-1.75, 0, 1.65);
       setAIMode('walk', 4);
       ai.nextAfterWalk = 'sleep';
       state.energy = Math.min(100, state.energy + 30);
@@ -1489,7 +1659,7 @@
     });
 
     // ============================================================================
-    // 11. BOUCLE D'ANIMATION 60 FPS & SUIVI DE L'OS DE LA TÊTE POUR LA COURONNE
+    // 11. BOUCLE D'ANIMATION 60 FPS APAISÉE & NATURELLE
     // ============================================================================
     const clock = new THREE.Clock();
     const headWorldPos = new THREE.Vector3();
@@ -1499,13 +1669,16 @@
       const dt = Math.min(clock.getDelta(), 0.1);
       const elapsed = clock.getElapsedTime();
 
+      // Rotation douce du ventilateur de plafond
+      ceilingFanGroup.rotation.y += dt * 1.1;
+
       if (mixer) {
         mixer.update(dt);
-        // Si un modèle .glb possède un os de tête, la couronne suit exactement l'os en coordonnées locales !
         if (activeHeadTarget) {
           activeHeadTarget.getWorldPosition(headWorldPos);
           petRoot.worldToLocal(headWorldPos);
-          hatGroup.position.set(headWorldPos.x, headWorldPos.y + 0.18, headWorldPos.z);
+          // Lissage (lerp) de la position de la couronne pour qu'elle ne tremble pas
+          hatGroup.position.lerp(new THREE.Vector3(headWorldPos.x, headWorldPos.y + 0.18, headWorldPos.z), 0.25);
         }
       }
 
@@ -1518,54 +1691,87 @@
           dir.normalize();
           petRoot.position.addScaledVector(dir, ai.walkSpeed * dt);
           const targetAngle = Math.atan2(dir.x, dir.z);
-          petRoot.rotation.y = THREE.MathUtils.lerp(petRoot.rotation.y, targetAngle, 0.12);
+          petRoot.rotation.y = THREE.MathUtils.lerp(petRoot.rotation.y, targetAngle, 0.1);
         } else {
-          setAIMode(ai.nextAfterWalk || 'idle', 6);
+          setAIMode(ai.nextAfterWalk || 'sit', 9);
         }
       } else if (ai.mode === 'play') {
         const toBall = new THREE.Vector3().subVectors(yarnBall.position, petRoot.position);
         if (toBall.length() < 0.85) {
-          yarnVelocity.set((Math.random() - 0.5) * 2.8, 0, (Math.random() - 0.5) * 2.8);
+          yarnVelocity.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
+          setAIMode('sit', 7);
         }
       }
 
       if (ai.timer <= 0) chooseNextAutonomousBehavior();
 
+      // Animation calme et réaliste du Chat 3DS intégré (sans oscillation constante !)
       if (proceduralParts) {
         const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
-        tailPivot.rotation.z = Math.sin(elapsed * 3.5) * 0.35;
 
         if (ai.mode === 'walk') {
-          legs[0].rotation.x = Math.sin(elapsed * 10) * 0.45;
-          legs[1].rotation.x = -Math.sin(elapsed * 10) * 0.45;
-          legs[2].rotation.x = -Math.sin(elapsed * 10) * 0.45;
-          legs[3].rotation.x = Math.sin(elapsed * 10) * 0.45;
-          body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 10)) * 0.04;
-          headGroup.position.y = 0.86 + Math.abs(Math.sin(elapsed * 10)) * 0.04;
+          // Marche souple
+          body.rotation.x = Math.PI / 2;
+          legs[0].rotation.x = Math.sin(elapsed * 7.5) * 0.4;
+          legs[1].rotation.x = -Math.sin(elapsed * 7.5) * 0.4;
+          legs[2].rotation.x = -Math.sin(elapsed * 7.5) * 0.4;
+          legs[3].rotation.x = Math.sin(elapsed * 7.5) * 0.4;
+          body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 7.5)) * 0.025;
+          headGroup.position.set(0, 0.86, 0.35);
+          headGroup.rotation.set(0, 0, 0);
+          tailPivot.rotation.z = Math.sin(elapsed * 4) * 0.2;
           eyesGroup.scale.y = 1;
         } else if (ai.mode === 'sleep') {
-          body.position.y = 0.26 + Math.sin(elapsed * 2) * 0.015;
-          headGroup.position.y = 0.46;
-          headGroup.rotation.x = 0.25;
-          eyesGroup.scale.y = 0.1;
+          // Roulé en boule, immobile à part une très lente respiration
+          body.rotation.x = Math.PI / 2;
+          body.position.y = 0.25 + Math.sin(elapsed * 1.4) * 0.01;
+          headGroup.position.set(0, 0.45, 0.32);
+          headGroup.rotation.set(0.28, 0.2, 0);
+          eyesGroup.scale.y = 0.08;
+          tailPivot.rotation.z = 0;
           legs.forEach((l) => (l.rotation.x = Math.PI / 2.2));
         } else if (ai.mode === 'eat') {
-          headGroup.position.y = 0.62 + Math.sin(elapsed * 12) * 0.06;
-          headGroup.rotation.x = 0.45;
-          eyesGroup.scale.y = 1;
-        } else if (ai.mode === 'happy' || ai.mode === 'play') {
-          body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
-          headGroup.position.y = 0.88 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
-          headGroup.rotation.z = Math.sin(elapsed * 6) * 0.15;
-          eyesGroup.scale.y = 0.35;
-        } else {
-          body.position.y = 0.48 + Math.sin(elapsed * 2.5) * 0.015;
-          headGroup.position.y = 0.86 + Math.sin(elapsed * 2.5) * 0.015;
-          headGroup.rotation.y = Math.sin(elapsed * 0.9) * 0.28;
-          headGroup.rotation.x = 0;
-          headGroup.rotation.z = 0;
+          // Penche la tête vers la gamelle
+          body.rotation.x = Math.PI / 2 + 0.15;
+          body.position.y = 0.44;
+          headGroup.position.set(0, 0.62 + Math.sin(elapsed * 8) * 0.03, 0.4);
+          headGroup.rotation.set(0.45, 0, 0);
           legs.forEach((l) => (l.rotation.x = 0));
-          eyesGroup.scale.y = (Math.sin(elapsed * 1.6) > 0.96) ? 0.08 : 1;
+          eyesGroup.scale.y = 0.2;
+        } else if (ai.mode === 'happy') {
+          // Ronronnement doux sur place (sans sauter dans tous les sens)
+          body.rotation.x = Math.PI / 2 - 0.25;
+          body.position.y = 0.42;
+          headGroup.position.set(0, 0.84, 0.32);
+          headGroup.rotation.z = Math.sin(elapsed * 4) * 0.08;
+          eyesGroup.scale.y = 0.2;
+        } else {
+          // ÉTAT ASSIS / REPOS CALME (80% du temps) : Posture assise féline naturelle !
+          body.rotation.x = Math.PI / 2 - 0.32; // Arrière-train posé au sol
+          body.position.y = 0.41 + Math.sin(elapsed * 1.5) * 0.006; // Respiration quasi imperceptible
+          headGroup.position.set(0, 0.85, 0.28);
+
+          // Pattes avant droites, pattes arrière repliées
+          legs[0].rotation.x = 0;
+          legs[1].rotation.x = 0;
+          legs[2].rotation.x = -Math.PI / 2.5;
+          legs[3].rotation.x = -Math.PI / 2.5;
+
+          // Change la direction du regard seulement toutes les 5 à 8 secondes, puis reste fixe !
+          if (elapsed > nextHeadLookChange) {
+            headLookTargetY = (Math.random() - 0.5) * 0.55;
+            nextHeadLookChange = elapsed + 5 + Math.random() * 4;
+          }
+          headGroup.rotation.y = THREE.MathUtils.lerp(headGroup.rotation.y, headLookTargetY, 0.04);
+          headGroup.rotation.x = THREE.MathUtils.lerp(headGroup.rotation.x, 0, 0.05);
+          headGroup.rotation.z = THREE.MathUtils.lerp(headGroup.rotation.z, 0, 0.05);
+
+          // Queue posée qui ne bouge doucement que par intermittence
+          const tailWave = Math.sin(elapsed * 0.8) > 0.5 ? Math.sin(elapsed * 2.2) * 0.15 : 0;
+          tailPivot.rotation.z = THREE.MathUtils.lerp(tailPivot.rotation.z, tailWave, 0.05);
+
+          // Clignement naturel des yeux
+          eyesGroup.scale.y = (Math.sin(elapsed * 1.4) > 0.97) ? 0.08 : 1;
         }
       }
 
@@ -1573,15 +1779,15 @@
         yarnBall.position.addScaledVector(yarnVelocity, dt);
         yarnBall.rotation.x += yarnVelocity.z * dt * 3;
         yarnBall.rotation.z -= yarnVelocity.x * dt * 3;
-        yarnVelocity.multiplyScalar(0.95);
+        yarnVelocity.multiplyScalar(0.94);
         if (Math.abs(yarnBall.position.x) > 2.6) yarnVelocity.x *= -0.8;
         if (yarnBall.position.z > 2.6 || yarnBall.position.z < -2.0) yarnVelocity.z *= -0.8;
       }
 
       const posArr = dustGeo.attributes.position.array;
       for (let i = 0; i < dustCount; i++) {
-        posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.0015;
-        posArr[i * 3] += Math.cos(elapsed * 0.5 + i) * 0.001;
+        posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.001;
+        posArr[i * 3] += Math.cos(elapsed * 0.5 + i) * 0.0008;
       }
       dustGeo.attributes.position.needsUpdate = true;
 
