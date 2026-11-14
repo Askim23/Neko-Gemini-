@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Neko 3DS — Édition Vivante</title>
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <meta name="theme-color" content="#1e222d" />
   <style>
     :root {
@@ -423,7 +425,7 @@
       coat: 'tuxedo',
       hat: 'crown',
       species: 'proc_cat',
-      lightingMode: 'auto' // 'auto', 'day', 'sunset', 'night'
+      lightingMode: 'auto'
     };
 
     const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save') || '{}'));
@@ -484,13 +486,11 @@
     sunLight.shadow.bias = -0.001;
     scene.add(sunLight);
 
-    // Lampe de chevet chaude pour la nuit (s'allume le soir sur le bureau de Justine)
     const nightLampLight = new THREE.PointLight(0xff9e44, 0, 7, 1.5);
     nightLampLight.position.set(-2.4, 1.8, -2.0);
     nightLampLight.castShadow = true;
     scene.add(nightLampLight);
 
-    // Rayon de lumière de la fenêtre (Volumetric Sunbeam)
     const sunbeamGeo = new THREE.ConeGeometry(1.8, 5.5, 32, 1, true);
     const sunbeamMat = new THREE.MeshBasicMaterial({
       color: 0xfff3c4,
@@ -512,7 +512,6 @@
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
 
-    // Parquet chaleureux en lattes 3D
     const floorCanvas = document.createElement('canvas');
     floorCanvas.width = 512; floorCanvas.height = 512;
     const fCtx = floorCanvas.getContext('2d');
@@ -538,7 +537,6 @@
     floorMesh.receiveShadow = true;
     roomGroup.add(floorMesh);
 
-    // Murs pastel coin cosy
     const wallMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.9 });
     const backWall = new THREE.Mesh(new THREE.BoxGeometry(6.8, 4.0, 0.25), wallMat);
     backWall.position.set(0, 2.0, -3.2);
@@ -550,7 +548,6 @@
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
-    // Fenêtre donnant sur le ciel (change de couleur selon l'heure + étoiles la nuit)
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
     const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.6), skyMat);
     windowGlass.position.set(1.2, 2.35, -3.05);
@@ -561,7 +558,6 @@
     winFrame.position.set(1.2, 2.35, -3.07);
     roomGroup.add(winFrame);
 
-    // Fonction utilitaire : Charge un meuble .GLB/.GLTF de tes packs, ou crée son équivalent 3D s'il n'est pas encore copié
     function loadFurnitureOrFallback(url, pos, rotY, scale, fallbackBuilder) {
       gltfLoader.load(
         url,
@@ -588,7 +584,6 @@
       );
     }
 
-    // 1. Tapis rond douillet au centre (rugRound.glb)
     loadFurnitureOrFallback('models/rugRound.glb', [0, 0.01, 0.2], 0, 2.2, () => {
       const g = new THREE.Group();
       const rug = new THREE.Mesh(
@@ -604,7 +599,6 @@
       return g;
     });
 
-    // 2. Coussin / Lit moelleux du chat (pillowBlue.glb)
     loadFurnitureOrFallback('models/pillowBlue.glb', [-1.8, 0.02, 0.9], 0.4, 1.8, () => {
       const g = new THREE.Group();
       const base = new THREE.Mesh(
@@ -624,7 +618,6 @@
       return g;
     });
 
-    // 3. Canapé cosy au fond (loungeSofa.glb)
     loadFurnitureOrFallback('models/loungeSofa.glb', [-0.9, 0, -2.35], 0, 1.7, () => {
       const g = new THREE.Group();
       const mat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
@@ -637,7 +630,6 @@
       return g;
     });
 
-    // 4. Lampadaire d'ambiance (lampRoundFloor.glb)
     loadFurnitureOrFallback('models/lampRoundFloor.glb', [-2.4, 0, -2.0], 0, 1.8, () => {
       const g = new THREE.Group();
       const pole = new THREE.Mesh(
@@ -654,7 +646,6 @@
       return g;
     });
 
-    // 5. Plante verte en pot (pottedPlant.glb)
     loadFurnitureOrFallback('models/pottedPlant.glb', [2.3, 0, -2.2], 0, 2.0, () => {
       const g = new THREE.Group();
       const pot = new THREE.Mesh(
@@ -674,7 +665,6 @@
       return g;
     });
 
-    // 6. Gamelle 3D qui se remplit quand on nourrit le compagnon
     const bowlGroup = new THREE.Group();
     bowlGroup.position.set(1.95, 0, 0.85);
     const bowlOuter = new THREE.Mesh(
@@ -692,7 +682,6 @@
     bowlGroup.add(bowlOuter, foodMesh);
     roomGroup.add(bowlGroup);
 
-    // 7. Pelote de laine 3D physique pour jouer
     const yarnBall = new THREE.Mesh(
       new THREE.SphereGeometry(0.22, 20, 20),
       new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.7 })
@@ -723,7 +712,6 @@
     const dustParticles = new THREE.Points(dustGeo, dustMat);
     scene.add(dustParticles);
 
-    // Particules d'émotions (Cœurs / Bulles / Notes)
     const floatingParticles = [];
     function spawnParticles3D(colorHex, count = 6) {
       for (let i = 0; i < count; i++) {
@@ -767,7 +755,6 @@
       ctx.fillRect(0, 0, 256, 256);
 
       if (p.pattern === 'tuxedo') {
-        // Plastron blanc et bout des pattes blancs (façon Phénix)
         ctx.fillStyle = p.secondary;
         ctx.beginPath();
         ctx.ellipse(128, 160, 55, 75, 0, 0, Math.PI * 2);
@@ -839,7 +826,7 @@
         rightWing.position.x = 0.1;
         const bow = new THREE.Group();
         bow.add(center, leftWing, rightWing);
-        bow.position.set(0, -0.42, 0.34); // Sous le menton
+        bow.position.set(0, -0.42, 0.34);
         hatGroup.add(bow);
       } else if (hatType === 'glasses') {
         const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5, roughness: 0.3 });
@@ -886,7 +873,6 @@
     let proceduralParts = null;
     let petBodyMeshes = [];
 
-    // Création du Chat 3DS Chibi Low-Poly intégré (Style Nintendogs + Cats)
     function createProceduralCat3DS() {
       const group = new THREE.Group();
       const coatTex = generateCoatTexture(state.coat);
@@ -897,7 +883,6 @@
 
       petBodyMeshes = [];
 
-      // Corps moelleux
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.34, 0.42, 16, 24), furMat);
       body.rotation.x = Math.PI / 2;
       body.position.set(0, 0.48, 0);
@@ -905,7 +890,6 @@
       group.add(body);
       petBodyMeshes.push(body);
 
-      // Groupe Tête (Chibi 3DS : grosse tête expressive)
       const headGroup = new THREE.Group();
       headGroup.position.set(0, 0.86, 0.35);
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 24), furMat);
@@ -914,7 +898,6 @@
       headGroup.add(head);
       petBodyMeshes.push(head);
 
-      // Oreilles de chat
       [-0.25, 0.25].forEach((x, idx) => {
         const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.34, 16), furMat);
         ear.position.set(x, 0.38, -0.02);
@@ -927,7 +910,6 @@
         petBodyMeshes.push(ear);
       });
 
-      // Grands yeux brillants style 3DS
       const eyesGroup = new THREE.Group();
       [-0.16, 0.16].forEach((x) => {
         const eye = new THREE.Mesh(new THREE.SphereGeometry(0.072, 16, 16), eyeMat);
@@ -938,20 +920,17 @@
       });
       headGroup.add(eyesGroup);
 
-      // Petit museau rose
       const nose = new THREE.Mesh(new THREE.SphereGeometry(0.042, 12, 12), pinkMat);
       nose.scale.set(1.3, 0.9, 0.9);
       nose.position.set(0, -0.04, 0.42);
       headGroup.add(nose);
 
-      // Attache l'accessoire 3D au sommet de la tête
       hatGroup.position.set(0, 0.39, 0);
       hatGroup.scale.setScalar(1);
       headGroup.add(hatGroup);
 
       group.add(headGroup);
 
-      // 4 Pattes articulées
       const legs = [];
       [
         [-0.2, 0.22, 0.25],
@@ -967,7 +946,6 @@
         petBodyMeshes.push(leg);
       });
 
-      // Queue animée
       const tailPivot = new THREE.Group();
       tailPivot.position.set(0, 0.55, -0.38);
       const tail = new THREE.Mesh(new THREE.CapsuleGeometry(0.065, 0.48, 12, 16), furMat);
@@ -982,7 +960,6 @@
       return group;
     }
 
-    // Charge soit le Chat 3DS intégré, soit un fichier .GLB de ton dossier models/
     function loadPetModel(speciesUrl) {
       while (petRoot.children.length > 0) {
         petRoot.remove(petRoot.children[0]);
@@ -1003,7 +980,6 @@
         speciesUrl,
         (gltf) => {
           const model = gltf.scene;
-          // Normalise la taille du modèle .glb
           const box = new THREE.Box3().setFromObject(model);
           const size = new THREE.Vector3();
           box.getSize(size);
@@ -1083,7 +1059,7 @@
     // 9. IA AUTONOME "VIVANTE 24/7" (MARCHE, REPAS, JEU, SIESTE, REGARD)
     // ============================================================================
     const ai = {
-      mode: 'idle', // 'idle', 'walk', 'eat', 'sleep', 'play', 'happy'
+      mode: 'idle',
       timer: 4,
       targetPos: new THREE.Vector3(0, 0, 0),
       walkSpeed: 1.15
@@ -1105,7 +1081,7 @@
 
       if (newMode === 'walk') playGLBAnimation('walk');
       else if (newMode === 'eat') playGLBAnimation('eat');
-      else if (newMode === 'sleep') playGLBAnimation('death'); // Souvent l'état couché dans les packs Quaternius
+      else if (newMode === 'sleep') playGLBAnimation('death');
       else if (newMode === 'happy' || newMode === 'play') playGLBAnimation('jump');
       else playGLBAnimation('idle');
     }
@@ -1115,7 +1091,7 @@
       const isNight = (state.lightingMode === 'night') || (state.lightingMode === 'auto' && (hour >= 22 || hour < 7));
 
       if (isNight || state.energy < 25) {
-        ai.targetPos.set(-1.8, 0, 0.9); // Va vers son coussin
+        ai.targetPos.set(-1.8, 0, 0.9);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'sleep';
         return;
@@ -1123,17 +1099,14 @@
 
       const roll = Math.random();
       if (roll < 0.42) {
-        // Se promène vers un point aléatoire de la pièce
         ai.targetPos.set((Math.random() - 0.5) * 3.4, 0, (Math.random() - 0.3) * 2.6);
         setAIMode('walk', 6);
         ai.nextAfterWalk = 'idle';
       } else if (roll < 0.65) {
-        // Va jouer avec la pelote de laine
         ai.targetPos.copy(yarnBall.position);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'play';
       } else if (roll < 0.82 && state.hunger < 90) {
-        // Va voir sa gamelle
         ai.targetPos.set(1.55, 0, 0.85);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'eat';
@@ -1248,7 +1221,6 @@
       saveState();
     });
 
-    // Sélecteurs de personnalisation
     const selectSpecies = document.getElementById('select-species');
     const selectCoat = document.getElementById('select-coat');
     const selectHat = document.getElementById('select-hat');
@@ -1275,7 +1247,6 @@
       saveState();
     });
 
-    // Renommer le compagnon
     document.getElementById('pet-name-display').addEventListener('click', () => {
       const newName = prompt('Comment s\'appelle ton compagnon ?', state.name);
       if (newName && newName.trim()) {
@@ -1329,7 +1300,6 @@
         sunbeamMat.color.setHex(0xfdba74);
         dot.style.background = '#f97316';
       } else {
-        // Mode Nuit doux pour ne pas éblouir Justine sur son bureau
         scene.background.setHex(0x1e1b4b);
         scene.fog.color.setHex(0x1e1b4b);
         skyMat.color.setHex(0x0f172a);
@@ -1368,7 +1338,6 @@
 
       if (mixer) mixer.update(dt);
 
-      // 1. Déplacement autonome et orientation douce du compagnon
       ai.timer -= dt;
       if (ai.mode === 'walk') {
         const dir = new THREE.Vector3().subVectors(ai.targetPos, petRoot.position);
@@ -1383,7 +1352,6 @@
           setAIMode(ai.nextAfterWalk || 'idle', 6);
         }
       } else if (ai.mode === 'play') {
-        // Donne des petits coups de patte dans la pelote
         const toBall = new THREE.Vector3().subVectors(yarnBall.position, petRoot.position);
         if (toBall.length() < 0.75) {
           yarnVelocity.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
@@ -1394,7 +1362,6 @@
         chooseNextAutonomousBehavior();
       }
 
-      // 2. Animation procédurale du Chat 3DS intégré (respiration, queue, pattes, dodo)
       if (proceduralParts) {
         const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
         tailPivot.rotation.z = Math.sin(elapsed * 3.5) * 0.35;
@@ -1408,11 +1375,10 @@
           headGroup.position.y = 0.86 + Math.abs(Math.sin(elapsed * 10)) * 0.04;
           eyesGroup.scale.y = 1;
         } else if (ai.mode === 'sleep') {
-          // Couché en boule et respire doucement
           body.position.y = 0.26 + Math.sin(elapsed * 2) * 0.015;
           headGroup.position.y = 0.46;
           headGroup.rotation.x = 0.25;
-          eyesGroup.scale.y = 0.1; // Yeux fermés
+          eyesGroup.scale.y = 0.1;
           legs.forEach((l) => (l.rotation.x = Math.PI / 2.2));
         } else if (ai.mode === 'eat') {
           headGroup.position.y = 0.62 + Math.sin(elapsed * 12) * 0.06;
@@ -1422,32 +1388,27 @@
           body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
           headGroup.position.y = 0.88 + Math.abs(Math.sin(elapsed * 8)) * 0.14;
           headGroup.rotation.z = Math.sin(elapsed * 6) * 0.15;
-          eyesGroup.scale.y = 0.35; // Yeux joyeux plissés
+          eyesGroup.scale.y = 0.35;
         } else {
-          // Repos vivant : respire et regarde autour de lui
           body.position.y = 0.48 + Math.sin(elapsed * 2.5) * 0.015;
           headGroup.position.y = 0.86 + Math.sin(elapsed * 2.5) * 0.015;
           headGroup.rotation.y = Math.sin(elapsed * 0.9) * 0.28;
           headGroup.rotation.x = 0;
           headGroup.rotation.z = 0;
           legs.forEach((l) => (l.rotation.x = 0));
-          // Clignement naturel des yeux toutes les 4 secondes
           eyesGroup.scale.y = (Math.sin(elapsed * 1.6) > 0.96) ? 0.08 : 1;
         }
       }
 
-      // 3. Physique de la pelote de laine 3D
       if (yarnVelocity.lengthSq() > 0.001) {
         yarnBall.position.addScaledVector(yarnVelocity, dt);
         yarnBall.rotation.x += yarnVelocity.z * dt * 3;
         yarnBall.rotation.z -= yarnVelocity.x * dt * 3;
         yarnVelocity.multiplyScalar(0.95);
-        // Rebonds dans les limites du tapis
         if (Math.abs(yarnBall.position.x) > 2.2) yarnVelocity.x *= -0.8;
         if (yarnBall.position.z > 2.1 || yarnBall.position.z < -1.5) yarnVelocity.z *= -0.8;
       }
 
-      // 4. Particules de poussière dorée flottante
       const posArr = dustGeo.attributes.position.array;
       for (let i = 0; i < dustCount; i++) {
         posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.0015;
@@ -1455,7 +1416,6 @@
       }
       dustGeo.attributes.position.needsUpdate = true;
 
-      // 5. Particules d'émotions (Cœurs / Bulles)
       for (let i = floatingParticles.length - 1; i >= 0; i--) {
         const p = floatingParticles[i];
         p.life -= dt * 0.8;
@@ -1467,14 +1427,13 @@
         }
       }
 
-      // 6. Respiration douce de la caméra (pour que l'écran soit toujours vivant de loin)
       camera.position.x += Math.sin(elapsed * 0.35) * 0.0012;
       controls.update();
       renderer.render(scene, camera);
     }
 
     // ============================================================================
-    // 14. DÉMARRAGE, ÉVOLUTION DES JAUGES & REDIMENSIONNEMENT
+    // 14. DÉMARRAGE, ÉVOLUTION DES JAUGES & SERVICE WORKER PWA
     // ============================================================================
     window.addEventListener('resize', () => {
       camera.aspect = container.clientWidth / container.clientHeight;
@@ -1482,11 +1441,10 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // Diminution très douce des jauges (pensé pour rester allumé toute la journée)
     setInterval(() => {
       state.hunger = Math.max(10, state.hunger - 0.4);
       state.fun = Math.max(10, state.fun - 0.35);
-      state.hygiene = Math.max(10, state.hygiene - 0.25);
+      state.hygiene = Math.max(10, state.fun - 0.25);
       if (ai.mode === 'sleep') {
         state.energy = Math.min(100, state.energy + 1.5);
       } else {
@@ -1497,7 +1455,6 @@
       saveState();
     }, 30000);
 
-    // Empêcher la mise en veille de l'écran sur le smartphone de Justine (Wake Lock API)
     async function keepScreenAwake() {
       try {
         if ('wakeLock' in navigator) {
@@ -1512,6 +1469,13 @@
     applyEnvironmentLighting();
     updateHUD();
     animate();
+
+    // Enregistrement du Service Worker PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
   </script>
 </body>
 </html>
