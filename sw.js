@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neko-3ds-v8';
+const CACHE_NAME = 'neko-3ds-v9';
 
 // Fichiers de base mis en cache dès l'installation
 const CORE_ASSETS = [
