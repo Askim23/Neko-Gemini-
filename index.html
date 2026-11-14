@@ -48,10 +48,10 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
-    /* ÉCRAN SUPÉRIEUR 3D (68% de la hauteur) */
+    /* ÉCRAN SUPÉRIEUR 3D (65% de la hauteur) */
     #top-screen-frame {
       position: relative;
-      flex: 6.8;
+      flex: 6.5;
       background: #000;
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -60,70 +60,90 @@
     }
 
     #webgl-container {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
-      display: block;
+      z-index: 1;
     }
 
+    /* Interface superposée sur l'écran 3D avec z-index élevé pour garantir le clic */
     #hud-top {
       position: absolute;
-      top: 12px;
-      left: 14px;
-      right: 14px;
+      top: 10px;
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 30;
       pointer-events: none;
-      z-index: 10;
     }
 
     .hud-pill {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(8px);
-      padding: 6px 14px;
+      padding: 6px 13px;
       border-radius: 999px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--text-main);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       pointer-events: auto;
     }
 
-    #pet-mood-bubble {
+    #hud-bottom-controls {
       position: absolute;
-      bottom: 14px;
-      left: 14px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(8px);
-      padding: 7px 14px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-main);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      bottom: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      z-index: 30;
       pointer-events: none;
     }
 
-    #camera-hint {
-      position: absolute;
-      bottom: 14px;
-      right: 14px;
-      background: rgba(30, 34, 45, 0.78);
-      color: #fff;
+    #pet-mood-bubble {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
       padding: 6px 12px;
       border-radius: 12px;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 600;
+      color: var(--text-main);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      max-width: 58%;
+    }
+
+    .top-overlay-btns {
+      display: flex;
+      gap: 6px;
       pointer-events: auto;
+    }
+
+    .overlay-btn {
+      background: rgba(30, 34, 45, 0.85);
+      color: #fff;
+      padding: 7px 11px;
+      border-radius: 11px;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.25);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.1s, background 0.2s;
+    }
+    .overlay-btn:active {
+      transform: scale(0.95);
     }
 
     #hinge {
-      height: 8px;
+      height: 7px;
       background: linear-gradient(90deg, #191c26 0%, #383f57 50%, #191c26 100%);
       border-radius: 99px;
       display: flex;
@@ -138,40 +158,41 @@
       box-shadow: 0 0 8px #6ee7b7;
     }
 
-    /* ÉCRAN TACTILE INFÉRIEUR */
+    /* ÉCRAN TACTILE INFÉRIEUR (35% de la hauteur, z-index isolé) */
     #bottom-screen-frame {
-      flex: 3.2;
+      position: relative;
+      z-index: 40;
+      flex: 3.5;
       background: var(--ui-bg);
       border-radius: 18px;
       border: 4px solid #3c425c;
-      padding: 10px 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
-      overflow: hidden;
+      gap: 4px;
     }
 
     .gauges-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
+      gap: 6px;
     }
 
     .gauge-card {
       background: var(--ui-card);
       border: 1.5px solid var(--ui-border);
-      border-radius: 11px;
-      padding: 5px 8px;
+      border-radius: 10px;
+      padding: 4px 7px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .gauge-header {
       display: flex;
       justify-content: space-between;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -190,29 +211,29 @@
       transition: width 0.4s ease;
     }
 
+    /* 6 Boutons d'action tactiles (incluant Déco Salon !) */
     .actions-row {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      margin: 4px 0;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
     }
 
     .btn-3ds {
       background: linear-gradient(180deg, #ffffff 0%, #f5efe6 100%);
       border: 2px solid #dfd3c3;
       border-bottom-width: 4px;
-      border-radius: 13px;
-      padding: 7px 4px;
+      border-radius: 12px;
+      padding: 6px 2px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
       cursor: pointer;
       color: var(--text-main);
       font-weight: 700;
-      font-size: 10.5px;
-      transition: transform 0.1s;
+      font-size: 10px;
+      touch-action: manipulation;
     }
 
     .btn-3ds:active {
@@ -221,40 +242,43 @@
     }
 
     .btn-3ds svg {
-      width: 19px;
-      height: 19px;
+      width: 18px;
+      height: 18px;
       stroke: var(--accent);
       stroke-width: 2.2;
       fill: none;
+      pointer-events: none;
     }
 
+    /* Barre de personnalisation (3 menus déroulants + utilisables au doigt et à la souris) */
     .customizer-bar {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      align-items: center;
-      justify-content: space-between;
       border-top: 1px solid var(--ui-border);
-      padding-top: 6px;
+      padding-top: 5px;
     }
 
     .select-3ds {
-      flex: 1;
-      background: #fff;
-      border: 1.5px solid var(--ui-border);
+      width: 100%;
+      background: #ffffff;
+      border: 2px solid #d5c7b4;
       border-radius: 9px;
       padding: 5px 6px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-main);
-      outline: none;
+      cursor: pointer;
+      pointer-events: auto;
+      touch-action: manipulation;
     }
 
     #toast {
       position: absolute;
-      top: 54px;
+      top: 52px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background: rgba(255, 133, 162, 0.95);
+      background: rgba(255, 133, 162, 0.96);
       color: #fff;
       padding: 6px 16px;
       border-radius: 99px;
@@ -263,8 +287,9 @@
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s ease;
-      z-index: 20;
+      z-index: 50;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      white-space: nowrap;
     }
     #toast.show {
       opacity: 1;
@@ -284,28 +309,36 @@
 <body>
 
   <div id="console-3ds">
+    <!-- ÉCRAN DU HAUT 3D -->
     <div id="top-screen-frame">
       <div id="hud-top">
-        <div class="hud-pill">
-          <span id="pet-name-display" style="cursor:pointer;" title="Toucher pour renommer">Mochi</span>
+        <div class="hud-pill" id="pill-name" style="cursor:pointer;" title="Toucher pour renommer">
+          <span id="pet-name-display">Mochi</span>
           <span style="color:#ff85a2;">•</span>
           <span id="coins-display">150 ★</span>
         </div>
-        <div class="hud-pill" id="time-display">
+        <div class="hud-pill">
           <span id="day-phase-dot" style="width:9px;height:9px;border-radius:50%;background:#fbbf24;display:inline-block;"></span>
           <span id="clock-text">14:30</span>
         </div>
       </div>
 
-      <div id="toast">Miam ! +25 Repas</div>
-      <div id="pet-mood-bubble">Explore tranquillement son grand salon...</div>
-      <button id="camera-hint">Lumière : Auto</button>
+      <div id="toast">Prêt !</div>
+
+      <div id="hud-bottom-controls">
+        <div id="pet-mood-bubble">Explore tranquillement son grand salon...</div>
+        <div class="top-overlay-btns">
+          <button type="button" class="overlay-btn" id="btn-deco-top">🎨 Déco : Pastel</button>
+          <button type="button" class="overlay-btn" id="camera-hint">☀️ Lumière : Auto</button>
+        </div>
+      </div>
 
       <div id="webgl-container"></div>
     </div>
 
     <div id="hinge"><div class="hinge-led"></div></div>
 
+    <!-- ÉCRAN DU BAS TACTILE -->
     <div id="bottom-screen-frame">
       <div class="gauges-grid">
         <div class="gauge-card">
@@ -327,62 +360,66 @@
       </div>
 
       <div class="actions-row">
-        <button class="btn-3ds" id="btn-feed">
+        <button type="button" class="btn-3ds" id="btn-feed">
           <svg viewBox="0 0 24 24"><path d="M12 6c-3.87 0-7 3.13-7 7 0 2.38 1.19 4.47 3 5.74V21h8v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z"/><path d="M9 3h6"/></svg>
           <span>Nourrir</span>
         </button>
-        <button class="btn-3ds" id="btn-pet">
+        <button type="button" class="btn-3ds" id="btn-pet">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           <span>Caresser</span>
         </button>
-        <button class="btn-3ds" id="btn-play">
+        <button type="button" class="btn-3ds" id="btn-play">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 8.5c3 3 4 7 7 7"/><path d="M15.5 8.5c-3 3-4 7-7 7"/></svg>
           <span>Pelote 3D</span>
         </button>
-        <button class="btn-3ds" id="btn-wash">
-          <svg viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+        <button type="button" class="btn-3ds" id="btn-wash">
+          <svg viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/></svg>
           <span>Brosser</span>
         </button>
-        <button class="btn-3ds" id="btn-sleep">
+        <button type="button" class="btn-3ds" id="btn-sleep">
           <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <span>Sieste</span>
+        </button>
+        <button type="button" class="btn-3ds" id="btn-deco">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Déco Salon</span>
         </button>
       </div>
 
       <div class="customizer-bar">
-        <select id="select-species" class="select-3ds" title="Choisir le compagnon 3D">
-          <option value="proc_cat">Chat 3DS (Intégré)</option>
-          <option value="Fox.glb">Renard (.glb)</option>
-          <option value="Shiba Inu.glb">Shiba Inu (.glb)</option>
-          <option value="Husky.glb">Husky (.glb)</option>
-          <option value="Wolf.glb">Loup (.glb)</option>
-          <option value="Deer.glb">Faon (.glb)</option>
-          <option value="Alpaca.glb">Alpaga (.glb)</option>
-          <option value="White Horse.glb">Cheval Blanc (.glb)</option>
+        <select id="select-species" class="select-3ds">
+          <option value="proc_cat">🐱 Chat 3DS</option>
+          <option value="Fox.glb">🦊 Renard (.glb)</option>
+          <option value="Shiba Inu.glb">🐕 Shiba Inu (.glb)</option>
+          <option value="Husky.glb">🐺 Husky (.glb)</option>
+          <option value="Wolf.glb">🐾 Loup (.glb)</option>
+          <option value="Deer.glb">🦌 Faon (.glb)</option>
+          <option value="Alpaca.glb">🦙 Alpaga (.glb)</option>
+          <option value="White Horse.glb">🐴 Cheval (.glb)</option>
         </select>
 
-        <select id="select-coat" class="select-3ds" title="Couleur / Pelage">
-          <option value="original">Robe : Couleur d'origine (.glb)</option>
-          <option value="tuxedo">Robe : Smoking (Phénix)</option>
-          <option value="black">Robe : Noir Ébène (Tichat)</option>
-          <option value="ginger">Robe : Tigré Roux</option>
-          <option value="calico">Robe : Calico Tricolore</option>
-          <option value="siamese">Robe : Siamois Royal</option>
-          <option value="white">Robe : Blanc Neige</option>
-          <option value="grey_tabby">Robe : Tigré Argent</option>
-          <option value="russian">Robe : Bleu Russe</option>
-          <option value="cinnamon">Robe : Cannelle Doux</option>
-          <option value="sakura">Robe : Rose Pastel</option>
-          <option value="gold">Robe : Doré Céleste</option>
+        <select id="select-coat" class="select-3ds">
+          <option value="original">🎨 Robe d'origine</option>
+          <option value="tuxedo">Smoking (Phénix)</option>
+          <option value="black">Noir Ébène (Tichat)</option>
+          <option value="ginger">Tigré Roux</option>
+          <option value="calico">Calico Tricolore</option>
+          <option value="siamese">Siamois Royal</option>
+          <option value="white">Blanc Neige</option>
+          <option value="grey_tabby">Tigré Argent</option>
+          <option value="russian">Bleu Russe</option>
+          <option value="cinnamon">Cannelle Doux</option>
+          <option value="sakura">Rose Pastel</option>
+          <option value="gold">Doré Céleste</option>
         </select>
 
-        <select id="select-hat" class="select-3ds" title="Accessoire 3D">
-          <option value="crown">Couronne Royale 3D</option>
-          <option value="bowtie">Nœud Papillon Rouge</option>
-          <option value="glasses">Lunettes Rondes 3D</option>
-          <option value="halo">Auréole Céleste</option>
-          <option value="witch">Chapeau Magique</option>
-          <option value="none">Sans accessoire</option>
+        <select id="select-hat" class="select-3ds">
+          <option value="crown">👑 Couronne 3D</option>
+          <option value="bowtie">🎀 Nœud Papillon</option>
+          <option value="glasses">👓 Lunettes 3D</option>
+          <option value="halo">😇 Auréole</option>
+          <option value="witch">🧙 Chapeau</option>
+          <option value="none">❌ Sans accessoire</option>
         </select>
       </div>
     </div>
@@ -392,6 +429,7 @@
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
     // ============================================================================
     // 1. ÉTAT & SAUVEGARDE
@@ -406,23 +444,31 @@
       coat: 'tuxedo',
       hat: 'crown',
       species: 'proc_cat',
-      lightingMode: 'auto'
+      lightingMode: 'auto',
+      roomTheme: 0
     };
 
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v2') || '{}'));
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v3') || '{}'));
     function saveState() {
-      localStorage.setItem('neko3ds_save_v2', JSON.stringify(state));
+      localStorage.setItem('neko3ds_save_v3', JSON.stringify(state));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.classList.remove('show'), 2500);
     }
 
     // ============================================================================
-    // 2. CAMÉRA & CONTRÔLES ANTI-COLLISION MURS (STYLE DIORAMA 3DS)
+    // 2. SCÈNE THREE.JS & CAMÉRA ANTI-MUR
     // ============================================================================
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xdbeafe);
-    scene.fog = new THREE.FogExp2(0xdbeafe, 0.02);
+    scene.fog = new THREE.FogExp2(0xdbeafe, 0.018);
 
-    // Angle plus large (48°) et position reculée pour voir toute la pièce !
     const camera = new THREE.PerspectiveCamera(48, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.set(3.2, 5.2, 8.8);
 
@@ -432,7 +478,7 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.08;
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -440,28 +486,22 @@
     controls.enablePan = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
-
-    // Permet de dézoomer très largement (jusqu'à 16m) ou de zoomer (3.5m)
     controls.minDistance = 3.5;
     controls.maxDistance = 16.0;
-
-    // Verrouillage des angles pour NE JAMAIS rentrer derrière les murs ni sous le sol !
-    controls.minPolarAngle = Math.PI / 7;     // Vue du dessus max
-    controls.maxPolarAngle = Math.PI / 2.25;  // Empêche de passer sous le parquet
-    controls.minAzimuthAngle = -Math.PI / 6;  // Butée mur gauche
-    controls.maxAzimuthAngle = Math.PI / 2.3; // Butée mur du fond
+    controls.minPolarAngle = Math.PI / 7;
+    controls.maxPolarAngle = Math.PI / 2.25;
+    controls.minAzimuthAngle = -Math.PI / 6;
+    controls.maxAzimuthAngle = Math.PI / 2.3;
 
     const gltfLoader = new GLTFLoader();
 
-    // Chargeur intelligent qui cherche le fichier dans tous les sous-dossiers possibles
     function loadSmartGLTF(filename, onSuccess, onError) {
       const cleanName = filename.replace(/^models\//, '');
       const candidatePaths = [
         `models/${cleanName}`,
         `./${cleanName}`,
         `Animated Animal Pack-glb/${cleanName}`,
-        `Models/GLTF format/${cleanName}`,
-        `KayKit_Furniture_Bits_1.0_FREE/Assets/gltf/${cleanName}`
+        `Models/GLTF format/${cleanName}`
       ];
 
       let index = 0;
@@ -482,9 +522,9 @@
     }
 
     // ============================================================================
-    // 3. ÉCLAIRAGE DYNAMIQUE JOUR / GOLDEN HOUR / NUIT
+    // 3. ÉCLAIRAGE DYNAMIQUE
     // ============================================================================
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.9);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.95);
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
@@ -505,10 +545,6 @@
     nightLampLight.castShadow = true;
     scene.add(nightLampLight);
 
-    const tvGlowLight = new THREE.PointLight(0x38bdf8, 0.5, 4, 2);
-    tvGlowLight.position.set(-3.2, 1.1, 1.6);
-    scene.add(tvGlowLight);
-
     const sunbeam = new THREE.Mesh(
       new THREE.ConeGeometry(2.1, 6.2, 32, 1, true),
       new THREE.MeshBasicMaterial({
@@ -526,61 +562,73 @@
     scene.add(sunbeam);
 
     // ============================================================================
-    // 4. GRANDE CHAMBRE 3D RICHE & MEUBLÉE (AUCUN ESPACE VIDE !)
+    // 4. SALON 3D COMPLET & SYSTÈME DE DÉCORATION INTERACTIF (4 THÈMES)
     // ============================================================================
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
 
-    // Parquet chaleureux (9x9m)
-    const floorCanvas = document.createElement('canvas');
-    floorCanvas.width = 512; floorCanvas.height = 512;
-    const fCtx = floorCanvas.getContext('2d');
-    fCtx.fillStyle = '#d6a87c';
-    fCtx.fillRect(0, 0, 512, 512);
-    fCtx.strokeStyle = '#bc8a5f';
-    fCtx.lineWidth = 4;
-    for (let y = 0; y < 512; y += 64) {
-      fCtx.beginPath(); fCtx.moveTo(0, y); fCtx.lineTo(512, y); fCtx.stroke();
-      for (let x = (y % 128 === 0 ? 0 : 128); x < 512; x += 256) {
-        fCtx.beginPath(); fCtx.moveTo(x, y); fCtx.lineTo(x, y + 64); fCtx.stroke();
-      }
-    }
-    const floorTex = new THREE.CanvasTexture(floorCanvas);
-    floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
-    floorTex.repeat.set(4, 4);
+    const roomThemes = [
+      { name: 'Pastel', wall: 0xfef3c7, floor: '#d6a87c', rug1: 0xffb3c6, rug2: 0xffe5ec, sofa: 0xfbbf24, blanket: 0xf472b6 },
+      { name: 'Sakura', wall: 0xfce7f3, floor: '#e2b897', rug1: 0xf472b6, rug2: 0xfdf2f8, sofa: 0xa78bfa, blanket: 0xfb7185 },
+      { name: 'Forêt',  wall: 0xdcfce7, floor: '#b07d4f', rug1: 0x34d399, rug2: 0xecfdf5, sofa: 0xd97706, blanket: 0x10b981 },
+      { name: 'Céleste', wall: 0xe0e7ff, floor: '#94a3b8', rug1: 0x60a5fa, rug2: 0xeff6ff, sofa: 0x818cf8, blanket: 0x38bdf8 }
+    ];
 
-    const floorMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(8.4, 0.3, 8.4),
-      new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.8 })
-    );
+    function makeFloorTexture(hexColor) {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = hexColor;
+      ctx.fillRect(0, 0, 512, 512);
+      ctx.strokeStyle = 'rgba(0,0,0,0.14)';
+      ctx.lineWidth = 4;
+      for (let y = 0; y < 512; y += 64) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+        for (let x = (y % 128 === 0 ? 0 : 128); x < 512; x += 256) {
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 64); ctx.stroke();
+        }
+      }
+      const t = new THREE.CanvasTexture(c);
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(4, 4);
+      return t;
+    }
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.9 });
+    const floorMat = new THREE.MeshStandardMaterial({ map: makeFloorTexture('#d6a87c'), roughness: 0.8 });
+    const rug1Mat = new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.95 });
+    const rug2Mat = new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 });
+    const sofaMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
+    const blanketMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.85 });
+    const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+
+    function applyRoomTheme(themeIdx) {
+      const t = roomThemes[themeIdx % roomThemes.length];
+      wallMat.color.setHex(t.wall);
+      floorMat.map = makeFloorTexture(t.floor);
+      floorMat.needsUpdate = true;
+      rug1Mat.color.setHex(t.rug1);
+      rug2Mat.color.setHex(t.rug2);
+      sofaMat.color.setHex(t.sofa);
+      blanketMat.color.setHex(t.blanket);
+      document.getElementById('btn-deco-top').textContent = `🎨 Déco : ${t.name}`;
+    }
+
+    const floorMesh = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.3, 8.4), floorMat);
     floorMesh.position.set(0, -0.15, 0);
     floorMesh.receiveShadow = true;
     roomGroup.add(floorMesh);
 
-    // Plinthes en bois blanc
-    const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.9 });
-
-    // Mur du fond & Mur gauche
     const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 4.4, 0.25), wallMat);
     backWall.position.set(0, 2.2, -4.08);
     backWall.receiveShadow = true;
     roomGroup.add(backWall);
-
-    const backBaseboard = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.22, 0.3), baseboardMat);
-    backBaseboard.position.set(0, 0.11, -4.05);
-    roomGroup.add(backBaseboard);
 
     const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.4, 8.4), wallMat);
     leftWall.position.set(-4.08, 2.2, 0);
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
-    const leftBaseboard = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.22, 8.4), baseboardMat);
-    leftBaseboard.position.set(-4.05, 0.11, 0);
-    roomGroup.add(leftBaseboard);
-
-    // Grande Fenêtre avec Lune/Soleil + Croisillons
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x7dd3fc });
     const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.7), skyMat);
     windowGlass.position.set(0.4, 2.55, -3.93);
@@ -594,232 +642,133 @@
     barV.position.set(0.4, 2.55, -3.92);
     roomGroup.add(winFrame, barH, barV);
 
-    // Guirlande lumineuse cozy sur les deux murs (Fairy Lights)
-    const fairyBulbs = [];
+    // Guirlande lumineuse
     const bulbGeo = new THREE.SphereGeometry(0.065, 10, 10);
     const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffe484 });
     for (let i = 0; i < 11; i++) {
       const b1 = new THREE.Mesh(bulbGeo, bulbMat);
       b1.position.set(-3.6 + i * 0.72, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.9);
-      roomGroup.add(b1);
-      fairyBulbs.push(b1);
-
       const b2 = new THREE.Mesh(bulbGeo, bulbMat);
       b2.position.set(-3.9, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.6 + i * 0.72);
-      roomGroup.add(b2);
-      fairyBulbs.push(b2);
+      roomGroup.add(b1, b2);
     }
 
-    // Cadres décoratifs au mur
-    function createWallPicture(x, y, z, rotY, colorHex) {
-      const g = new THREE.Group();
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.7, 0.06), new THREE.MeshStandardMaterial({ color: 0x78350f }));
-      const canvas = new THREE.Mesh(new THREE.PlaneGeometry(0.76, 0.56), new THREE.MeshBasicMaterial({ color: colorHex }));
-      canvas.position.z = 0.035;
-      g.add(frame, canvas);
-      g.position.set(x, y, z);
-      g.rotation.y = rotY;
-      roomGroup.add(g);
-    }
-    createWallPicture(-1.8, 2.6, -3.92, 0, 0xfda4af);
-    createWallPicture(-3.92, 2.6, -1.2, Math.PI / 2, 0x93c5fd);
-    createWallPicture(-3.92, 2.4, 0.2, Math.PI / 2, 0xa7f3d0);
+    // Tapis central personnalisable
+    const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 0.03, 40), rug1Mat);
+    const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 1.95, 0.035, 40), rug2Mat);
+    r1.position.set(0, 0.015, 0.3);
+    r2.position.set(0, 0.02, 0.3);
+    r1.receiveShadow = r2.receiveShadow = true;
+    roomGroup.add(r1, r2);
 
-    // Charge un meuble .GLB ou affiche le meuble 3D intégré
-    function addSmartFurniture(filename, pos, rotY, scale, fallbackBuilder) {
-      loadSmartGLTF(
-        filename,
-        (gltf) => {
-          const model = gltf.scene;
-          model.position.set(pos[0], pos[1], pos[2]);
-          model.rotation.y = rotY;
-          model.scale.setScalar(scale);
-          model.traverse((c) => {
-            if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
-          });
-          roomGroup.add(model);
-        },
-        () => {
-          const fb = fallbackBuilder();
-          fb.position.set(pos[0], pos[1], pos[2]);
-          fb.rotation.y = rotY;
-          roomGroup.add(fb);
-        }
-      );
-    }
-
-    // 1. Grand Tapis central (rugRound.glb)
-    addSmartFurniture('rugRound.glb', [0, 0.01, 0.3], 0, 2.8, () => {
-      const g = new THREE.Group();
-      const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 0.03, 40), new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.95 }));
-      const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 1.95, 0.035, 40), new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 }));
-      r1.receiveShadow = r2.receiveShadow = true;
-      g.add(r1, r2);
-      return g;
+    // Lit douillet dans le coin droit
+    const bedGroup = new THREE.Group();
+    bedGroup.position.set(2.4, 0, -2.2);
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
+    const sheetMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 2.6), woodMat);
+    frame.position.y = 0.175;
+    const headBoard = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.25, 0.2), woodMat);
+    headBoard.position.set(0, 0.625, -1.25);
+    const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.32, 2.45), sheetMat);
+    mattress.position.y = 0.42;
+    const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.07, 0.34, 1.65), blanketMat);
+    duvet.position.set(0, 0.43, 0.4);
+    [-0.52, 0.52].forEach((px) => {
+      const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.16, 0.48), sheetMat);
+      pillow.position.set(px, 0.64, -0.82);
+      pillow.rotation.x = 0.15;
+      bedGroup.add(pillow);
     });
+    [frame, headBoard, mattress, duvet].forEach((m) => { m.castShadow = m.receiveShadow = true; bedGroup.add(m); });
+    roomGroup.add(bedGroup);
 
-    // 2. Grand Lit douillet dans le coin droit (bedDouble.glb)
-    addSmartFurniture('bedDouble.glb', [2.4, 0, -2.2], 0, 1.9, () => {
-      const g = new THREE.Group();
-      const wood = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
-      const sheet = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
-      const blanket = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.85 });
+    // Canapé moelleux au fond
+    const sofaGroup = new THREE.Group();
+    sofaGroup.position.set(-0.6, 0, -3.1);
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 0.95), sofaMat);
+    seat.position.y = 0.25;
+    const back = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.0, 0.28), sofaMat);
+    back.position.set(0, 0.65, -0.35);
+    const armL = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.98), sofaMat);
+    armL.position.set(-1.1, 0.4, 0);
+    const armR = armL.clone();
+    armR.position.x = 1.1;
+    [seat, back, armL, armR].forEach((m) => { m.castShadow = m.receiveShadow = true; sofaGroup.add(m); });
+    roomGroup.add(sofaGroup);
 
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 2.6), wood);
-      frame.position.y = 0.175;
-      const headBoard = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.25, 0.2), wood);
-      headBoard.position.set(0, 0.625, -1.25);
-      const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.32, 2.45), sheet);
-      mattress.position.y = 0.42;
-      const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.07, 0.34, 1.65), blanket);
-      duvet.position.set(0, 0.43, 0.4);
+    // Table basse + Tasse + Livre
+    const coffeeGroup = new THREE.Group();
+    coffeeGroup.position.set(-0.6, 0, -1.6);
+    const cTop = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), woodMat);
+    cTop.position.y = 0.42;
+    const cBase = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.35, 0.4, 16), woodMat);
+    cBase.position.y = 0.2;
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 16), sheetMat);
+    cup.position.set(0.2, 0.52, 0.1);
+    coffeeGroup.add(cTop, cBase, cup);
+    roomGroup.add(coffeeGroup);
 
-      [-0.52, 0.52].forEach((px) => {
-        const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.16, 0.48), sheet);
-        pillow.position.set(px, 0.64, -0.82);
-        pillow.rotation.x = 0.15;
-        pillow.castShadow = true;
-        g.add(pillow);
-      });
-      [frame, headBoard, mattress, duvet].forEach((m) => { m.castShadow = m.receiveShadow = true; g.add(m); });
-      return g;
-    });
-
-    // 3. Canapé jaune moelleux au fond (loungeSofa.glb)
-    addSmartFurniture('loungeSofa.glb', [-0.6, 0, -3.1], 0, 1.9, () => {
-      const g = new THREE.Group();
-      const mat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 0.95), mat);
-      seat.position.y = 0.25;
-      const back = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.0, 0.28), mat);
-      back.position.set(0, 0.65, -0.35);
-      const armL = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.98), mat);
-      armL.position.set(-1.1, 0.4, 0);
-      const armR = armL.clone();
-      armR.position.x = 1.1;
-      [seat, back, armL, armR].forEach((m) => { m.castShadow = m.receiveShadow = true; g.add(m); });
-      return g;
-    });
-
-    // 4. Table basse + Tasse de thé + Livres (tableCoffee.glb)
-    addSmartFurniture('tableCoffee.glb', [-0.6, 0, -1.6], 0, 1.8, () => {
-      const g = new THREE.Group();
-      const wood = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.6 });
-      const top = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), wood);
-      top.position.y = 0.42;
-      top.castShadow = top.receiveShadow = true;
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.35, 0.4, 16), wood);
-      base.position.y = 0.2;
-      const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 16), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-      cup.position.set(0.2, 0.52, 0.1);
-      const book = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.24), new THREE.MeshStandardMaterial({ color: 0x38bdf8 }));
-      book.position.set(-0.2, 0.49, -0.1);
-      book.rotation.y = 0.4;
-      g.add(top, base, cup, book);
-      return g;
-    });
-
-    // 5. Grande Bibliothèque remplie de livres à gauche (bookcaseClosedDoors.glb)
-    addSmartFurniture('bookcaseClosedDoors.glb', [-3.4, 0, -1.2], Math.PI / 2, 1.9, () => {
-      const g = new THREE.Group();
-      const wood = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
-      const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.2, 0.48), wood);
-      body.position.y = 1.1;
-      body.castShadow = body.receiveShadow = true;
-      g.add(body);
-      const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0xa855f7, 0xec4899];
-      for (let row = 0; row < 3; row++) {
-        for (let b = 0; b < 6; b++) {
-          const book = new THREE.Mesh(
-            new THREE.BoxGeometry(0.12, 0.36, 0.32),
-            new THREE.MeshStandardMaterial({ color: colors[(row + b) % colors.length] })
-          );
-          book.position.set(-0.5 + b * 0.19, 0.55 + row * 0.6, 0.12);
-          g.add(book);
-        }
+    // Grande Bibliothèque à gauche
+    const bookGroup = new THREE.Group();
+    bookGroup.position.set(-3.4, 0, -1.2);
+    bookGroup.rotation.y = Math.PI / 2;
+    const bBody = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.2, 0.48), woodMat);
+    bBody.position.y = 1.1;
+    bBody.castShadow = bBody.receiveShadow = true;
+    bookGroup.add(bBody);
+    const bColors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0xa855f7, 0xec4899];
+    for (let row = 0; row < 3; row++) {
+      for (let b = 0; b < 6; b++) {
+        const bk = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.36, 0.32), new THREE.MeshStandardMaterial({ color: bColors[(row + b) % bColors.length] }));
+        bk.position.set(-0.5 + b * 0.19, 0.55 + row * 0.6, 0.12);
+        bookGroup.add(bk);
       }
-      return g;
-    });
+    }
+    roomGroup.add(bookGroup);
 
-    // 6. Coin Télévision Rétro / Console au premier plan gauche (televisionModern.glb)
-    addSmartFurniture('televisionModern.glb', [-3.35, 0, 1.6], Math.PI / 2, 1.9, () => {
-      const g = new THREE.Group();
-      const stand = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.55), new THREE.MeshStandardMaterial({ color: 0x78350f }));
-      stand.position.y = 0.25;
-      stand.castShadow = true;
-      const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.85, 0.1), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
-      tvFrame.position.y = 0.98;
-      const tvScreen = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.22, 0.72),
-        new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
-      );
-      tvScreen.position.set(0, 0.98, 0.055);
-      g.add(stand, tvFrame, tvScreen);
-      return g;
-    });
+    // Meuble TV + Écran
+    const tvGroup = new THREE.Group();
+    tvGroup.position.set(-3.35, 0, 1.6);
+    tvGroup.rotation.y = Math.PI / 2;
+    const tvStand = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.55), woodMat);
+    tvStand.position.y = 0.25;
+    const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.85, 0.1), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+    tvFrame.position.y = 0.98;
+    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(1.22, 0.72), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+    tvScreen.position.set(0, 0.98, 0.055);
+    tvGroup.add(tvStand, tvFrame, tvScreen);
+    roomGroup.add(tvGroup);
 
-    // 7. Arbre à Chat 3D multi-niveaux avec griffoir !
+    // Arbre à chat 3 étages
     const catTree = new THREE.Group();
     catTree.position.set(2.85, 0, 1.65);
     const sisalMat = new THREE.MeshStandardMaterial({ color: 0xd6b88d, roughness: 0.95 });
-    const plushMat = new THREE.MeshStandardMaterial({ color: 0xfda4af, roughness: 0.85 });
-    const treeBase = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 1.1), plushMat);
+    const treeBase = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 1.1), rug1Mat);
     treeBase.position.y = 0.06;
     const pole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.2, 16), sisalMat);
     pole1.position.set(-0.25, 0.65, -0.2);
     const pole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.85, 16), sisalMat);
     pole2.position.set(0.25, 0.95, 0.15);
-    const plat1 = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 24), plushMat);
+    const plat1 = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 24), rug1Mat);
     plat1.position.set(-0.25, 1.25, -0.2);
-    const plat2 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.12, 24), plushMat);
+    const plat2 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.12, 24), rug1Mat);
     plat2.position.set(0.25, 1.9, 0.15);
     [treeBase, pole1, pole2, plat1, plat2].forEach((m) => { m.castShadow = m.receiveShadow = true; catTree.add(m); });
     roomGroup.add(catTree);
 
-    // 8. Coussin de sieste du compagnon (pillowBlue.glb)
-    addSmartFurniture('pillowBlue.glb', [-1.8, 0.02, 1.5], 0.4, 1.9, () => {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.22, 16, 32), new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 }));
-      base.rotation.x = Math.PI / 2;
-      base.position.y = 0.2;
-      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xede9fe, roughness: 0.9 }));
-      pad.position.y = 0.12;
-      base.castShadow = pad.receiveShadow = true;
-      g.add(base, pad);
-      return g;
-    });
+    // Coussin de sieste
+    const bedPadGroup = new THREE.Group();
+    bedPadGroup.position.set(-1.8, 0.02, 1.5);
+    const pBase = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.22, 16, 32), new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 }));
+    pBase.rotation.x = Math.PI / 2;
+    pBase.position.y = 0.2;
+    const pPad = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xede9fe, roughness: 0.9 }));
+    pPad.position.y = 0.12;
+    bedPadGroup.add(pBase, pPad);
+    roomGroup.add(bedPadGroup);
 
-    // 9. Lampadaire & Plante verte
-    addSmartFurniture('lampRoundFloor.glb', [-3.1, 0, -2.8], 0, 1.9, () => {
-      const g = new THREE.Group();
-      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 1.9, 12), new THREE.MeshStandardMaterial({ color: 0x78350f }));
-      pole.position.y = 0.95;
-      const shade = new THREE.Mesh(
-        new THREE.ConeGeometry(0.45, 0.52, 20, 1, true),
-        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfef08a, emissiveIntensity: 0.5, side: THREE.DoubleSide })
-      );
-      shade.position.y = 1.95;
-      g.add(pole, shade);
-      return g;
-    });
-
-    addSmartFurniture('pottedPlant.glb', [0.85, 0, -3.2], 0, 2.1, () => {
-      const g = new THREE.Group();
-      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0xea580c }));
-      pot.position.y = 0.25;
-      pot.castShadow = true;
-      const lMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.6 });
-      for (let i = 0; i < 6; i++) {
-        const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), lMat);
-        leaf.position.set(Math.cos(i) * 0.22, 0.68 + (i % 2) * 0.22, Math.sin(i) * 0.22);
-        leaf.castShadow = true;
-        g.add(leaf);
-      }
-      g.add(pot);
-      return g;
-    });
-
-    // 10. Coin Repas : Gamelle de croquettes + Gamelle d'eau fraîche
+    // Gamelles de croquettes et d'eau
     const bowlGroup = new THREE.Group();
     bowlGroup.position.set(1.6, 0, 2.2);
     const bowlOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.42, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.4 }));
@@ -827,16 +776,14 @@
     const foodMesh = new THREE.Mesh(new THREE.SphereGeometry(0.27, 16, 12), new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.9 }));
     foodMesh.scale.set(1, 0.45, 1);
     foodMesh.position.y = 0.14;
-
     const waterBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.38, 0.16, 24), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.3 }));
     waterBowl.position.set(0.82, 0.08, 0);
     const waterSurface = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.27, 0.02, 20), new THREE.MeshBasicMaterial({ color: 0x7dd3fc }));
     waterSurface.position.set(0.82, 0.14, 0);
-
     bowlGroup.add(bowlOuter, foodMesh, waterBowl, waterSurface);
     roomGroup.add(bowlGroup);
 
-    // 11. Pelote de laine 3D physique
+    // Pelote de laine 3D
     const yarnBall = new THREE.Mesh(
       new THREE.SphereGeometry(0.23, 20, 20),
       new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.65 })
@@ -881,7 +828,7 @@
     }
 
     // ============================================================================
-    // 6. ROBES & ACCESSOIRES 3D
+    // 6. TEXTURES DES 11 ROBES & ACCESSOIRES 3D
     // ============================================================================
     function generateCoatTexture(coatId) {
       const c = document.createElement('canvas');
@@ -949,13 +896,13 @@
 
       if (hatType === 'crown') {
         const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.6, roughness: 0.25 });
-        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.19, 0.14, 16), goldMat);
-        base.position.y = 0.07;
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.13, 16), goldMat);
+        base.position.y = 0.065;
         hatGroup.add(base);
         for (let i = 0; i < 5; i++) {
           const a = (i / 5) * Math.PI * 2;
-          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.14, 8), goldMat);
-          spike.position.set(Math.cos(a) * 0.18, 0.18, Math.sin(a) * 0.18);
+          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.13, 8), goldMat);
+          spike.position.set(Math.cos(a) * 0.16, 0.16, Math.sin(a) * 0.16);
           hatGroup.add(spike);
         }
       } else if (hatType === 'bowtie') {
@@ -967,36 +914,36 @@
         rightWing.rotation.z = Math.PI / 2; rightWing.position.x = 0.1;
         const bow = new THREE.Group();
         bow.add(center, leftWing, rightWing);
-        bow.position.set(0, -0.42, 0.34);
+        bow.position.set(0, -0.42, 0.22);
         hatGroup.add(bow);
       } else if (hatType === 'glasses') {
         const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5, roughness: 0.3 });
         const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
         const g = new THREE.Group();
-        [-0.17, 0.17].forEach((x) => {
-          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.018, 12, 24), frameMat);
-          rim.position.set(x, -0.1, 0.41);
-          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.1, 20), glassMat);
-          lens.position.set(x, -0.1, 0.41);
+        [-0.16, 0.16].forEach((x) => {
+          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.018, 12, 24), frameMat);
+          rim.position.set(x, -0.15, 0.25);
+          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.09, 20), glassMat);
+          lens.position.set(x, -0.15, 0.25);
           g.add(rim, lens);
         });
         hatGroup.add(g);
       } else if (hatType === 'halo') {
-        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.035, 16, 36), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.032, 16, 36), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
         halo.rotation.x = Math.PI / 2;
-        halo.position.y = 0.26;
+        halo.position.y = 0.24;
         hatGroup.add(halo);
       } else if (hatType === 'witch') {
         const hatMat = new THREE.MeshStandardMaterial({ color: 0x3b0764, roughness: 0.8 });
-        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.03, 24), hatMat);
-        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.55, 24), hatMat);
-        cone.position.y = 0.28;
+        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.03, 24), hatMat);
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 24), hatMat);
+        cone.position.y = 0.25;
         hatGroup.add(brim, cone);
       }
     }
 
     // ============================================================================
-    // 7. GESTION DES MODÈLES D'ANIMAUX (.GLB + CHAT 3DS INTÉGRÉ)
+    // 7. CHARGEMENT CORRIGÉ DES MODÈLES .GLB (CORRIGE LES SKINNEDMESH INVISIBLES)
     // ============================================================================
     const petRoot = new THREE.Group();
     scene.add(petRoot);
@@ -1006,6 +953,7 @@
     let currentAction = null;
     let proceduralParts = null;
     let petBodyMeshes = [];
+    let activeHeadTarget = null;
 
     function createProceduralCat3DS() {
       const group = new THREE.Group();
@@ -1016,6 +964,7 @@
       const shineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
       petBodyMeshes = [];
+      activeHeadTarget = null;
 
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.34, 0.42, 16, 24), furMat);
       body.rotation.x = Math.PI / 2;
@@ -1060,6 +1009,7 @@
       headGroup.add(nose);
 
       hatGroup.position.set(0, 0.39, 0);
+      hatGroup.rotation.set(0, 0, 0);
       hatGroup.scale.setScalar(1);
       headGroup.add(hatGroup);
       group.add(headGroup);
@@ -1088,12 +1038,53 @@
       return group;
     }
 
+    // Calcul robuste de la vraie taille d'un modèle SkinnedMesh .GLB (évite le bug du scale 0.001x)
+    function computeAccurateGLBBounds(root) {
+      root.updateMatrixWorld(true);
+      const box = new THREE.Box3();
+      const tempVec = new THREE.Vector3();
+
+      root.traverse((child) => {
+        if (child.isMesh && child.geometry) {
+          // Désactive impérativement le frustum culling qui cache les SkinnedMesh !
+          child.frustumCulled = false;
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          if (child.isSkinnedMesh && child.skeleton) {
+            try { child.skeleton.update(); } catch (_) {}
+          }
+
+          const posAttr = child.geometry.attributes.position;
+          if (posAttr) {
+            const step = Math.max(1, Math.floor(posAttr.count / 300));
+            for (let i = 0; i < posAttr.count; i += step) {
+              tempVec.fromBufferAttribute(posAttr, i);
+              if (child.isSkinnedMesh && child.applyBoneTransform) {
+                try { child.applyBoneTransform(i, tempVec); } catch (_) {}
+              }
+              tempVec.applyMatrix4(child.matrixWorld);
+              if (isFinite(tempVec.x) && isFinite(tempVec.y) && isFinite(tempVec.z)) {
+                box.expandByPoint(tempVec);
+              }
+            }
+          }
+        }
+      });
+
+      if (box.isEmpty()) {
+        box.setFromObject(root);
+      }
+      return box;
+    }
+
     function loadPetModel(speciesName) {
       while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
       mixer = null;
       animationsMap = {};
       currentAction = null;
       proceduralParts = null;
+      activeHeadTarget = null;
 
       if (speciesName === 'proc_cat') {
         const cat = createProceduralCat3DS();
@@ -1105,29 +1096,46 @@
 
       loadSmartGLTF(
         speciesName,
-        (gltf, loadedPath) => {
-          const model = gltf.scene;
+        (gltf) => {
+          // Clone proprement le SkinnedMesh avec SkeletonUtils
+          const model = SkeletonUtils.clone(gltf.scene);
+          petBodyMeshes = [];
 
-          // Calcul précis de la boîte englobante pour normaliser la taille et poser les pattes au sol
-          const box = new THREE.Box3().setFromObject(model);
+          // Démarre d'abord l'animation Idle pour que le squelette prenne sa vraie pose !
+          if (gltf.animations && gltf.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(model);
+            gltf.animations.forEach((clip) => {
+              animationsMap[clip.name.toLowerCase()] = mixer.clipAction(clip);
+            });
+            playGLBAnimation('idle');
+            mixer.update(0.016);
+          }
+
+          // Mesure la taille exacte une fois le squelette en pose
+          const rawBox = computeAccurateGLBBounds(model);
           const size = new THREE.Vector3();
-          box.getSize(size);
-          const maxDim = Math.max(size.x, size.y, size.z, 0.001);
-          const scaleFactor = 1.45 / maxDim;
+          rawBox.getSize(size);
+          let maxDim = Math.max(size.x, size.y, size.z);
+          if (!isFinite(maxDim) || maxDim < 0.01 || maxDim > 5000) maxDim = 3.5;
+
+          const targetHeight = 1.45;
+          const scaleFactor = targetHeight / maxDim;
           model.scale.setScalar(scaleFactor);
 
-          const scaledBox = new THREE.Box3().setFromObject(model);
-          model.position.y = -scaledBox.min.y;
+          // Recalcule la boîte après mise à l'échelle pour poser les pattes pile sur le sol (y=0)
+          const finalBox = computeAccurateGLBBounds(model);
+          const center = new THREE.Vector3();
+          finalBox.getCenter(center);
+          model.position.x = -center.x;
+          model.position.z = -center.z;
+          model.position.y = isFinite(finalBox.min.y) ? -finalBox.min.y : 0;
 
-          petBodyMeshes = [];
+          // Cherche l'os de la tête pour faire suivre la couronne
           let headBone = null;
-
           model.traverse((child) => {
             if (child.isMesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-              // Sauvegarde du matériau d'origine du .glb pour ne pas le casser !
-              if (!child.userData.originalMat) {
+              child.frustumCulled = false;
+              if (!child.userData.originalMat && child.material) {
                 child.userData.originalMat = child.material.clone();
               }
               petBodyMeshes.push(child);
@@ -1137,28 +1145,23 @@
             }
           });
 
-          hatGroup.position.set(0, 1.35, 0.45);
+          activeHeadTarget = headBone;
+          const topY = isFinite(finalBox.max.y - finalBox.min.y) ? (finalBox.max.y - finalBox.min.y) : 1.15;
+          hatGroup.position.set(0, topY * 0.92, 0.35);
           hatGroup.scale.setScalar(1);
-          petRoot.add(hatGroup);
 
           petRoot.add(model);
+          petRoot.add(hatGroup);
+
           buildAccessory3D(state.hat);
-          // Garde les vraies textures du modèle .glb par défaut
           if (state.coat !== 'original') {
             applyCoatToMeshes(state.coat);
           }
 
-          if (gltf.animations && gltf.animations.length > 0) {
-            mixer = new THREE.AnimationMixer(model);
-            gltf.animations.forEach((clip) => {
-              animationsMap[clip.name.toLowerCase()] = mixer.clipAction(clip);
-            });
-            playGLBAnimation('idle');
-          }
-          showToast(`Modèle 3D chargé (${loadedPath})`);
+          showToast(`Compagnon 3D "${speciesName.replace('.glb', '')}" affiché !`);
         },
         () => {
-          showToast(`"${speciesName}" introuvable dans models/ → Chat 3DS activé`);
+          showToast(`"${speciesName}" non trouvé → Chat 3DS activé`);
           const cat = createProceduralCat3DS();
           petRoot.add(cat);
           buildAccessory3D(state.hat);
@@ -1199,6 +1202,7 @@
         petBodyMeshes.forEach((mesh) => {
           if (mesh.userData.originalMat) {
             mesh.material = mesh.userData.originalMat.clone();
+            mesh.material.needsUpdate = true;
           }
         });
         return;
@@ -1215,7 +1219,7 @@
     }
 
     // ============================================================================
-    // 8. IA AUTONOME "VIVANTE 24/7" DANS TOUT LE SALON
+    // 8. IA AUTONOME "VIVANTE 24/7"
     // ============================================================================
     const ai = {
       mode: 'idle',
@@ -1275,7 +1279,7 @@
     }
 
     // ============================================================================
-    // 9. INTERACTIONS & BOUTONS
+    // 9. INTERACTIONS BOUTONS & DÉCORATION DU SALON
     // ============================================================================
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -1294,14 +1298,6 @@
         throwYarnBall();
       }
     });
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(t._tid);
-      t._tid = setTimeout(() => t.classList.remove('show'), 2400);
-    }
 
     function updateHUD() {
       document.getElementById('pet-name-display').textContent = state.name;
@@ -1334,6 +1330,14 @@
       spawnParticles3D(0xfbbf24, 6);
       showToast('Pelote lancée ! +18 Bonheur');
       updateHUD();
+      saveState();
+    }
+
+    function cycleRoomDecoration() {
+      state.roomTheme = ((state.roomTheme || 0) + 1) % roomThemes.length;
+      applyRoomTheme(state.roomTheme);
+      const tName = roomThemes[state.roomTheme].name;
+      showToast(`Décoration du salon : Thème ${tName} !`);
       saveState();
     }
 
@@ -1372,6 +1376,9 @@
       saveState();
     });
 
+    document.getElementById('btn-deco').addEventListener('click', cycleRoomDecoration);
+    document.getElementById('btn-deco-top').addEventListener('click', cycleRoomDecoration);
+
     const selectSpecies = document.getElementById('select-species');
     const selectCoat = document.getElementById('select-coat');
     const selectHat = document.getElementById('select-hat');
@@ -1393,16 +1400,18 @@
     selectCoat.addEventListener('change', (e) => {
       state.coat = e.target.value;
       applyCoatToMeshes(state.coat);
+      showToast(`Robe changée : ${selectCoat.options[selectCoat.selectedIndex].text}`);
       saveState();
     });
 
     selectHat.addEventListener('change', (e) => {
       state.hat = e.target.value;
       buildAccessory3D(state.hat);
+      showToast(`Accessoire : ${selectHat.options[selectHat.selectedIndex].text}`);
       saveState();
     });
 
-    document.getElementById('pet-name-display').addEventListener('click', () => {
+    document.getElementById('pill-name').addEventListener('click', () => {
       const newName = prompt('Comment s\'appelle ton compagnon ?', state.name);
       if (newName && newName.trim()) {
         state.name = newName.trim().slice(0, 16);
@@ -1412,7 +1421,7 @@
     });
 
     // ============================================================================
-    // 10. AMBIANCE LUMINEUSE (JOUR / GOLDEN HOUR / NUIT)
+    // 10. CYCLE LUMIÈRE TEMPS RÉEL
     // ============================================================================
     const lightingModes = ['auto', 'day', 'sunset', 'night'];
     const cameraHintBtn = document.getElementById('camera-hint');
@@ -1469,10 +1478,10 @@
       const idx = (lightingModes.indexOf(state.lightingMode) + 1) % lightingModes.length;
       state.lightingMode = lightingModes[idx];
       const labels = {
-        auto: 'Lumière : Auto',
-        day: 'Lumière : Jour',
-        sunset: 'Lumière : Soirée',
-        night: 'Lumière : Nuit'
+        auto: '☀️ Lumière : Auto',
+        day: '☀️ Lumière : Jour',
+        sunset: '🌅 Lumière : Soirée',
+        night: '🌙 Lumière : Nuit'
       };
       cameraHintBtn.textContent = labels[state.lightingMode];
       applyEnvironmentLighting();
@@ -1480,16 +1489,25 @@
     });
 
     // ============================================================================
-    // 11. BOUCLE D'ANIMATION 60 FPS
+    // 11. BOUCLE D'ANIMATION 60 FPS & SUIVI DE L'OS DE LA TÊTE POUR LA COURONNE
     // ============================================================================
     const clock = new THREE.Clock();
+    const headWorldPos = new THREE.Vector3();
 
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
       const elapsed = clock.getElapsedTime();
 
-      if (mixer) mixer.update(dt);
+      if (mixer) {
+        mixer.update(dt);
+        // Si un modèle .glb possède un os de tête, la couronne suit exactement l'os en coordonnées locales !
+        if (activeHeadTarget) {
+          activeHeadTarget.getWorldPosition(headWorldPos);
+          petRoot.worldToLocal(headWorldPos);
+          hatGroup.position.set(headWorldPos.x, headWorldPos.y + 0.18, headWorldPos.z);
+        }
+      }
 
       ai.timer -= dt;
       if (ai.mode === 'walk') {
@@ -1609,6 +1627,7 @@
     }
     document.addEventListener('click', keepScreenAwake, { once: true });
 
+    applyRoomTheme(state.roomTheme || 0);
     loadPetModel(state.species);
     applyEnvironmentLighting();
     updateHUD();
