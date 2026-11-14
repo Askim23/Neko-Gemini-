@@ -10,15 +10,11 @@
   <meta name="theme-color" content="#1e222d" />
   <style>
     :root {
-      --shell-bg: #222634;
-      --shell-Trim: #363c52;
       --accent: #ff85a2;
-      --accent-soft: #ffdde6;
       --ui-bg: #fdfaf6;
       --ui-card: #ffffff;
       --ui-border: #e6dccf;
       --text-main: #4a3f35;
-      --text-muted: #8c7b6b;
     }
 
     * {
@@ -40,11 +36,10 @@
       align-items: center;
     }
 
-    /* Boîtier Nintendo 3DS / Desk Companion */
     #console-3ds {
       width: 100%;
       height: 100%;
-      max-width: 540px;
+      max-width: 560px;
       display: flex;
       flex-direction: column;
       background: linear-gradient(145deg, #2b3042, #1b1e2b);
@@ -53,7 +48,7 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
-    /* ÉCRAN SUPÉRIEUR 3D (68% de l'espace pour être admiré de loin) */
+    /* ÉCRAN SUPÉRIEUR 3D (68% de la hauteur) */
     #top-screen-frame {
       position: relative;
       flex: 6.8;
@@ -70,7 +65,6 @@
       display: block;
     }
 
-    /* Bandeau d'ambiance & Heure en haut de l'écran 3D */
     #hud-top {
       position: absolute;
       top: 12px;
@@ -84,14 +78,14 @@
     }
 
     .hud-pill {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(8px);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 700;
       color: var(--text-main);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -102,33 +96,32 @@
       position: absolute;
       bottom: 14px;
       left: 14px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(8px);
       padding: 7px 14px;
       border-radius: 14px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-main);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
       pointer-events: none;
-      transition: all 0.3s ease;
     }
 
     #camera-hint {
       position: absolute;
       bottom: 14px;
       right: 14px;
-      background: rgba(30, 34, 45, 0.65);
+      background: rgba(30, 34, 45, 0.78);
       color: #fff;
-      padding: 6px 11px;
+      padding: 6px 12px;
       border-radius: 12px;
       font-size: 11px;
+      font-weight: 600;
       pointer-events: auto;
       cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.25);
     }
 
-    /* Charnière 3DS */
     #hinge {
       height: 8px;
       background: linear-gradient(90deg, #191c26 0%, #383f57 50%, #191c26 100%);
@@ -136,17 +129,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 40px;
     }
     .hinge-led {
-      width: 24px;
+      width: 28px;
       height: 3px;
       border-radius: 4px;
       background: #6ee7b7;
       box-shadow: 0 0 8px #6ee7b7;
     }
 
-    /* ÉCRAN TACTILE INFÉRIEUR (32% de la hauteur) */
+    /* ÉCRAN TACTILE INFÉRIEUR */
     #bottom-screen-frame {
       flex: 3.2;
       background: var(--ui-bg);
@@ -158,21 +150,19 @@
       justify-content: space-between;
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    /* Barres de jauges 3DS */
     .gauges-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 7px;
     }
 
     .gauge-card {
       background: var(--ui-card);
       border: 1.5px solid var(--ui-border);
-      border-radius: 12px;
-      padding: 6px 8px;
+      border-radius: 11px;
+      padding: 5px 8px;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -181,14 +171,14 @@
     .gauge-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: var(--text-main);
     }
 
     .gauge-track {
       width: 100%;
-      height: 7px;
+      height: 6px;
       background: #eee5d8;
       border-radius: 99px;
       overflow: hidden;
@@ -200,20 +190,19 @@
       transition: width 0.4s ease;
     }
 
-    /* Boutons d'action tactiles */
     .actions-row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
-      margin: 6px 0;
+      gap: 6px;
+      margin: 4px 0;
     }
 
     .btn-3ds {
       background: linear-gradient(180deg, #ffffff 0%, #f5efe6 100%);
       border: 2px solid #dfd3c3;
       border-bottom-width: 4px;
-      border-radius: 14px;
-      padding: 8px 4px;
+      border-radius: 13px;
+      padding: 7px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -222,8 +211,8 @@
       cursor: pointer;
       color: var(--text-main);
       font-weight: 700;
-      font-size: 11px;
-      transition: transform 0.1s, background 0.2s;
+      font-size: 10.5px;
+      transition: transform 0.1s;
     }
 
     .btn-3ds:active {
@@ -232,14 +221,13 @@
     }
 
     .btn-3ds svg {
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
       stroke: var(--accent);
       stroke-width: 2.2;
       fill: none;
     }
 
-    /* Barre de personnalisation (Robes, Espèces .GLB, Accessoires 3D) */
     .customizer-bar {
       display: flex;
       gap: 6px;
@@ -247,25 +235,23 @@
       justify-content: space-between;
       border-top: 1px solid var(--ui-border);
       padding-top: 6px;
-      font-size: 11px;
     }
 
     .select-3ds {
       flex: 1;
       background: #fff;
       border: 1.5px solid var(--ui-border);
-      border-radius: 10px;
-      padding: 5px 8px;
-      font-size: 11.5px;
+      border-radius: 9px;
+      padding: 5px 6px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-main);
       outline: none;
     }
 
-    /* Notification flottante */
     #toast {
       position: absolute;
-      top: 56px;
+      top: 54px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
       background: rgba(255, 133, 162, 0.95);
@@ -278,7 +264,7 @@
       pointer-events: none;
       transition: all 0.25s ease;
       z-index: 20;
-      box-shadow: 0 4px 12px rgba(255,133,162,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
     #toast.show {
       opacity: 1;
@@ -286,7 +272,6 @@
     }
   </style>
 
-  <!-- Importation de Three.js et GLTFLoader via CDN officiel -->
   <script type="importmap">
     {
       "imports": {
@@ -299,7 +284,6 @@
 <body>
 
   <div id="console-3ds">
-    <!-- ÉCRAN DU HAUT : CHAMBRE 3D TEMPS RÉEL -->
     <div id="top-screen-frame">
       <div id="hud-top">
         <div class="hud-pill">
@@ -313,19 +297,15 @@
         </div>
       </div>
 
-      <div id="toast">Miam ! +25 Faim</div>
-      <div id="pet-mood-bubble">Se promène tranquillement dans sa chambre...</div>
-      <button id="camera-hint" title="Changer l'éclairage ou recentrer">Mode Lumière : Auto (Heure réelle)</button>
+      <div id="toast">Miam ! +25 Repas</div>
+      <div id="pet-mood-bubble">Explore tranquillement son grand salon...</div>
+      <button id="camera-hint">Lumière : Auto</button>
 
       <div id="webgl-container"></div>
     </div>
 
-    <!-- CHARNIÈRE 3DS -->
-    <div id="hinge">
-      <div class="hinge-led"></div>
-    </div>
+    <div id="hinge"><div class="hinge-led"></div></div>
 
-    <!-- ÉCRAN DU BAS : COMMANDES TACTILES DOUCES -->
     <div id="bottom-screen-frame">
       <div class="gauges-grid">
         <div class="gauge-card">
@@ -369,19 +349,20 @@
         </button>
       </div>
 
-      <!-- Sélecteurs 3D : Modèle, 11 Robes à motifs & Accessoires 3D -->
       <div class="customizer-bar">
-        <select id="select-species" class="select-3ds" title="Modèle 3D">
+        <select id="select-species" class="select-3ds" title="Choisir le compagnon 3D">
           <option value="proc_cat">Chat 3DS (Intégré)</option>
-          <option value="models/Cat.glb">Chat (models/Cat.glb)</option>
-          <option value="models/Fox.glb">Renard (models/Fox.glb)</option>
-          <option value="models/Shiba Inu.glb">Shiba Inu (models/Shiba Inu.glb)</option>
-          <option value="models/Husky.glb">Husky (models/Husky.glb)</option>
-          <option value="models/Deer.glb">Faon (models/Deer.glb)</option>
-          <option value="models/Alpaca.glb">Alpaga (models/Alpaca.glb)</option>
+          <option value="Fox.glb">Renard (.glb)</option>
+          <option value="Shiba Inu.glb">Shiba Inu (.glb)</option>
+          <option value="Husky.glb">Husky (.glb)</option>
+          <option value="Wolf.glb">Loup (.glb)</option>
+          <option value="Deer.glb">Faon (.glb)</option>
+          <option value="Alpaca.glb">Alpaga (.glb)</option>
+          <option value="White Horse.glb">Cheval Blanc (.glb)</option>
         </select>
 
-        <select id="select-coat" class="select-3ds" title="11 Robes et motifs">
+        <select id="select-coat" class="select-3ds" title="Couleur / Pelage">
+          <option value="original">Robe : Couleur d'origine (.glb)</option>
           <option value="tuxedo">Robe : Smoking (Phénix)</option>
           <option value="black">Robe : Noir Ébène (Tichat)</option>
           <option value="ginger">Robe : Tigré Roux</option>
@@ -395,13 +376,13 @@
           <option value="gold">Robe : Doré Céleste</option>
         </select>
 
-        <select id="select-hat" class="select-3ds" title="Accessoire 3D attaché à la tête">
-          <option value="none">Sans accessoire</option>
+        <select id="select-hat" class="select-3ds" title="Accessoire 3D">
           <option value="crown">Couronne Royale 3D</option>
           <option value="bowtie">Nœud Papillon Rouge</option>
           <option value="glasses">Lunettes Rondes 3D</option>
           <option value="halo">Auréole Céleste</option>
           <option value="witch">Chapeau Magique</option>
+          <option value="none">Sans accessoire</option>
         </select>
       </div>
     </div>
@@ -413,7 +394,7 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     // ============================================================================
-    // 1. ÉTAT DU JEU & SAUVEGARDE LOCALE (CONSERVE LA LOGIQUE NEKO)
+    // 1. ÉTAT & SAUVEGARDE
     // ============================================================================
     const defaultState = {
       name: 'Mochi',
@@ -428,21 +409,22 @@
       lightingMode: 'auto'
     };
 
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save') || '{}'));
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v2') || '{}'));
     function saveState() {
-      localStorage.setItem('neko3ds_save', JSON.stringify(state));
+      localStorage.setItem('neko3ds_save_v2', JSON.stringify(state));
     }
 
     // ============================================================================
-    // 2. INITIALISATION DE LA SCÈNE 3D THREE.JS (STYLE NINTENDO 3DS COZY)
+    // 2. CAMÉRA & CONTRÔLES ANTI-COLLISION MURS (STYLE DIORAMA 3DS)
     // ============================================================================
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xdbeafe);
-    scene.fog = new THREE.FogExp2(0xdbeafe, 0.035);
+    scene.fog = new THREE.FogExp2(0xdbeafe, 0.02);
 
-    const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 3.6, 6.2);
+    // Angle plus large (48°) et position reculée pour voir toute la pièce !
+    const camera = new THREE.PerspectiveCamera(48, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(3.2, 5.2, 8.8);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -454,31 +436,63 @@
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0.8, 0);
+    controls.target.set(0, 1.0, -0.3);
     controls.enablePan = false;
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.minDistance = 3.2;
-    controls.maxDistance = 8.5;
-    controls.minPolarAngle = Math.PI / 6;
-    controls.maxPolarAngle = Math.PI / 2.15;
+    controls.dampingFactor = 0.06;
+
+    // Permet de dézoomer très largement (jusqu'à 16m) ou de zoomer (3.5m)
+    controls.minDistance = 3.5;
+    controls.maxDistance = 16.0;
+
+    // Verrouillage des angles pour NE JAMAIS rentrer derrière les murs ni sous le sol !
+    controls.minPolarAngle = Math.PI / 7;     // Vue du dessus max
+    controls.maxPolarAngle = Math.PI / 2.25;  // Empêche de passer sous le parquet
+    controls.minAzimuthAngle = -Math.PI / 6;  // Butée mur gauche
+    controls.maxAzimuthAngle = Math.PI / 2.3; // Butée mur du fond
 
     const gltfLoader = new GLTFLoader();
 
+    // Chargeur intelligent qui cherche le fichier dans tous les sous-dossiers possibles
+    function loadSmartGLTF(filename, onSuccess, onError) {
+      const cleanName = filename.replace(/^models\//, '');
+      const candidatePaths = [
+        `models/${cleanName}`,
+        `./${cleanName}`,
+        `Animated Animal Pack-glb/${cleanName}`,
+        `Models/GLTF format/${cleanName}`,
+        `KayKit_Furniture_Bits_1.0_FREE/Assets/gltf/${cleanName}`
+      ];
+
+      let index = 0;
+      function tryNext() {
+        if (index >= candidatePaths.length) {
+          if (onError) onError();
+          return;
+        }
+        const path = candidatePaths[index++];
+        gltfLoader.load(
+          encodeURI(path),
+          (gltf) => onSuccess(gltf, path),
+          undefined,
+          () => tryNext()
+        );
+      }
+      tryNext();
+    }
+
     // ============================================================================
-    // 3. ÉCLAIRAGE DYNAMIQUE JOUR / GOLDEN HOUR / NUIT (POUR LE BUREAU 24/7)
+    // 3. ÉCLAIRAGE DYNAMIQUE JOUR / GOLDEN HOUR / NUIT
     // ============================================================================
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.85);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.9);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.4);
-    sunLight.position.set(4, 7, 3);
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
+    sunLight.position.set(5, 8, 5);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 1024;
     sunLight.shadow.mapSize.height = 1024;
-    sunLight.shadow.camera.near = 0.5;
-    sunLight.shadow.camera.far = 20;
-    const d = 5;
+    const d = 6.5;
     sunLight.shadow.camera.left = -d;
     sunLight.shadow.camera.right = d;
     sunLight.shadow.camera.top = d;
@@ -486,38 +500,44 @@
     sunLight.shadow.bias = -0.001;
     scene.add(sunLight);
 
-    const nightLampLight = new THREE.PointLight(0xff9e44, 0, 7, 1.5);
-    nightLampLight.position.set(-2.4, 1.8, -2.0);
+    const nightLampLight = new THREE.PointLight(0xff9e44, 0, 9, 1.4);
+    nightLampLight.position.set(-3.1, 2.1, -2.6);
     nightLampLight.castShadow = true;
     scene.add(nightLampLight);
 
-    const sunbeamGeo = new THREE.ConeGeometry(1.8, 5.5, 32, 1, true);
-    const sunbeamMat = new THREE.MeshBasicMaterial({
-      color: 0xfff3c4,
-      transparent: true,
-      opacity: 0.13,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    });
-    const sunbeam = new THREE.Mesh(sunbeamGeo, sunbeamMat);
-    sunbeam.position.set(1.5, 2.3, -1.6);
-    sunbeam.rotation.z = 0.45;
+    const tvGlowLight = new THREE.PointLight(0x38bdf8, 0.5, 4, 2);
+    tvGlowLight.position.set(-3.2, 1.1, 1.6);
+    scene.add(tvGlowLight);
+
+    const sunbeam = new THREE.Mesh(
+      new THREE.ConeGeometry(2.1, 6.2, 32, 1, true),
+      new THREE.MeshBasicMaterial({
+        color: 0xfff3c4,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    sunbeam.position.set(0.9, 2.5, -2.0);
+    sunbeam.rotation.z = 0.38;
     sunbeam.rotation.x = 0.35;
     scene.add(sunbeam);
 
     // ============================================================================
-    // 4. CONSTRUCTION DE LA CHAMBRE 3D (AVEC TES FICHIERS .GLB KENNEY / KAYKIT)
+    // 4. GRANDE CHAMBRE 3D RICHE & MEUBLÉE (AUCUN ESPACE VIDE !)
     // ============================================================================
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
 
+    // Parquet chaleureux (9x9m)
     const floorCanvas = document.createElement('canvas');
     floorCanvas.width = 512; floorCanvas.height = 512;
     const fCtx = floorCanvas.getContext('2d');
     fCtx.fillStyle = '#d6a87c';
     fCtx.fillRect(0, 0, 512, 512);
-    fCtx.strokeStyle = '#bf8f63';
+    fCtx.strokeStyle = '#bc8a5f';
     fCtx.lineWidth = 4;
     for (let y = 0; y < 512; y += 64) {
       fCtx.beginPath(); fCtx.moveTo(0, y); fCtx.lineTo(512, y); fCtx.stroke();
@@ -527,137 +547,271 @@
     }
     const floorTex = new THREE.CanvasTexture(floorCanvas);
     floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
-    floorTex.repeat.set(3, 3);
+    floorTex.repeat.set(4, 4);
 
     const floorMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(4.8, 4.8, 0.25, 48),
+      new THREE.BoxGeometry(8.4, 0.3, 8.4),
       new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.8 })
     );
-    floorMesh.position.y = -0.125;
+    floorMesh.position.set(0, -0.15, 0);
     floorMesh.receiveShadow = true;
     roomGroup.add(floorMesh);
 
+    // Plinthes en bois blanc
+    const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
     const wallMat = new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.9 });
-    const backWall = new THREE.Mesh(new THREE.BoxGeometry(6.8, 4.0, 0.25), wallMat);
-    backWall.position.set(0, 2.0, -3.2);
+
+    // Mur du fond & Mur gauche
+    const backWall = new THREE.Mesh(new THREE.BoxGeometry(8.4, 4.4, 0.25), wallMat);
+    backWall.position.set(0, 2.2, -4.08);
     backWall.receiveShadow = true;
     roomGroup.add(backWall);
 
-    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.0, 6.8), wallMat);
-    leftWall.position.set(-3.3, 2.0, 0.1);
+    const backBaseboard = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.22, 0.3), baseboardMat);
+    backBaseboard.position.set(0, 0.11, -4.05);
+    roomGroup.add(backBaseboard);
+
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.4, 8.4), wallMat);
+    leftWall.position.set(-4.08, 2.2, 0);
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
-    const skyMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd });
-    const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.6), skyMat);
-    windowGlass.position.set(1.2, 2.35, -3.05);
+    const leftBaseboard = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.22, 8.4), baseboardMat);
+    leftBaseboard.position.set(-4.05, 0.11, 0);
+    roomGroup.add(leftBaseboard);
+
+    // Grande Fenêtre avec Lune/Soleil + Croisillons
+    const skyMat = new THREE.MeshBasicMaterial({ color: 0x7dd3fc });
+    const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.7), skyMat);
+    windowGlass.position.set(0.4, 2.55, -3.93);
     roomGroup.add(windowGlass);
 
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-    const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.25, 1.75, 0.08), frameMat);
-    winFrame.position.set(1.2, 2.35, -3.07);
-    roomGroup.add(winFrame);
+    const winFrame = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.9, 0.08), baseboardMat);
+    winFrame.position.set(0.4, 2.55, -3.95);
+    const barH = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.06, 0.12), baseboardMat);
+    barH.position.set(0.4, 2.55, -3.92);
+    const barV = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.8, 0.12), baseboardMat);
+    barV.position.set(0.4, 2.55, -3.92);
+    roomGroup.add(winFrame, barH, barV);
 
-    function loadFurnitureOrFallback(url, pos, rotY, scale, fallbackBuilder) {
-      gltfLoader.load(
-        url,
+    // Guirlande lumineuse cozy sur les deux murs (Fairy Lights)
+    const fairyBulbs = [];
+    const bulbGeo = new THREE.SphereGeometry(0.065, 10, 10);
+    const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffe484 });
+    for (let i = 0; i < 11; i++) {
+      const b1 = new THREE.Mesh(bulbGeo, bulbMat);
+      b1.position.set(-3.6 + i * 0.72, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.9);
+      roomGroup.add(b1);
+      fairyBulbs.push(b1);
+
+      const b2 = new THREE.Mesh(bulbGeo, bulbMat);
+      b2.position.set(-3.9, 3.85 - Math.sin((i / 10) * Math.PI) * 0.25, -3.6 + i * 0.72);
+      roomGroup.add(b2);
+      fairyBulbs.push(b2);
+    }
+
+    // Cadres décoratifs au mur
+    function createWallPicture(x, y, z, rotY, colorHex) {
+      const g = new THREE.Group();
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.7, 0.06), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+      const canvas = new THREE.Mesh(new THREE.PlaneGeometry(0.76, 0.56), new THREE.MeshBasicMaterial({ color: colorHex }));
+      canvas.position.z = 0.035;
+      g.add(frame, canvas);
+      g.position.set(x, y, z);
+      g.rotation.y = rotY;
+      roomGroup.add(g);
+    }
+    createWallPicture(-1.8, 2.6, -3.92, 0, 0xfda4af);
+    createWallPicture(-3.92, 2.6, -1.2, Math.PI / 2, 0x93c5fd);
+    createWallPicture(-3.92, 2.4, 0.2, Math.PI / 2, 0xa7f3d0);
+
+    // Charge un meuble .GLB ou affiche le meuble 3D intégré
+    function addSmartFurniture(filename, pos, rotY, scale, fallbackBuilder) {
+      loadSmartGLTF(
+        filename,
         (gltf) => {
           const model = gltf.scene;
           model.position.set(pos[0], pos[1], pos[2]);
           model.rotation.y = rotY;
           model.scale.setScalar(scale);
-          model.traverse((child) => {
-            if (child.isMesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-            }
+          model.traverse((c) => {
+            if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
           });
           roomGroup.add(model);
         },
-        undefined,
         () => {
-          const fallback = fallbackBuilder();
-          fallback.position.set(pos[0], pos[1], pos[2]);
-          fallback.rotation.y = rotY;
-          roomGroup.add(fallback);
+          const fb = fallbackBuilder();
+          fb.position.set(pos[0], pos[1], pos[2]);
+          fb.rotation.y = rotY;
+          roomGroup.add(fb);
         }
       );
     }
 
-    loadFurnitureOrFallback('models/rugRound.glb', [0, 0.01, 0.2], 0, 2.2, () => {
+    // 1. Grand Tapis central (rugRound.glb)
+    addSmartFurniture('rugRound.glb', [0, 0.01, 0.3], 0, 2.8, () => {
       const g = new THREE.Group();
-      const rug = new THREE.Mesh(
-        new THREE.CylinderGeometry(2.1, 2.1, 0.04, 36),
-        new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.95 })
-      );
-      const inner = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.65, 1.65, 0.045, 36),
-        new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 })
-      );
-      rug.receiveShadow = inner.receiveShadow = true;
-      g.add(rug, inner);
+      const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 0.03, 40), new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.95 }));
+      const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 1.95, 0.035, 40), new THREE.MeshStandardMaterial({ color: 0xffe5ec, roughness: 0.95 }));
+      r1.receiveShadow = r2.receiveShadow = true;
+      g.add(r1, r2);
       return g;
     });
 
-    loadFurnitureOrFallback('models/pillowBlue.glb', [-1.8, 0.02, 0.9], 0.4, 1.8, () => {
+    // 2. Grand Lit douillet dans le coin droit (bedDouble.glb)
+    addSmartFurniture('bedDouble.glb', [2.4, 0, -2.2], 0, 1.9, () => {
       const g = new THREE.Group();
-      const base = new THREE.Mesh(
-        new THREE.TorusGeometry(0.62, 0.22, 16, 32),
-        new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 })
+      const wood = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
+      const sheet = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85 });
+      const blanket = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.85 });
+
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 2.6), wood);
+      frame.position.y = 0.175;
+      const headBoard = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.25, 0.2), wood);
+      headBoard.position.set(0, 0.625, -1.25);
+      const mattress = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.32, 2.45), sheet);
+      mattress.position.y = 0.42;
+      const duvet = new THREE.Mesh(new THREE.BoxGeometry(2.07, 0.34, 1.65), blanket);
+      duvet.position.set(0, 0.43, 0.4);
+
+      [-0.52, 0.52].forEach((px) => {
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.16, 0.48), sheet);
+        pillow.position.set(px, 0.64, -0.82);
+        pillow.rotation.x = 0.15;
+        pillow.castShadow = true;
+        g.add(pillow);
+      });
+      [frame, headBoard, mattress, duvet].forEach((m) => { m.castShadow = m.receiveShadow = true; g.add(m); });
+      return g;
+    });
+
+    // 3. Canapé jaune moelleux au fond (loungeSofa.glb)
+    addSmartFurniture('loungeSofa.glb', [-0.6, 0, -3.1], 0, 1.9, () => {
+      const g = new THREE.Group();
+      const mat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.45, 0.95), mat);
+      seat.position.y = 0.25;
+      const back = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.0, 0.28), mat);
+      back.position.set(0, 0.65, -0.35);
+      const armL = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.98), mat);
+      armL.position.set(-1.1, 0.4, 0);
+      const armR = armL.clone();
+      armR.position.x = 1.1;
+      [seat, back, armL, armR].forEach((m) => { m.castShadow = m.receiveShadow = true; g.add(m); });
+      return g;
+    });
+
+    // 4. Table basse + Tasse de thé + Livres (tableCoffee.glb)
+    addSmartFurniture('tableCoffee.glb', [-0.6, 0, -1.6], 0, 1.8, () => {
+      const g = new THREE.Group();
+      const wood = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.6 });
+      const top = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), wood);
+      top.position.y = 0.42;
+      top.castShadow = top.receiveShadow = true;
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.35, 0.4, 16), wood);
+      base.position.y = 0.2;
+      const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 16), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+      cup.position.set(0.2, 0.52, 0.1);
+      const book = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.24), new THREE.MeshStandardMaterial({ color: 0x38bdf8 }));
+      book.position.set(-0.2, 0.49, -0.1);
+      book.rotation.y = 0.4;
+      g.add(top, base, cup, book);
+      return g;
+    });
+
+    // 5. Grande Bibliothèque remplie de livres à gauche (bookcaseClosedDoors.glb)
+    addSmartFurniture('bookcaseClosedDoors.glb', [-3.4, 0, -1.2], Math.PI / 2, 1.9, () => {
+      const g = new THREE.Group();
+      const wood = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.7 });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.2, 0.48), wood);
+      body.position.y = 1.1;
+      body.castShadow = body.receiveShadow = true;
+      g.add(body);
+      const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0xa855f7, 0xec4899];
+      for (let row = 0; row < 3; row++) {
+        for (let b = 0; b < 6; b++) {
+          const book = new THREE.Mesh(
+            new THREE.BoxGeometry(0.12, 0.36, 0.32),
+            new THREE.MeshStandardMaterial({ color: colors[(row + b) % colors.length] })
+          );
+          book.position.set(-0.5 + b * 0.19, 0.55 + row * 0.6, 0.12);
+          g.add(book);
+        }
+      }
+      return g;
+    });
+
+    // 6. Coin Télévision Rétro / Console au premier plan gauche (televisionModern.glb)
+    addSmartFurniture('televisionModern.glb', [-3.35, 0, 1.6], Math.PI / 2, 1.9, () => {
+      const g = new THREE.Group();
+      const stand = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.55), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+      stand.position.y = 0.25;
+      stand.castShadow = true;
+      const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.85, 0.1), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+      tvFrame.position.y = 0.98;
+      const tvScreen = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.22, 0.72),
+        new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
       );
+      tvScreen.position.set(0, 0.98, 0.055);
+      g.add(stand, tvFrame, tvScreen);
+      return g;
+    });
+
+    // 7. Arbre à Chat 3D multi-niveaux avec griffoir !
+    const catTree = new THREE.Group();
+    catTree.position.set(2.85, 0, 1.65);
+    const sisalMat = new THREE.MeshStandardMaterial({ color: 0xd6b88d, roughness: 0.95 });
+    const plushMat = new THREE.MeshStandardMaterial({ color: 0xfda4af, roughness: 0.85 });
+    const treeBase = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 1.1), plushMat);
+    treeBase.position.y = 0.06;
+    const pole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.2, 16), sisalMat);
+    pole1.position.set(-0.25, 0.65, -0.2);
+    const pole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 1.85, 16), sisalMat);
+    pole2.position.set(0.25, 0.95, 0.15);
+    const plat1 = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 24), plushMat);
+    plat1.position.set(-0.25, 1.25, -0.2);
+    const plat2 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.12, 24), plushMat);
+    plat2.position.set(0.25, 1.9, 0.15);
+    [treeBase, pole1, pole2, plat1, plat2].forEach((m) => { m.castShadow = m.receiveShadow = true; catTree.add(m); });
+    roomGroup.add(catTree);
+
+    // 8. Coussin de sieste du compagnon (pillowBlue.glb)
+    addSmartFurniture('pillowBlue.glb', [-1.8, 0.02, 1.5], 0.4, 1.9, () => {
+      const g = new THREE.Group();
+      const base = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.22, 16, 32), new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 }));
       base.rotation.x = Math.PI / 2;
       base.position.y = 0.2;
-      base.castShadow = base.receiveShadow = true;
-      const pad = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.58, 0.58, 0.18, 24),
-        new THREE.MeshStandardMaterial({ color: 0xede9fe, roughness: 0.9 })
-      );
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xede9fe, roughness: 0.9 }));
       pad.position.y = 0.12;
-      pad.receiveShadow = true;
+      base.castShadow = pad.receiveShadow = true;
       g.add(base, pad);
       return g;
     });
 
-    loadFurnitureOrFallback('models/loungeSofa.glb', [-0.9, 0, -2.35], 0, 1.7, () => {
+    // 9. Lampadaire & Plante verte
+    addSmartFurniture('lampRoundFloor.glb', [-3.1, 0, -2.8], 0, 1.9, () => {
       const g = new THREE.Group();
-      const mat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.8 });
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.45, 0.95), mat);
-      seat.position.y = 0.25;
-      const back = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.95, 0.3), mat);
-      back.position.set(0, 0.65, -0.35);
-      seat.castShadow = back.castShadow = seat.receiveShadow = true;
-      g.add(seat, back);
-      return g;
-    });
-
-    loadFurnitureOrFallback('models/lampRoundFloor.glb', [-2.4, 0, -2.0], 0, 1.8, () => {
-      const g = new THREE.Group();
-      const pole = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.05, 0.08, 1.7, 12),
-        new THREE.MeshStandardMaterial({ color: 0x78350f })
-      );
-      pole.position.y = 0.85;
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 1.9, 12), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+      pole.position.y = 0.95;
       const shade = new THREE.Mesh(
-        new THREE.ConeGeometry(0.42, 0.5, 20, 1, true),
-        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfef08a, emissiveIntensity: 0.4, side: THREE.DoubleSide })
+        new THREE.ConeGeometry(0.45, 0.52, 20, 1, true),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfef08a, emissiveIntensity: 0.5, side: THREE.DoubleSide })
       );
-      shade.position.y = 1.75;
+      shade.position.y = 1.95;
       g.add(pole, shade);
       return g;
     });
 
-    loadFurnitureOrFallback('models/pottedPlant.glb', [2.3, 0, -2.2], 0, 2.0, () => {
+    addSmartFurniture('pottedPlant.glb', [0.85, 0, -3.2], 0, 2.1, () => {
       const g = new THREE.Group();
-      const pot = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.32, 0.24, 0.5, 16),
-        new THREE.MeshStandardMaterial({ color: 0xea580c, roughness: 0.7 })
-      );
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0xea580c }));
       pot.position.y = 0.25;
       pot.castShadow = true;
-      const leavesMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.6 });
-      for (let i = 0; i < 5; i++) {
-        const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), leavesMat);
-        leaf.position.set(Math.cos(i * 1.2) * 0.2, 0.65 + (i % 2) * 0.2, Math.sin(i * 1.2) * 0.2);
+      const lMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.6 });
+      for (let i = 0; i < 6; i++) {
+        const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), lMat);
+        leaf.position.set(Math.cos(i) * 0.22, 0.68 + (i % 2) * 0.22, Math.sin(i) * 0.22);
         leaf.castShadow = true;
         g.add(leaf);
       }
@@ -665,71 +819,69 @@
       return g;
     });
 
+    // 10. Coin Repas : Gamelle de croquettes + Gamelle d'eau fraîche
     const bowlGroup = new THREE.Group();
-    bowlGroup.position.set(1.95, 0, 0.85);
-    const bowlOuter = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.36, 0.44, 0.18, 24),
-      new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.4 })
-    );
+    bowlGroup.position.set(1.6, 0, 2.2);
+    const bowlOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.42, 0.18, 24), new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.4 }));
     bowlOuter.position.y = 0.09;
-    bowlOuter.castShadow = bowlOuter.receiveShadow = true;
-    const foodMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.28, 16, 12),
-      new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.9 })
-    );
+    const foodMesh = new THREE.Mesh(new THREE.SphereGeometry(0.27, 16, 12), new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.9 }));
     foodMesh.scale.set(1, 0.45, 1);
     foodMesh.position.y = 0.14;
-    bowlGroup.add(bowlOuter, foodMesh);
+
+    const waterBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.38, 0.16, 24), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.3 }));
+    waterBowl.position.set(0.82, 0.08, 0);
+    const waterSurface = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.27, 0.02, 20), new THREE.MeshBasicMaterial({ color: 0x7dd3fc }));
+    waterSurface.position.set(0.82, 0.14, 0);
+
+    bowlGroup.add(bowlOuter, foodMesh, waterBowl, waterSurface);
     roomGroup.add(bowlGroup);
 
+    // 11. Pelote de laine 3D physique
     const yarnBall = new THREE.Mesh(
-      new THREE.SphereGeometry(0.22, 20, 20),
-      new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.7 })
+      new THREE.SphereGeometry(0.23, 20, 20),
+      new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.65 })
     );
-    yarnBall.position.set(0.9, 0.22, 1.4);
+    yarnBall.position.set(0.8, 0.23, 1.1);
     yarnBall.castShadow = true;
     scene.add(yarnBall);
     const yarnVelocity = new THREE.Vector3(0, 0, 0);
 
     // ============================================================================
-    // 5. SYSTÈME DE PARTICULES 3D (POUSSIÈRES DORÉES + CŒURS + Zzz)
+    // 5. PARTICULES D'AMBIANCE & CŒURS 3D
     // ============================================================================
-    const dustCount = 55;
+    const dustCount = 65;
     const dustGeo = new THREE.BufferGeometry();
     const dustPositions = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
-      dustPositions[i * 3] = (Math.random() - 0.5) * 6;
-      dustPositions[i * 3 + 1] = Math.random() * 3.5 + 0.3;
-      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 5;
+      dustPositions[i * 3] = (Math.random() - 0.5) * 7.5;
+      dustPositions[i * 3 + 1] = Math.random() * 3.6 + 0.3;
+      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 7.5;
     }
     dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    const dustMat = new THREE.PointsMaterial({
-      color: 0xfffbeb,
-      size: 0.06,
-      transparent: true,
-      opacity: 0.75
-    });
-    const dustParticles = new THREE.Points(dustGeo, dustMat);
+    const dustParticles = new THREE.Points(
+      dustGeo,
+      new THREE.PointsMaterial({ color: 0xfffbeb, size: 0.065, transparent: true, opacity: 0.75 })
+    );
     scene.add(dustParticles);
 
     const floatingParticles = [];
-    function spawnParticles3D(colorHex, count = 6) {
+    function spawnParticles3D(colorHex, count = 7) {
       for (let i = 0; i < count; i++) {
         const mesh = new THREE.Mesh(
-          new THREE.SphereGeometry(0.08, 10, 10),
+          new THREE.SphereGeometry(0.085, 10, 10),
           new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 1 })
         );
         mesh.position.copy(petRoot.position);
-        mesh.position.y += 0.9 + Math.random() * 0.3;
-        mesh.position.x += (Math.random() - 0.5) * 0.6;
-        mesh.position.z += (Math.random() - 0.5) * 0.6;
+        mesh.position.y += 1.0 + Math.random() * 0.3;
+        mesh.position.x += (Math.random() - 0.5) * 0.7;
+        mesh.position.z += (Math.random() - 0.5) * 0.7;
         scene.add(mesh);
-        floatingParticles.push({ mesh, life: 1.0, vy: 0.8 + Math.random() * 0.5 });
+        floatingParticles.push({ mesh, life: 1.0, vy: 0.9 + Math.random() * 0.5 });
       }
     }
 
     // ============================================================================
-    // 6. GÉNÉRATEUR DES 11 TEXTURES DE ROBES (AVEC VRAIS MOTIFS 3D !)
+    // 6. ROBES & ACCESSOIRES 3D
     // ============================================================================
     function generateCoatTexture(coatId) {
       const c = document.createElement('canvas');
@@ -762,13 +914,10 @@
         ctx.fillRect(0, 210, 256, 46);
       } else if (p.pattern === 'stripes') {
         ctx.fillStyle = p.secondary;
-        for (let y = 20; y < 240; y += 28) {
-          ctx.fillRect(10, y, 236, 10);
-        }
+        for (let y = 20; y < 240; y += 28) ctx.fillRect(10, y, 236, 10);
       } else if (p.pattern === 'spots') {
         ctx.fillStyle = p.secondary;
-        const spots = [[60,60,35],[180,80,40],[90,170,38],[190,190,30]];
-        spots.forEach(([x,y,r]) => {
+        [[60,60,35],[180,80,40],[90,170,38],[190,190,30]].forEach(([x,y,r]) => {
           ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
         });
         if (p.tertiary) {
@@ -793,15 +942,9 @@
       return tex;
     }
 
-    // ============================================================================
-    // 7. MODÉLISATION 3D DES ACCESSOIRES (S'ATTACHENT À L'OS DE LA TÊTE !)
-    // ============================================================================
     const hatGroup = new THREE.Group();
-
     function buildAccessory3D(hatType) {
-      while (hatGroup.children.length > 0) {
-        hatGroup.remove(hatGroup.children[0]);
-      }
+      while (hatGroup.children.length > 0) hatGroup.remove(hatGroup.children[0]);
       if (hatType === 'none') return;
 
       if (hatType === 'crown') {
@@ -819,11 +962,9 @@
         const redMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 });
         const center = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), redMat);
         const leftWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
-        leftWing.rotation.z = -Math.PI / 2;
-        leftWing.position.x = -0.1;
+        leftWing.rotation.z = -Math.PI / 2; leftWing.position.x = -0.1;
         const rightWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
-        rightWing.rotation.z = Math.PI / 2;
-        rightWing.position.x = 0.1;
+        rightWing.rotation.z = Math.PI / 2; rightWing.position.x = 0.1;
         const bow = new THREE.Group();
         bow.add(center, leftWing, rightWing);
         bow.position.set(0, -0.42, 0.34);
@@ -839,16 +980,9 @@
           lens.position.set(x, -0.1, 0.41);
           g.add(rim, lens);
         });
-        const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.14), frameMat);
-        bridge.rotation.z = Math.PI / 2;
-        bridge.position.set(0, -0.1, 0.41);
-        g.add(bridge);
         hatGroup.add(g);
       } else if (hatType === 'halo') {
-        const halo = new THREE.Mesh(
-          new THREE.TorusGeometry(0.28, 0.035, 16, 36),
-          new THREE.MeshBasicMaterial({ color: 0xfef08a })
-        );
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.035, 16, 36), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
         halo.rotation.x = Math.PI / 2;
         halo.position.y = 0.26;
         hatGroup.add(halo);
@@ -862,7 +996,7 @@
     }
 
     // ============================================================================
-    // 8. COMPAGNON 3D (MODÈLE .GLB EXTERNE OU CHAT 3DS LOW-POLY INTÉGRÉ)
+    // 7. GESTION DES MODÈLES D'ANIMAUX (.GLB + CHAT 3DS INTÉGRÉ)
     // ============================================================================
     const petRoot = new THREE.Group();
     scene.add(petRoot);
@@ -875,7 +1009,7 @@
 
     function createProceduralCat3DS() {
       const group = new THREE.Group();
-      const coatTex = generateCoatTexture(state.coat);
+      const coatTex = generateCoatTexture(state.coat === 'original' ? 'tuxedo' : state.coat);
       const furMat = new THREE.MeshStandardMaterial({ map: coatTex, roughness: 0.75 });
       const pinkMat = new THREE.MeshStandardMaterial({ color: 0xffb3c6, roughness: 0.6 });
       const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.15 });
@@ -928,16 +1062,10 @@
       hatGroup.position.set(0, 0.39, 0);
       hatGroup.scale.setScalar(1);
       headGroup.add(hatGroup);
-
       group.add(headGroup);
 
       const legs = [];
-      [
-        [-0.2, 0.22, 0.25],
-        [0.2, 0.22, 0.25],
-        [-0.2, 0.22, -0.25],
-        [0.2, 0.22, -0.25]
-      ].forEach(([lx, ly, lz]) => {
+      [[-0.2, 0.22, 0.25], [0.2, 0.22, 0.25], [-0.2, 0.22, -0.25], [0.2, 0.22, -0.25]].forEach(([lx, ly, lz]) => {
         const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.24, 12, 16), furMat);
         leg.position.set(lx, ly, lz);
         leg.castShadow = true;
@@ -960,15 +1088,14 @@
       return group;
     }
 
-    function loadPetModel(speciesUrl) {
-      while (petRoot.children.length > 0) {
-        petRoot.remove(petRoot.children[0]);
-      }
+    function loadPetModel(speciesName) {
+      while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
       mixer = null;
       animationsMap = {};
+      currentAction = null;
       proceduralParts = null;
 
-      if (speciesUrl === 'proc_cat') {
+      if (speciesName === 'proc_cat') {
         const cat = createProceduralCat3DS();
         petRoot.add(cat);
         buildAccessory3D(state.hat);
@@ -976,15 +1103,21 @@
         return;
       }
 
-      gltfLoader.load(
-        speciesUrl,
-        (gltf) => {
+      loadSmartGLTF(
+        speciesName,
+        (gltf, loadedPath) => {
           const model = gltf.scene;
+
+          // Calcul précis de la boîte englobante pour normaliser la taille et poser les pattes au sol
           const box = new THREE.Box3().setFromObject(model);
           const size = new THREE.Vector3();
           box.getSize(size);
-          const scaleFactor = 1.35 / Math.max(size.x, size.y, size.z, 0.1);
+          const maxDim = Math.max(size.x, size.y, size.z, 0.001);
+          const scaleFactor = 1.45 / maxDim;
           model.scale.setScalar(scaleFactor);
+
+          const scaledBox = new THREE.Box3().setFromObject(model);
+          model.position.y = -scaledBox.min.y;
 
           petBodyMeshes = [];
           let headBone = null;
@@ -993,6 +1126,10 @@
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
+              // Sauvegarde du matériau d'origine du .glb pour ne pas le casser !
+              if (!child.userData.originalMat) {
+                child.userData.originalMat = child.material.clone();
+              }
               petBodyMeshes.push(child);
             }
             if (child.isBone && /head/i.test(child.name) && !headBone) {
@@ -1000,19 +1137,16 @@
             }
           });
 
-          if (headBone) {
-            hatGroup.position.set(0, 0.35, 0);
-            hatGroup.scale.setScalar(1 / scaleFactor * 0.6);
-            headBone.add(hatGroup);
-          } else {
-            hatGroup.position.set(0, 1.25, 0.35);
-            hatGroup.scale.setScalar(1);
-            petRoot.add(hatGroup);
-          }
+          hatGroup.position.set(0, 1.35, 0.45);
+          hatGroup.scale.setScalar(1);
+          petRoot.add(hatGroup);
 
           petRoot.add(model);
           buildAccessory3D(state.hat);
-          applyCoatToMeshes(state.coat);
+          // Garde les vraies textures du modèle .glb par défaut
+          if (state.coat !== 'original') {
+            applyCoatToMeshes(state.coat);
+          }
 
           if (gltf.animations && gltf.animations.length > 0) {
             mixer = new THREE.AnimationMixer(model);
@@ -1021,10 +1155,10 @@
             });
             playGLBAnimation('idle');
           }
+          showToast(`Modèle 3D chargé (${loadedPath})`);
         },
-        undefined,
         () => {
-          showToast('Fichier ' + speciesUrl + ' absent : Chat 3DS activé');
+          showToast(`"${speciesName}" introuvable dans models/ → Chat 3DS activé`);
           const cat = createProceduralCat3DS();
           petRoot.add(cat);
           buildAccessory3D(state.hat);
@@ -1035,7 +1169,24 @@
     function playGLBAnimation(keyword) {
       if (!mixer) return;
       const keys = Object.keys(animationsMap);
-      const match = keys.find((k) => k.includes(keyword)) || keys[0];
+      if (keys.length === 0) return;
+
+      const synonyms = {
+        idle: ['idle', 'stand', 'breathe', 'rest'],
+        walk: ['walk', 'run', 'gallop', 'trot', 'move'],
+        eat: ['eat', 'bite', 'attack', 'peck'],
+        death: ['death', 'sleep', 'lie', 'sit', 'rest'],
+        jump: ['jump', 'bounce', 'gallop', 'walk']
+      };
+
+      const targets = synonyms[keyword] || [keyword];
+      let match = null;
+      for (const t of targets) {
+        match = keys.find((k) => k.includes(t));
+        if (match) break;
+      }
+      if (!match) match = keys[0];
+
       if (match && animationsMap[match] !== currentAction) {
         if (currentAction) currentAction.fadeOut(0.25);
         currentAction = animationsMap[match];
@@ -1044,7 +1195,15 @@
     }
 
     function applyCoatToMeshes(coatId) {
-      const tex = generateCoatTexture(coatId);
+      if (coatId === 'original' && !proceduralParts) {
+        petBodyMeshes.forEach((mesh) => {
+          if (mesh.userData.originalMat) {
+            mesh.material = mesh.userData.originalMat.clone();
+          }
+        });
+        return;
+      }
+      const tex = generateCoatTexture(coatId === 'original' ? 'tuxedo' : coatId);
       petBodyMeshes.forEach((mesh) => {
         if (mesh.material) {
           mesh.material = mesh.material.clone();
@@ -1056,21 +1215,21 @@
     }
 
     // ============================================================================
-    // 9. IA AUTONOME "VIVANTE 24/7" (MARCHE, REPAS, JEU, SIESTE, REGARD)
+    // 8. IA AUTONOME "VIVANTE 24/7" DANS TOUT LE SALON
     // ============================================================================
     const ai = {
       mode: 'idle',
       timer: 4,
       targetPos: new THREE.Vector3(0, 0, 0),
-      walkSpeed: 1.15
+      walkSpeed: 1.25
     };
 
     const moodTexts = {
-      idle: 'Observe tranquillement la chambre...',
-      walk: 'Se dégourdit les pattes sur le tapis...',
-      eat: 'Savoure ses croquettes avec appétit !',
-      sleep: 'Fait une douce sieste sur son coussin... Zzz',
-      play: 'Joue joyeusement avec sa pelote de laine !',
+      idle: 'Observe tranquillement son grand salon...',
+      walk: 'Se promène entre les meubles de la chambre...',
+      eat: 'Savoure ses croquettes près de la gamelle d\'eau !',
+      sleep: 'Dort paisiblement sur son coussin moelleux... Zzz',
+      play: 'Joue avec sa pelote de laine sur le tapis !',
       happy: 'Ronronne de bonheur sous tes caresses ♥'
     };
 
@@ -1091,23 +1250,23 @@
       const isNight = (state.lightingMode === 'night') || (state.lightingMode === 'auto' && (hour >= 22 || hour < 7));
 
       if (isNight || state.energy < 25) {
-        ai.targetPos.set(-1.8, 0, 0.9);
+        ai.targetPos.set(-1.8, 0, 1.5);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'sleep';
         return;
       }
 
       const roll = Math.random();
-      if (roll < 0.42) {
-        ai.targetPos.set((Math.random() - 0.5) * 3.4, 0, (Math.random() - 0.3) * 2.6);
+      if (roll < 0.45) {
+        ai.targetPos.set((Math.random() - 0.5) * 4.2, 0, (Math.random() - 0.2) * 3.8);
         setAIMode('walk', 6);
         ai.nextAfterWalk = 'idle';
-      } else if (roll < 0.65) {
+      } else if (roll < 0.7) {
         ai.targetPos.copy(yarnBall.position);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'play';
-      } else if (roll < 0.82 && state.hunger < 90) {
-        ai.targetPos.set(1.55, 0, 0.85);
+      } else if (roll < 0.85 && state.hunger < 92) {
+        ai.targetPos.set(1.6, 0, 1.9);
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'eat';
       } else {
@@ -1116,7 +1275,7 @@
     }
 
     // ============================================================================
-    // 10. INTERACTION TACTILE RAYCASTER (CLIQUER SUR LE CHAT OU LA PELOTE 3D)
+    // 9. INTERACTIONS & BOUTONS
     // ============================================================================
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -1127,39 +1286,31 @@
       pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
 
-      const hitsPet = raycaster.intersectObjects(petRoot.children, true);
-      if (hitsPet.length > 0) {
+      if (raycaster.intersectObjects(petRoot.children, true).length > 0) {
         petCompanion();
         return;
       }
-
-      const hitsYarn = raycaster.intersectObject(yarnBall);
-      if (hitsYarn.length > 0) {
+      if (raycaster.intersectObject(yarnBall).length > 0) {
         throwYarnBall();
       }
     });
 
-    // ============================================================================
-    // 11. ACTIONS DES BOUTONS & MISE À JOUR DES JAUGES
-    // ============================================================================
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
       clearTimeout(t._tid);
-      t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+      t._tid = setTimeout(() => t.classList.remove('show'), 2400);
     }
 
     function updateHUD() {
       document.getElementById('pet-name-display').textContent = state.name;
       document.getElementById('coins-display').textContent = `${state.coins} ★`;
-
       ['hunger', 'fun', 'energy', 'hygiene'].forEach((k) => {
         const val = Math.round(Math.max(0, Math.min(100, state[k])));
         document.getElementById(`val-${k}`).textContent = `${val}%`;
         document.getElementById(`bar-${k}`).style.width = `${val}%`;
       });
-
       foodMesh.visible = state.hunger > 20;
     }
 
@@ -1174,7 +1325,7 @@
     }
 
     function throwYarnBall() {
-      yarnVelocity.set((Math.random() - 0.5) * 4.5, 0, (Math.random() - 0.5) * 4.0);
+      yarnVelocity.set((Math.random() - 0.5) * 5.0, 0, (Math.random() - 0.5) * 4.5);
       state.fun = Math.min(100, state.fun + 18);
       state.energy = Math.max(10, state.energy - 5);
       ai.targetPos.copy(yarnBall.position);
@@ -1189,7 +1340,7 @@
     document.getElementById('btn-feed').addEventListener('click', () => {
       state.hunger = Math.min(100, state.hunger + 25);
       state.coins += 5;
-      ai.targetPos.set(1.5, 0, 0.85);
+      ai.targetPos.set(1.6, 0, 1.9);
       setAIMode('walk', 4);
       ai.nextAfterWalk = 'eat';
       spawnParticles3D(0xfb7185, 7);
@@ -1212,7 +1363,7 @@
     });
 
     document.getElementById('btn-sleep').addEventListener('click', () => {
-      ai.targetPos.set(-1.8, 0, 0.9);
+      ai.targetPos.set(-1.8, 0, 1.5);
       setAIMode('walk', 4);
       ai.nextAfterWalk = 'sleep';
       state.energy = Math.min(100, state.energy + 30);
@@ -1231,6 +1382,10 @@
 
     selectSpecies.addEventListener('change', (e) => {
       state.species = e.target.value;
+      if (state.species !== 'proc_cat') {
+        state.coat = 'original';
+        selectCoat.value = 'original';
+      }
       loadPetModel(state.species);
       saveState();
     });
@@ -1257,7 +1412,7 @@
     });
 
     // ============================================================================
-    // 12. CYCLE LUMIÈRE TEMPS RÉEL (MATIN / JOUR / GOLDEN HOUR / NUIT)
+    // 10. AMBIANCE LUMINEUSE (JOUR / GOLDEN HOUR / NUIT)
     // ============================================================================
     const lightingModes = ['auto', 'day', 'sunset', 'night'];
     const cameraHintBtn = document.getElementById('camera-hint');
@@ -1281,32 +1436,30 @@
         scene.background.setHex(0xdbeafe);
         scene.fog.color.setHex(0xdbeafe);
         skyMat.color.setHex(0x7dd3fc);
-        hemiLight.intensity = 0.9;
+        hemiLight.intensity = 0.95;
         sunLight.color.setHex(0xfffbeb);
         sunLight.intensity = 1.45;
         nightLampLight.intensity = 0;
         sunbeam.visible = true;
-        sunbeamMat.color.setHex(0xfff3c4);
         dot.style.background = '#fbbf24';
       } else if (mode === 'sunset') {
         scene.background.setHex(0xfed7aa);
         scene.fog.color.setHex(0xfed7aa);
         skyMat.color.setHex(0xfb923c);
-        hemiLight.intensity = 0.65;
+        hemiLight.intensity = 0.7;
         sunLight.color.setHex(0xf97316);
-        sunLight.intensity = 1.3;
-        nightLampLight.intensity = 1.2;
+        sunLight.intensity = 1.35;
+        nightLampLight.intensity = 1.4;
         sunbeam.visible = true;
-        sunbeamMat.color.setHex(0xfdba74);
         dot.style.background = '#f97316';
       } else {
         scene.background.setHex(0x1e1b4b);
         scene.fog.color.setHex(0x1e1b4b);
         skyMat.color.setHex(0x0f172a);
-        hemiLight.intensity = 0.28;
+        hemiLight.intensity = 0.32;
         sunLight.color.setHex(0x818cf8);
-        sunLight.intensity = 0.35;
-        nightLampLight.intensity = 2.6;
+        sunLight.intensity = 0.38;
+        nightLampLight.intensity = 2.8;
         sunbeam.visible = false;
         dot.style.background = '#818cf8';
       }
@@ -1316,10 +1469,10 @@
       const idx = (lightingModes.indexOf(state.lightingMode) + 1) % lightingModes.length;
       state.lightingMode = lightingModes[idx];
       const labels = {
-        auto: 'Mode Lumière : Auto (Heure réelle)',
-        day: 'Mode Lumière : Soleil de Midi',
-        sunset: 'Mode Lumière : Golden Hour',
-        night: 'Mode Lumière : Veilleuse de Nuit'
+        auto: 'Lumière : Auto',
+        day: 'Lumière : Jour',
+        sunset: 'Lumière : Soirée',
+        night: 'Lumière : Nuit'
       };
       cameraHintBtn.textContent = labels[state.lightingMode];
       applyEnvironmentLighting();
@@ -1327,7 +1480,7 @@
     });
 
     // ============================================================================
-    // 13. BOUCLE D'ANIMATION 60 FPS (MOUVEMENTS FLUIDES & CAMÉRA VIVANTE)
+    // 11. BOUCLE D'ANIMATION 60 FPS
     // ============================================================================
     const clock = new THREE.Clock();
 
@@ -1343,7 +1496,7 @@
         const dir = new THREE.Vector3().subVectors(ai.targetPos, petRoot.position);
         dir.y = 0;
         const dist = dir.length();
-        if (dist > 0.12) {
+        if (dist > 0.15) {
           dir.normalize();
           petRoot.position.addScaledVector(dir, ai.walkSpeed * dt);
           const targetAngle = Math.atan2(dir.x, dir.z);
@@ -1353,14 +1506,12 @@
         }
       } else if (ai.mode === 'play') {
         const toBall = new THREE.Vector3().subVectors(yarnBall.position, petRoot.position);
-        if (toBall.length() < 0.75) {
-          yarnVelocity.set((Math.random() - 0.5) * 2.5, 0, (Math.random() - 0.5) * 2.5);
+        if (toBall.length() < 0.85) {
+          yarnVelocity.set((Math.random() - 0.5) * 2.8, 0, (Math.random() - 0.5) * 2.8);
         }
       }
 
-      if (ai.timer <= 0) {
-        chooseNextAutonomousBehavior();
-      }
+      if (ai.timer <= 0) chooseNextAutonomousBehavior();
 
       if (proceduralParts) {
         const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
@@ -1405,8 +1556,8 @@
         yarnBall.rotation.x += yarnVelocity.z * dt * 3;
         yarnBall.rotation.z -= yarnVelocity.x * dt * 3;
         yarnVelocity.multiplyScalar(0.95);
-        if (Math.abs(yarnBall.position.x) > 2.2) yarnVelocity.x *= -0.8;
-        if (yarnBall.position.z > 2.1 || yarnBall.position.z < -1.5) yarnVelocity.z *= -0.8;
+        if (Math.abs(yarnBall.position.x) > 2.6) yarnVelocity.x *= -0.8;
+        if (yarnBall.position.z > 2.6 || yarnBall.position.z < -2.0) yarnVelocity.z *= -0.8;
       }
 
       const posArr = dustGeo.attributes.position.array;
@@ -1427,14 +1578,10 @@
         }
       }
 
-      camera.position.x += Math.sin(elapsed * 0.35) * 0.0012;
       controls.update();
       renderer.render(scene, camera);
     }
 
-    // ============================================================================
-    // 14. DÉMARRAGE, ÉVOLUTION DES JAUGES & SERVICE WORKER PWA
-    // ============================================================================
     window.addEventListener('resize', () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -1444,7 +1591,7 @@
     setInterval(() => {
       state.hunger = Math.max(10, state.hunger - 0.4);
       state.fun = Math.max(10, state.fun - 0.35);
-      state.hygiene = Math.max(10, state.fun - 0.25);
+      state.hygiene = Math.max(10, state.hygiene - 0.25);
       if (ai.mode === 'sleep') {
         state.energy = Math.min(100, state.energy + 1.5);
       } else {
@@ -1457,20 +1604,16 @@
 
     async function keepScreenAwake() {
       try {
-        if ('wakeLock' in navigator) {
-          await navigator.wakeLock.request('screen');
-        }
+        if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
       } catch (_) {}
     }
     document.addEventListener('click', keepScreenAwake, { once: true });
 
-    // Initialisation
     loadPetModel(state.species);
     applyEnvironmentLighting();
     updateHUD();
     animate();
 
-    // Enregistrement du Service Worker PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
