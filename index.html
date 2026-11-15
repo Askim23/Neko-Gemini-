@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Neko 3DS — Édition Vivante</title>
+  <title>Neko 3DS — Édition Nintendogs + Cats</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
@@ -48,10 +48,10 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     }
 
-    /* ÉCRAN SUPÉRIEUR 3D (65% de la hauteur) */
+    /* ÉCRAN SUPÉRIEUR 3D (64% de la hauteur) */
     #top-screen-frame {
       position: relative;
-      flex: 6.5;
+      flex: 6.4;
       background: #000;
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -80,7 +80,7 @@
     }
 
     .hud-pill {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(8px);
       padding: 6px 13px;
       border-radius: 999px;
@@ -92,6 +92,31 @@
       align-items: center;
       gap: 7px;
       pointer-events: auto;
+    }
+
+    /* Petit panneau d'ajustement rapide de l'accessoire si besoin */
+    #hat-adjust-bar {
+      position: absolute;
+      top: 48px;
+      right: 12px;
+      display: flex;
+      gap: 4px;
+      z-index: 30;
+      pointer-events: auto;
+    }
+
+    .mini-adj-btn {
+      background: rgba(30, 34, 45, 0.78);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      padding: 4px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mini-adj-btn:active {
+      transform: scale(0.92);
     }
 
     #hud-bottom-controls {
@@ -135,7 +160,6 @@
       cursor: pointer;
       border: 1.5px solid rgba(255,255,255,0.3);
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: transform 0.1s, background 0.2s;
     }
     .overlay-btn:active {
       transform: scale(0.95);
@@ -161,7 +185,7 @@
     #bottom-screen-frame {
       position: relative;
       z-index: 40;
-      flex: 3.5;
+      flex: 3.6;
       background: var(--ui-bg);
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -320,6 +344,15 @@
         </div>
       </div>
 
+      <!-- Boutons discrets pour ajuster parfaitement l'accessoire sur la tête -->
+      <div id="hat-adjust-bar">
+        <button type="button" class="mini-adj-btn" id="adj-up" title="Monter l'accessoire">▲</button>
+        <button type="button" class="mini-adj-btn" id="adj-down" title="Descendre l'accessoire">▼</button>
+        <button type="button" class="mini-adj-btn" id="adj-fwd" title="Avancer l'accessoire">◀</button>
+        <button type="button" class="mini-adj-btn" id="adj-back" title="Reculer l'accessoire">▶</button>
+        <button type="button" class="mini-adj-btn" id="adj-scale" title="Changer la taille de l'accessoire">Taille ±</button>
+      </div>
+
       <div id="toast">Prêt !</div>
 
       <div id="hud-bottom-controls">
@@ -384,19 +417,18 @@
       </div>
 
       <div class="customizer-bar">
-        <select id="select-species" class="select-3ds">
-          <option value="proc_cat">🐱 Chat 3DS</option>
+        <select id="select-species" class="select-3ds" title="Modèles officiels Nintendogs + Cats">
+          <option value="f2_cat_std.dae">🐱 Chat Nintendogs (3DS)</option>
+          <option value="bgl.dae">🐶 Beagle Nintendogs (3DS)</option>
+          <option value="gld.dae">🦮 Golden Retriever (3DS)</option>
+          <option value="proc_cat">🐾 Chat Chibi (Intégré)</option>
           <option value="Fox.glb">🦊 Renard (.glb)</option>
           <option value="Shiba Inu.glb">🐕 Shiba Inu (.glb)</option>
           <option value="Husky.glb">🐺 Husky (.glb)</option>
-          <option value="Wolf.glb">🐾 Loup (.glb)</option>
-          <option value="Deer.glb">🦌 Faon (.glb)</option>
-          <option value="Alpaca.glb">🦙 Alpaga (.glb)</option>
-          <option value="White Horse.glb">🐴 Cheval (.glb)</option>
         </select>
 
         <select id="select-coat" class="select-3ds">
-          <option value="original">🎨 Robe d'origine</option>
+          <option value="original">🎨 Texture Officielle 3DS</option>
           <option value="tuxedo">Smoking (Phénix)</option>
           <option value="black">Noir Ébène (Tichat)</option>
           <option value="ginger">Tigré Roux</option>
@@ -411,11 +443,11 @@
         </select>
 
         <select id="select-hat" class="select-3ds">
-          <option value="crown">👑 Couronne 3D</option>
-          <option value="bowtie">🎀 Nœud Papillon</option>
-          <option value="glasses">👓 Lunettes 3D</option>
-          <option value="halo">😇 Auréole</option>
-          <option value="witch">🧙 Chapeau</option>
+          <option value="crown">👑 Couronne Royale</option>
+          <option value="bowtie">🎀 Collier Nœud Pap'</option>
+          <option value="glasses">👓 Lunettes 3DS</option>
+          <option value="halo">😇 Auréole Céleste</option>
+          <option value="witch">🧙 Chapeau Magique</option>
           <option value="none">❌ Sans accessoire</option>
         </select>
       </div>
@@ -426,10 +458,11 @@
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
     import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
     // ============================================================================
-    // 1. ÉTAT & SAUVEGARDE
+    // 1. ÉTAT & SAUVEGARDE (AVEC RÉGLAGES FINS D'ACCESSOIRES PAR MODÈLE)
     // ============================================================================
     const defaultState = {
       name: 'Mochi',
@@ -438,16 +471,19 @@
       fun: 90,
       energy: 85,
       hygiene: 95,
-      coat: 'tuxedo',
+      coat: 'original',
       hat: 'crown',
-      species: 'proc_cat',
+      species: 'f2_cat_std.dae', // Charge le vrai Chat Nintendogs 3DS par défaut !
       lightingMode: 'auto',
-      roomTheme: 0
+      roomTheme: 0,
+      hatOffsetY: 0,
+      hatOffsetZ: 0,
+      hatScaleMul: 1.0
     };
 
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v4') || '{}'));
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v5') || '{}'));
     function saveState() {
-      localStorage.setItem('neko3ds_save_v4', JSON.stringify(state));
+      localStorage.setItem('neko3ds_save_v5', JSON.stringify(state));
     }
 
     function showToast(msg) {
@@ -466,8 +502,8 @@
     scene.background = new THREE.Color(0xdbeafe);
     scene.fog = new THREE.FogExp2(0xdbeafe, 0.016);
 
-    const camera = new THREE.PerspectiveCamera(48, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(3.4, 5.4, 9.2);
+    const camera = new THREE.PerspectiveCamera(46, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(3.0, 4.8, 8.4);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -479,28 +515,37 @@
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 1.0, -0.2);
+    controls.target.set(0, 0.9, 0.1);
     controls.enablePan = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
-    controls.minDistance = 3.5;
-    controls.maxDistance = 16.5;
+    controls.minDistance = 2.8;
+    controls.maxDistance = 16.0;
     controls.minPolarAngle = Math.PI / 7;
     controls.maxPolarAngle = Math.PI / 2.25;
     controls.minAzimuthAngle = -Math.PI / 6;
     controls.maxAzimuthAngle = Math.PI / 2.3;
 
     const gltfLoader = new GLTFLoader();
+    const colladaLoader = new ColladaLoader();
 
-    function loadSmartGLTF(filename, onSuccess, onError) {
-      const cleanName = filename.replace(/^models\//, '');
-      const candidatePaths = [
-        `models/${cleanName}`,
-        `./${cleanName}`,
-        `Animated Animal Pack-glb/${cleanName}`,
-        `Models/GLTF format/${cleanName}`,
-        `KayKit_Furniture_Bits_1.0_FREE/Assets/gltf/${cleanName}`
-      ];
+    // Cherche automatiquement les modèles .dae (Nintendogs) ou .glb dans tous les dossiers
+    function loadSmartModel(filename, onSuccess, onError) {
+      const cleanName = filename.replace(/^(models\/|Nintendogs and Cat\/)/, '');
+      const isDAE = cleanName.toLowerCase().endsWith('.dae');
+
+      const candidatePaths = isDAE
+        ? [
+            `Nintendogs and Cat/${cleanName}`,
+            `models/Nintendogs and Cat/${cleanName}`,
+            `models/${cleanName}`,
+            `./${cleanName}`
+          ]
+        : [
+            `models/${cleanName}`,
+            `./${cleanName}`,
+            `Animated Animal Pack-glb/${cleanName}`
+          ];
 
       let index = 0;
       function tryNext() {
@@ -509,12 +554,21 @@
           return;
         }
         const path = candidatePaths[index++];
-        gltfLoader.load(
-          encodeURI(path),
-          (gltf) => onSuccess(gltf, path),
-          undefined,
-          () => tryNext()
-        );
+        if (isDAE) {
+          colladaLoader.load(
+            encodeURI(path),
+            (collada) => onSuccess({ scene: collada.scene, animations: collada.animations || [], isDAE: true }, path),
+            undefined,
+            () => tryNext()
+          );
+        } else {
+          gltfLoader.load(
+            encodeURI(path),
+            (gltf) => onSuccess({ scene: gltf.scene, animations: gltf.animations || [], isDAE: false }, path),
+            undefined,
+            () => tryNext()
+          );
+        }
       }
       tryNext();
     }
@@ -522,7 +576,7 @@
     // ============================================================================
     // 3. ÉCLAIRAGE DYNAMIQUE
     // ============================================================================
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 0.95);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 1.0);
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
@@ -543,10 +597,6 @@
     nightLampLight.castShadow = true;
     scene.add(nightLampLight);
 
-    const deskLampLight = new THREE.PointLight(0xfef08a, 0.5, 4, 1.8);
-    deskLampLight.position.set(1.3, 1.8, -3.3);
-    scene.add(deskLampLight);
-
     const sunbeam = new THREE.Mesh(
       new THREE.ConeGeometry(2.1, 6.2, 32, 1, true),
       new THREE.MeshBasicMaterial({
@@ -564,7 +614,7 @@
     scene.add(sunbeam);
 
     // ============================================================================
-    // 4. SALON 3D ULTRA-COMPLET (NOUVEAUX MEUBLES + 4 THÈMES DE DÉCO)
+    // 4. SALON 3D ULTRA-COMPLET (AVEC TOUS LES NOUVEAUX MEUBLES)
     // ============================================================================
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
@@ -636,7 +686,7 @@
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
-    // Grande Fenêtre avec paysage + rideaux
+    // Fenêtre + Rideaux
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x7dd3fc });
     const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.65), skyMat);
     windowGlass.position.set(0.1, 2.6, -4.12);
@@ -650,7 +700,6 @@
     barV.position.set(0.1, 2.6, -4.11);
     roomGroup.add(winFrame, barH, barV);
 
-    // Rideaux doux de chaque côté de la fenêtre
     [-1.25, 1.45].forEach((cx) => {
       const curtain = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.24, 2.1, 16), rug2Mat);
       curtain.position.set(cx, 2.55, -4.02);
@@ -669,7 +718,7 @@
       roomGroup.add(b1, b2);
     }
 
-    // 1. Tapis central + Tapis de lecture
+    // Tapis central
     const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.03, 40), rug1Mat);
     const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 1.85, 0.035, 40), rug2Mat);
     r1.position.set(-0.1, 0.015, 0.4);
@@ -677,7 +726,7 @@
     r1.receiveShadow = r2.receiveShadow = true;
     roomGroup.add(r1, r2);
 
-    // 2. Grand Lit douillet dans le coin droit
+    // Lit + Table de chevet + Radio
     const bedGroup = new THREE.Group();
     bedGroup.position.set(2.8, 0, -2.5);
     const frame = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.35, 2.6), woodMat);
@@ -697,26 +746,16 @@
     [frame, headBoard, mattress, duvet].forEach((m) => { m.castShadow = m.receiveShadow = true; bedGroup.add(m); });
     roomGroup.add(bedGroup);
 
-    // 3. NOUVEAU : Table de chevet (sideTableDrawers) + Radio rétro + Réveil à côté du lit
     const nightStand = new THREE.Group();
     nightStand.position.set(1.35, 0, -3.55);
     const nsBox = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.62, 0.58), woodMat);
     nsBox.position.y = 0.31;
-    const drawer1 = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.2, 0.04), lightWoodMat);
-    drawer1.position.set(0, 0.44, 0.29);
-    const drawer2 = drawer1.clone();
-    drawer2.position.y = 0.18;
-    // Petite Radio vintage dessus
     const radioBody = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.2, 0.16), new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 }));
     radioBody.position.set(-0.08, 0.72, 0);
-    const radioDial = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.04, 12), sheetMat);
-    radioDial.rotation.x = Math.PI / 2;
-    radioDial.position.set(0.02, 0.72, 0.08);
-    nightStand.add(nsBox, drawer1, drawer2, radioBody, radioDial);
-    nightStand.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    nightStand.add(nsBox, radioBody);
     roomGroup.add(nightStand);
 
-    // 4. Canapé moelleux au fond + Coussins décoratifs
+    // Canapé + Table basse + Fauteuil & Pouf
     const sofaGroup = new THREE.Group();
     sofaGroup.position.set(-1.35, 0, -3.35);
     const seat = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.45, 0.95), sofaMat);
@@ -727,17 +766,9 @@
     armL.position.set(-1.05, 0.4, 0);
     const armR = armL.clone();
     armR.position.x = 1.05;
-    // Coussins sur le canapé
-    const throwPillow1 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.16), blanketMat);
-    throwPillow1.position.set(-0.68, 0.62, -0.1);
-    throwPillow1.rotation.z = 0.2;
-    const throwPillow2 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.16), accentChairMat);
-    throwPillow2.position.set(0.68, 0.62, -0.1);
-    throwPillow2.rotation.z = -0.2;
-    [seat, back, armL, armR, throwPillow1, throwPillow2].forEach((m) => { m.castShadow = m.receiveShadow = true; sofaGroup.add(m); });
+    [seat, back, armL, armR].forEach((m) => { m.castShadow = m.receiveShadow = true; sofaGroup.add(m); });
     roomGroup.add(sofaGroup);
 
-    // 5. Table basse + Plateau de thé + Assiette de biscuits + Livres
     const coffeeGroup = new THREE.Group();
     coffeeGroup.position.set(-1.35, 0, -1.85);
     const cTop = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.08, 24), lightWoodMat);
@@ -746,62 +777,32 @@
     cBase.position.y = 0.2;
     const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.14, 16), sheetMat);
     cup.position.set(0.22, 0.52, 0.12);
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.03, 18), sheetMat);
-    plate.position.set(-0.18, 0.47, 0.15);
-    const cookie = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.03, 12), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
-    cookie.position.set(-0.18, 0.5, 0.15);
-    coffeeGroup.add(cTop, cBase, cup, plate, cookie);
-    coffeeGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    coffeeGroup.add(cTop, cBase, cup);
     roomGroup.add(coffeeGroup);
 
-    // 6. NOUVEAU : Fauteuil cosy (Armchair) + Pouf repose-pieds (Ottoman)
     const armchairGroup = new THREE.Group();
     armchairGroup.position.set(0.45, 0, -1.85);
     armchairGroup.rotation.y = -0.55;
     const acSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.48, 0.38, 24), accentChairMat);
     acSeat.position.y = 0.22;
-    const acBack = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.55, 24, 1, true, Math.PI * 0.8, Math.PI * 1.4), accentChairMat);
-    acBack.material.side = THREE.DoubleSide;
-    acBack.position.y = 0.52;
     const ottoman = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.24, 20), rug1Mat);
     ottoman.position.set(0, 0.12, 0.72);
-    armchairGroup.add(acSeat, acBack, ottoman);
-    armchairGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    armchairGroup.add(acSeat, ottoman);
     roomGroup.add(armchairGroup);
 
-    // 7. NOUVEAU : Bureau (Desk) + Chaise de bureau + Ordinateur portable (Laptop) + Lampe de bureau
+    // Bureau + Laptop + Bibliothèque + Meuble TV
     const deskGroup = new THREE.Group();
     deskGroup.position.set(-3.45, 0, 0.15);
     deskGroup.rotation.y = Math.PI / 2;
     const deskTop = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.08, 0.75), lightWoodMat);
     deskTop.position.y = 0.78;
-    const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.78, 10);
-    [[-0.68, -0.3], [0.68, -0.3], [-0.68, 0.3], [0.68, 0.3]].forEach(([lx, lz]) => {
-      const leg = new THREE.Mesh(legGeo, woodMat);
-      leg.position.set(lx, 0.39, lz);
-      deskGroup.add(leg);
-    });
-    // Laptop ouvert sur le bureau
     const lapBase = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.02, 0.3), new THREE.MeshStandardMaterial({ color: 0x334155 }));
     lapBase.position.set(0, 0.83, 0.04);
     const lapScreen = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.02), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
     lapScreen.position.set(0, 0.96, -0.1);
-    lapScreen.rotation.x = -0.2;
-    const lapDisplay = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.24), new THREE.MeshBasicMaterial({ color: 0x60a5fa }));
-    lapDisplay.position.set(0, 0.96, -0.088);
-    lapDisplay.rotation.x = -0.2;
-    // Chaise de bureau
-    const dChairSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.08, 18), blanketMat);
-    dChairSeat.position.set(0, 0.48, 0.58);
-    const dChairPole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 0.48, 10), new THREE.MeshStandardMaterial({ color: 0x334155 }));
-    dChairPole.position.set(0, 0.24, 0.58);
-    const dChairBack = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.07), blanketMat);
-    dChairBack.position.set(0, 0.74, 0.82);
-    deskGroup.add(deskTop, lapBase, lapScreen, lapDisplay, dChairSeat, dChairPole, dChairBack);
-    deskGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
+    deskGroup.add(deskTop, lapBase, lapScreen);
     roomGroup.add(deskGroup);
 
-    // 8. Grande Bibliothèque à gauche (au fond)
     const bookGroup = new THREE.Group();
     bookGroup.position.set(-3.55, 0, -1.75);
     bookGroup.rotation.y = Math.PI / 2;
@@ -816,10 +817,8 @@
         bookGroup.add(bk);
       }
     }
-    bookGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
     roomGroup.add(bookGroup);
 
-    // 9. Meuble TV + Console + Horloge murale à gauche (premier plan)
     const tvGroup = new THREE.Group();
     tvGroup.position.set(-3.5, 0, 2.1);
     tvGroup.rotation.y = Math.PI / 2;
@@ -832,33 +831,7 @@
     tvGroup.add(tvStand, tvFrame, tvScreen);
     roomGroup.add(tvGroup);
 
-    // Horloge murale au-dessus de la télé + Étagères avec petits cactus
-    const wallClock = new THREE.Group();
-    wallClock.position.set(-4.12, 2.75, 2.1);
-    wallClock.rotation.y = Math.PI / 2;
-    const clockRim = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.06, 24), woodMat);
-    clockRim.rotation.x = Math.PI / 2;
-    const clockFace = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.07, 24), sheetMat);
-    clockFace.rotation.x = Math.PI / 2;
-    wallClock.add(clockRim, clockFace);
-    roomGroup.add(wallClock);
-
-    // Étagère murale avec petites plantes succulentes (cactus_small_A)
-    const wallShelf = new THREE.Group();
-    wallShelf.position.set(-4.0, 2.35, 0.15);
-    const shelfBoard = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.05, 1.3), lightWoodMat);
-    [-0.38, 0, 0.38].forEach((sz, idx) => {
-      const miniPot = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xea580c }));
-      miniPot.position.set(0, 0.09, sz);
-      const cactus = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), new THREE.MeshStandardMaterial({ color: idx === 1 ? 0x10b981 : 0x22c55e }));
-      cactus.scale.y = 1.5;
-      cactus.position.set(0, 0.22, sz);
-      wallShelf.add(miniPot, cactus);
-    });
-    wallShelf.add(shelfBoard);
-    roomGroup.add(wallShelf);
-
-    // 10. NOUVEAU : Ventilateur de plafond animé (ceilingFan)
+    // Ventilateur de plafond
     const ceilingFanGroup = new THREE.Group();
     ceilingFanGroup.position.set(0, 4.15, 0);
     const fanHub = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.18, 16), woodMat);
@@ -873,7 +846,7 @@
     }
     roomGroup.add(ceilingFanGroup);
 
-    // 11. Arbre à chat 3 étages + Carton à chat avec Ours en peluche (cardboardBoxOpen + bear)
+    // Arbre à chat + Carton avec peluche + Coussin + Gamelles + Pelote
     const catTree = new THREE.Group();
     catTree.position.set(2.95, 0, 1.15);
     const sisalMat = new THREE.MeshStandardMaterial({ color: 0xd6b88d, roughness: 0.95 });
@@ -890,26 +863,6 @@
     [treeBase, pole1, pole2, plat1, plat2].forEach((m) => { m.castShadow = m.receiveShadow = true; catTree.add(m); });
     roomGroup.add(catTree);
 
-    // Petit carton ouvert avec ours en peluche dedans !
-    const boxGroup = new THREE.Group();
-    boxGroup.position.set(2.85, 0, 2.55);
-    boxGroup.rotation.y = -0.35;
-    const cardboardMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.9 });
-    const cBox = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.36, 0.58), cardboardMat);
-    cBox.position.y = 0.18;
-    // Ours en peluche assis dans le carton
-    const bearMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.85 });
-    const bearHead = new THREE.Mesh(new THREE.SphereGeometry(0.16, 14, 14), bearMat);
-    bearHead.position.set(0, 0.44, 0);
-    const bearEarL = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), bearMat);
-    bearEarL.position.set(-0.12, 0.56, 0);
-    const bearEarR = bearEarL.clone();
-    bearEarR.position.x = 0.12;
-    boxGroup.add(cBox, bearHead, bearEarL, bearEarR);
-    boxGroup.traverse((c) => { if (c.isMesh) c.castShadow = c.receiveShadow = true; });
-    roomGroup.add(boxGroup);
-
-    // 12. Coussin de sieste + Gamelles + Pelote de laine
     const bedPadGroup = new THREE.Group();
     bedPadGroup.position.set(-1.75, 0.02, 1.65);
     const pBase = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.22, 16, 32), new THREE.MeshStandardMaterial({ color: 0xa78bfa, roughness: 0.85 }));
@@ -946,7 +899,7 @@
     // ============================================================================
     // 5. PARTICULES D'AMBIANCE & CŒURS 3D
     // ============================================================================
-    const dustCount = 65;
+    const dustCount = 55;
     const dustGeo = new THREE.BufferGeometry();
     const dustPositions = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
@@ -957,7 +910,7 @@
     dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
     const dustParticles = new THREE.Points(
       dustGeo,
-      new THREE.PointsMaterial({ color: 0xfffbeb, size: 0.065, transparent: true, opacity: 0.75 })
+      new THREE.PointsMaterial({ color: 0xfffbeb, size: 0.06, transparent: true, opacity: 0.75 })
     );
     scene.add(dustParticles);
 
@@ -965,7 +918,7 @@
     function spawnParticles3D(colorHex, count = 7) {
       for (let i = 0; i < count; i++) {
         const mesh = new THREE.Mesh(
-          new THREE.SphereGeometry(0.085, 10, 10),
+          new THREE.SphereGeometry(0.08, 10, 10),
           new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 1 })
         );
         mesh.position.copy(petRoot.position);
@@ -978,7 +931,7 @@
     }
 
     // ============================================================================
-    // 6. TEXTURES DES 11 ROBES & ACCESSOIRES 3D
+    // 6. ROBES & ACCESSOIRES 3D PROPORTIONNÉS POUR NINTENDOGS + CATS
     // ============================================================================
     function generateCoatTexture(coatId) {
       const c = document.createElement('canvas');
@@ -1039,61 +992,80 @@
       return tex;
     }
 
+    // Groupe d'accessoires qui s'ajuste exactement entre les oreilles ou autour du cou
     const hatGroup = new THREE.Group();
+
     function buildAccessory3D(hatType) {
       while (hatGroup.children.length > 0) hatGroup.remove(hatGroup.children[0]);
       if (hatType === 'none') return;
 
+      const inner = new THREE.Group();
+      const s = 0.72 * (state.hatScaleMul || 1.0); // Taille fine adaptée entre les deux oreilles du chat 3DS
+      inner.scale.setScalar(s);
+
       if (hatType === 'crown') {
-        const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.6, roughness: 0.25 });
-        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.13, 16), goldMat);
-        base.position.y = 0.065;
-        hatGroup.add(base);
+        const goldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.65, roughness: 0.25 });
+        const gemMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.145, 0.11, 20), goldMat);
+        base.position.y = 0.055;
+        inner.add(base);
         for (let i = 0; i < 5; i++) {
           const a = (i / 5) * Math.PI * 2;
-          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.13, 8), goldMat);
-          spike.position.set(Math.cos(a) * 0.16, 0.16, Math.sin(a) * 0.16);
-          hatGroup.add(spike);
+          const spike = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.11, 10), goldMat);
+          spike.position.set(Math.cos(a) * 0.145, 0.14, Math.sin(a) * 0.145);
+          const gem = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), gemMat);
+          gem.position.set(Math.cos(a) * 0.155, 0.06, Math.sin(a) * 0.155);
+          inner.add(spike, gem);
         }
       } else if (hatType === 'bowtie') {
-        const redMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 });
-        const center = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), redMat);
-        const leftWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
-        leftWing.rotation.z = -Math.PI / 2; leftWing.position.x = -0.1;
-        const rightWing = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.2, 12), redMat);
-        rightWing.rotation.z = Math.PI / 2; rightWing.position.x = 0.1;
+        const redMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.45 });
+        const center = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 12), redMat);
+        const leftWing = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.18, 12), redMat);
+        leftWing.rotation.z = -Math.PI / 2; leftWing.position.x = -0.09;
+        const rightWing = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.18, 12), redMat);
+        rightWing.rotation.z = Math.PI / 2; rightWing.position.x = 0.09;
         const bow = new THREE.Group();
         bow.add(center, leftWing, rightWing);
-        bow.position.set(0, -0.42, 0.22);
-        hatGroup.add(bow);
+        // Placé directement sous le menton / sur le poitrail
+        bow.position.set(0, -0.34, 0.12);
+        inner.add(bow);
       } else if (hatType === 'glasses') {
-        const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5, roughness: 0.3 });
-        const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.25 });
+        const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.4 });
         const g = new THREE.Group();
-        [-0.16, 0.16].forEach((x) => {
-          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.018, 12, 24), frameMat);
-          rim.position.set(x, -0.15, 0.25);
-          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.09, 20), glassMat);
-          lens.position.set(x, -0.15, 0.25);
+        [-0.14, 0.14].forEach((x) => {
+          const rim = new THREE.Mesh(new THREE.TorusGeometry(0.095, 0.016, 12, 24), frameMat);
+          rim.position.set(x, -0.14, 0.22);
+          const lens = new THREE.Mesh(new THREE.CircleGeometry(0.088, 20), glassMat);
+          lens.position.set(x, -0.14, 0.22);
           g.add(rim, lens);
         });
-        hatGroup.add(g);
+        const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.1), frameMat);
+        bridge.rotation.z = Math.PI / 2;
+        bridge.position.set(0, -0.14, 0.22);
+        g.add(bridge);
+        inner.add(g);
       } else if (hatType === 'halo') {
-        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.032, 16, 36), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.028, 16, 36), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
         halo.rotation.x = Math.PI / 2;
-        halo.position.y = 0.24;
-        hatGroup.add(halo);
+        halo.position.y = 0.22;
+        inner.add(halo);
       } else if (hatType === 'witch') {
         const hatMat = new THREE.MeshStandardMaterial({ color: 0x3b0764, roughness: 0.8 });
-        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.03, 24), hatMat);
-        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 24), hatMat);
-        cone.position.y = 0.25;
-        hatGroup.add(brim, cone);
+        const ribbonMat = new THREE.MeshStandardMaterial({ color: 0xfacc15 });
+        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.025, 24), hatMat);
+        const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.19, 0.05, 20), ribbonMat);
+        ribbon.position.y = 0.03;
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.42, 24), hatMat);
+        cone.position.y = 0.22;
+        inner.add(brim, ribbon, cone);
       }
+
+      hatGroup.add(inner);
     }
 
     // ============================================================================
-    // 7. COMPAGNONS 3D AVEC ANIMATIONS NATURELLES (FINI L'EFFET DE DANSE !)
+    // 7. CHARGEUR OFFICIEL NINTENDOGS (.DAE) + ANIMATEUR SQUELETTIQUE 3DS
     // ============================================================================
     const petRoot = new THREE.Group();
     scene.add(petRoot);
@@ -1102,9 +1074,12 @@
     let animationsMap = {};
     let currentAction = null;
     let proceduralParts = null;
+    let daeRig = null; // Contient les os du modèle officiel Nintendogs (.dae) pour les animer !
     let petBodyMeshes = [];
+    let headAnchorBase = new THREE.Vector3(0, 1.05, 0.32);
     let activeHeadTarget = null;
     let headLookTargetY = 0;
+    let headTiltTargetZ = 0;
     let nextHeadLookChange = 0;
 
     function createProceduralCat3DS() {
@@ -1117,6 +1092,7 @@
 
       petBodyMeshes = [];
       activeHeadTarget = null;
+      daeRig = null;
 
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.34, 0.42, 16, 24), furMat);
       body.rotation.x = Math.PI / 2;
@@ -1160,9 +1136,7 @@
       nose.position.set(0, -0.04, 0.42);
       headGroup.add(nose);
 
-      hatGroup.position.set(0, 0.39, 0);
-      hatGroup.rotation.set(0, 0, 0);
-      hatGroup.scale.setScalar(1);
+      hatGroup.position.set(0, 0.39 + (state.hatOffsetY || 0), (state.hatOffsetZ || 0));
       headGroup.add(hatGroup);
       group.add(headGroup);
 
@@ -1190,7 +1164,7 @@
       return group;
     }
 
-    function computeAccurateGLBBounds(root) {
+    function computeAccurateBounds(root) {
       root.updateMatrixWorld(true);
       const box = new THREE.Box3();
       const tempVec = new THREE.Vector3();
@@ -1207,7 +1181,7 @@
 
           const posAttr = child.geometry.attributes.position;
           if (posAttr) {
-            const step = Math.max(1, Math.floor(posAttr.count / 300));
+            const step = Math.max(1, Math.floor(posAttr.count / 400));
             for (let i = 0; i < posAttr.count; i += step) {
               tempVec.fromBufferAttribute(posAttr, i);
               if (child.isSkinnedMesh && child.applyBoneTransform) {
@@ -1226,12 +1200,54 @@
       return box;
     }
 
+    // Analyse les os du modèle officiel Nintendogs (.dae) pour lui donner vie !
+    function setupNintendogsDAERig(model) {
+      const bones = {
+        head: null,
+        neck: null,
+        spine: null,
+        tails: [],
+        legsFL: [],
+        legsFR: [],
+        legsBL: [],
+        legsBR: []
+      };
+
+      model.traverse((obj) => {
+        if (obj.isBone || obj.type === 'Bone' || obj.type === 'Joint') {
+          const n = obj.name.toLowerCase();
+          obj.userData.initRot = obj.rotation.clone();
+
+          if (!bones.head && (n.includes('head') || n === 'hd' || n.includes('face'))) {
+            bones.head = obj;
+          } else if (!bones.neck && n.includes('neck')) {
+            bones.neck = obj;
+          } else if (!bones.spine && (n.includes('spine') || n.includes('body') || n.includes('waist') || n.includes('hip'))) {
+            bones.spine = obj;
+          } else if (n.includes('tail')) {
+            bones.tails.push(obj);
+          } else if ((n.includes('leg') || n.includes('arm') || n.includes('thigh') || n.includes('shoulder') || n.includes('up')) && !n.includes('toe') && !n.includes('foot') && !n.includes('hand')) {
+            if (n.includes('l') || n.endsWith('_l')) {
+              if (n.includes('f') || n.includes('arm') || n.includes('shoulder')) bones.legsFL.push(obj);
+              else bones.legsBL.push(obj);
+            } else if (n.includes('r') || n.endsWith('_r')) {
+              if (n.includes('f') || n.includes('arm') || n.includes('shoulder')) bones.legsFR.push(obj);
+              else bones.legsBR.push(obj);
+            }
+          }
+        }
+      });
+
+      return { model, bones, basePosY: model.position.y };
+    }
+
     function loadPetModel(speciesName) {
       while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
       mixer = null;
       animationsMap = {};
       currentAction = null;
       proceduralParts = null;
+      daeRig = null;
       activeHeadTarget = null;
 
       if (speciesName === 'proc_cat') {
@@ -1242,16 +1258,46 @@
         return;
       }
 
-      loadSmartGLTF(
+      loadSmartModel(
         speciesName,
-        (gltf) => {
-          const model = SkeletonUtils.clone(gltf.scene);
+        (loaded, loadedPath) => {
+          const model = loaded.isDAE ? loaded.scene : SkeletonUtils.clone(loaded.scene);
           petBodyMeshes = [];
 
-          if (gltf.animations && gltf.animations.length > 0) {
+          // Améliore le rendu des moustaches transparentes (whiskers) des modèles Nintendogs 3DS
+          model.traverse((child) => {
+            if (child.isMesh) {
+              child.frustumCulled = false;
+              child.castShadow = true;
+              child.receiveShadow = true;
+
+              const mats = Array.isArray(child.material) ? child.material : [child.material];
+              mats.forEach((m) => {
+                if (!m) return;
+                m.roughness = 0.75;
+                m.metalness = 0.05;
+                if (/whisker/i.test(child.name) || (m.name && /whisker/i.test(m.name))) {
+                  m.transparent = true;
+                  m.alphaTest = 0.15;
+                  m.depthWrite = false;
+                  m.side = THREE.DoubleSide;
+                }
+              });
+
+              if (!child.userData.originalMat && child.material) {
+                child.userData.originalMat = Array.isArray(child.material)
+                  ? child.material.map((m) => m.clone())
+                  : child.material.clone();
+              }
+              if (!/whisker/i.test(child.name)) {
+                petBodyMeshes.push(child);
+              }
+            }
+          });
+
+          if (!loaded.isDAE && loaded.animations && loaded.animations.length > 0) {
             mixer = new THREE.AnimationMixer(model);
-            gltf.animations.forEach((clip) => {
-              // Enregistre le nom court sans le préfixe "AnimalArmature|"
+            loaded.animations.forEach((clip) => {
               const cleanClipName = clip.name.split('|').pop().toLowerCase().trim();
               animationsMap[cleanClipName] = mixer.clipAction(clip);
             });
@@ -1259,51 +1305,44 @@
             mixer.update(0.016);
           }
 
-          const rawBox = computeAccurateGLBBounds(model);
+          // Mise à l'échelle automatique propre (1.28m dans le salon)
+          const rawBox = computeAccurateBounds(model);
           const size = new THREE.Vector3();
           rawBox.getSize(size);
           let maxDim = Math.max(size.x, size.y, size.z);
-          if (!isFinite(maxDim) || maxDim < 0.01 || maxDim > 5000) maxDim = 3.5;
+          if (!isFinite(maxDim) || maxDim < 0.001 || maxDim > 10000) maxDim = 1.0;
 
-          const scaleFactor = 1.45 / maxDim;
-          model.scale.setScalar(scaleFactor);
+          const targetSize = 1.28;
+          const scaleFactor = targetSize / maxDim;
+          model.scale.multiplyScalar(scaleFactor);
 
-          const finalBox = computeAccurateGLBBounds(model);
+          const finalBox = computeAccurateBounds(model);
           const center = new THREE.Vector3();
           finalBox.getCenter(center);
-          model.position.x = -center.x;
-          model.position.z = -center.z;
-          model.position.y = isFinite(finalBox.min.y) ? -finalBox.min.y : 0;
+          model.position.x -= center.x;
+          model.position.z -= center.z;
+          model.position.y -= isFinite(finalBox.min.y) ? finalBox.min.y : 0;
 
-          let headBone = null;
-          model.traverse((child) => {
-            if (child.isMesh) {
-              child.frustumCulled = false;
-              if (!child.userData.originalMat && child.material) {
-                child.userData.originalMat = child.material.clone();
-              }
-              petBodyMeshes.push(child);
-            }
-            if (child.isBone && /head/i.test(child.name) && !headBone) {
-              headBone = child;
-            }
-          });
+          // Détection du squelette Nintendogs (.dae) ou de l'os de tête (.glb)
+          daeRig = setupNintendogsDAERig(model);
+          activeHeadTarget = daeRig.bones.head || daeRig.bones.neck;
 
-          activeHeadTarget = headBone;
-          const topY = isFinite(finalBox.max.y - finalBox.min.y) ? (finalBox.max.y - finalBox.min.y) : 1.15;
-          hatGroup.position.set(0, topY * 0.92, 0.35);
-          hatGroup.scale.setScalar(1);
+          // Position de base calibrée juste entre les deux oreilles du modèle !
+          const totalHeight = Math.max(0.6, finalBox.max.y - finalBox.min.y);
+          const totalLength = Math.max(0.6, finalBox.max.z - finalBox.min.z);
+          headAnchorBase.set(0, totalHeight * 0.84, totalLength * 0.28);
 
           petRoot.add(model);
           petRoot.add(hatGroup);
+          updateHatPlacement();
 
           buildAccessory3D(state.hat);
           if (state.coat !== 'original') applyCoatToMeshes(state.coat);
 
-          showToast(`Compagnon 3D "${speciesName.replace('.glb', '')}" prêt !`);
+          showToast(`Modèle 3DS "${speciesName}" chargé avec succès !`);
         },
         () => {
-          showToast(`"${speciesName}" non trouvé → Chat 3DS activé`);
+          showToast(`"${speciesName}" introuvable dans Nintendogs and Cat/ → Chat Chibi activé`);
           const cat = createProceduralCat3DS();
           petRoot.add(cat);
           buildAccessory3D(state.hat);
@@ -1311,7 +1350,30 @@
       );
     }
 
-    // Sélectionne l'animation la plus calme et ajuste sa vitesse (timeScale) pour éviter l'effet de danse !
+    function updateHatPlacement() {
+      if (proceduralParts) {
+        hatGroup.position.set(0, 0.39 + (state.hatOffsetY || 0), (state.hatOffsetZ || 0));
+        return;
+      }
+      if (activeHeadTarget) {
+        const worldPos = new THREE.Vector3();
+        activeHeadTarget.getWorldPosition(worldPos);
+        petRoot.worldToLocal(worldPos);
+        // Place la couronne pile au sommet du crâne de l'os Head + ton offset personnalisé
+        hatGroup.position.set(
+          worldPos.x,
+          worldPos.y + 0.14 + (state.hatOffsetY || 0),
+          worldPos.z + 0.04 + (state.hatOffsetZ || 0)
+        );
+      } else {
+        hatGroup.position.set(
+          headAnchorBase.x,
+          headAnchorBase.y + (state.hatOffsetY || 0),
+          headAnchorBase.z + (state.hatOffsetZ || 0)
+        );
+      }
+    }
+
     function playGLBAnimation(keyword) {
       if (!mixer) return;
       const keys = Object.keys(animationsMap);
@@ -1319,43 +1381,26 @@
 
       let match = null;
       if (keyword === 'idle') {
-        // Priorise l'Idle exact (sans _2 ni hitreaction) pour que l'animal reste calme !
         match = keys.find((k) => k === 'idle') ||
                 keys.find((k) => k.startsWith('idle') && !k.includes('hit') && !k.includes('2')) ||
                 keys.find((k) => k.includes('idle'));
       } else if (keyword === 'walk') {
-        match = keys.find((k) => k === 'walk') || keys.find((k) => k.includes('walk')) || keys.find((k) => k.includes('run'));
+        match = keys.find((k) => k === 'walk') || keys.find((k) => k.includes('walk'));
       } else if (keyword === 'eat') {
-        match = keys.find((k) => k.includes('eat')) || keys.find((k) => k.includes('bite')) || keys.find((k) => k === 'idle');
+        match = keys.find((k) => k.includes('eat')) || keys.find((k) => k === 'idle');
       } else if (keyword === 'death') {
-        match = keys.find((k) => k.includes('death')) || keys.find((k) => k.includes('sleep')) || keys.find((k) => k === 'idle');
+        match = keys.find((k) => k.includes('death')) || keys.find((k) => k === 'idle');
       } else if (keyword === 'jump') {
-        match = keys.find((k) => k.includes('jump')) || keys.find((k) => k.includes('idle_2')) || keys.find((k) => k === 'idle');
+        match = keys.find((k) => k.includes('jump')) || keys.find((k) => k === 'idle');
       }
 
       if (!match) match = keys[0];
       const nextAction = animationsMap[match];
       if (!nextAction) return;
 
-      // Réglage de la vitesse et du bouclage pour un rendu naturel et doux
-      if (keyword === 'idle') {
-        nextAction.timeScale = 0.42; // Respiration très calme, plus aucune danse frénétique !
-        nextAction.setLoop(THREE.LoopRepeat);
-      } else if (keyword === 'walk') {
-        nextAction.timeScale = 0.78; // Pas de marche naturel
-        nextAction.setLoop(THREE.LoopRepeat);
-      } else if (keyword === 'death') {
-        nextAction.timeScale = 0.5;
-        nextAction.setLoop(THREE.LoopOnce);
-        nextAction.clampWhenFinished = true; // Reste couché pendant la sieste !
-      } else if (keyword === 'jump') {
-        nextAction.timeScale = 0.75;
-        nextAction.setLoop(THREE.LoopOnce);
-        nextAction.clampWhenFinished = false;
-      } else {
-        nextAction.timeScale = 0.65;
-        nextAction.setLoop(THREE.LoopRepeat);
-      }
+      nextAction.timeScale = keyword === 'idle' ? 0.4 : 0.72;
+      nextAction.setLoop(keyword === 'death' || keyword === 'jump' ? THREE.LoopOnce : THREE.LoopRepeat);
+      if (keyword === 'death') nextAction.clampWhenFinished = true;
 
       if (nextAction !== currentAction) {
         if (currentAction) currentAction.fadeOut(0.5);
@@ -1368,15 +1413,16 @@
       if (coatId === 'original' && !proceduralParts) {
         petBodyMeshes.forEach((mesh) => {
           if (mesh.userData.originalMat) {
-            mesh.material = mesh.userData.originalMat.clone();
-            mesh.material.needsUpdate = true;
+            mesh.material = Array.isArray(mesh.userData.originalMat)
+              ? mesh.userData.originalMat.map((m) => m.clone())
+              : mesh.userData.originalMat.clone();
           }
         });
         return;
       }
       const tex = generateCoatTexture(coatId === 'original' ? 'tuxedo' : coatId);
       petBodyMeshes.forEach((mesh) => {
-        if (mesh.material) {
+        if (mesh.material && !Array.isArray(mesh.material)) {
           mesh.material = mesh.material.clone();
           mesh.material.map = tex;
           mesh.material.color.setHex(0xffffff);
@@ -1386,23 +1432,23 @@
     }
 
     // ============================================================================
-    // 8. IA AUTONOME APAISÉE (PAUSE LONGUE AU REPOS + PROMENADES DOUCES)
+    // 8. IA AUTONOME DOUCE STYLE NINTENDOGS + CATS
     // ============================================================================
     const ai = {
-      mode: 'sit', // 'sit', 'idle', 'walk', 'eat', 'sleep', 'play', 'happy'
+      mode: 'sit',
       timer: 8,
       targetPos: new THREE.Vector3(0, 0, 0),
-      walkSpeed: 0.95 // Marche tranquille en intérieur
+      walkSpeed: 0.92
     };
 
     const moodTexts = {
-      sit: 'Est assis tranquillement et observe la pièce...',
-      idle: 'Profite du calme de son salon...',
-      walk: 'Flâne tranquillement entre les meubles...',
-      eat: 'Savoure ses croquettes près de la gamelle d\'eau !',
-      sleep: 'Dort paisiblement sur son coussin moelleux... Zzz',
-      play: 'Joue avec sa pelote de laine sur le tapis !',
-      happy: 'Ronronne de bonheur sous tes caresses ♥'
+      sit: 'Est posé calmement et te regarde avec curiosité...',
+      idle: 'Profite de la douceur du salon...',
+      walk: 'Trottine tranquillement sur le tapis...',
+      eat: 'Se régale à sa gamelle de croquettes !',
+      sleep: 'Fait un gros dodo sur son coussin... Zzz',
+      play: 'S\'amuse avec sa pelote de laine !',
+      happy: 'Ronronne et penche la tête sous tes caresses ♥'
     };
 
     function setAIMode(newMode, duration = 8) {
@@ -1430,8 +1476,7 @@
 
       const roll = Math.random();
       if (roll < 0.35) {
-        // Marche calmement vers un coin du salon puis s'assoit longuement
-        ai.targetPos.set((Math.random() - 0.5) * 3.8, 0, (Math.random() - 0.1) * 3.4);
+        ai.targetPos.set((Math.random() - 0.5) * 3.6, 0, (Math.random() - 0.1) * 3.2);
         setAIMode('walk', 6);
         ai.nextAfterWalk = 'sit';
       } else if (roll < 0.52) {
@@ -1443,13 +1488,12 @@
         setAIMode('walk', 5);
         ai.nextAfterWalk = 'eat';
       } else {
-        // Reste assis/posé calmement pendant 9 à 14 secondes
         setAIMode('sit', 9 + Math.random() * 5);
       }
     }
 
     // ============================================================================
-    // 9. INTERACTIONS BOUTONS & DÉCORATION DU SALON
+    // 9. INTERACTIONS, BOUTONS & RÉGLAGES FINS DE LA COURONNE
     // ============================================================================
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -1469,6 +1513,41 @@
       }
     });
 
+    // Boutons d'ajustement chirurgical de l'accessoire (Hauteur / Profondeur / Taille)
+    document.getElementById('adj-up').addEventListener('click', () => {
+      state.hatOffsetY = Number(((state.hatOffsetY || 0) + 0.04).toFixed(2));
+      updateHatPlacement();
+      saveState();
+      showToast(`Hauteur accessoire : ${state.hatOffsetY > 0 ? '+' : ''}${state.hatOffsetY}`);
+    });
+    document.getElementById('adj-down').addEventListener('click', () => {
+      state.hatOffsetY = Number(((state.hatOffsetY || 0) - 0.04).toFixed(2));
+      updateHatPlacement();
+      saveState();
+      showToast(`Hauteur accessoire : ${state.hatOffsetY}`);
+    });
+    document.getElementById('adj-fwd').addEventListener('click', () => {
+      state.hatOffsetZ = Number(((state.hatOffsetZ || 0) + 0.04).toFixed(2));
+      updateHatPlacement();
+      saveState();
+      showToast(`Avancée accessoire : ${state.hatOffsetZ > 0 ? '+' : ''}${state.hatOffsetZ}`);
+    });
+    document.getElementById('adj-back').addEventListener('click', () => {
+      state.hatOffsetZ = Number(((state.hatOffsetZ || 0) - 0.04).toFixed(2));
+      updateHatPlacement();
+      saveState();
+      showToast(`Avancée accessoire : ${state.hatOffsetZ}`);
+    });
+    document.getElementById('adj-scale').addEventListener('click', () => {
+      const scales = [0.65, 0.8, 1.0, 1.2, 1.4];
+      const cur = state.hatScaleMul || 1.0;
+      const nextIdx = (scales.indexOf(cur) + 1) % scales.length;
+      state.hatScaleMul = scales[nextIdx];
+      buildAccessory3D(state.hat);
+      saveState();
+      showToast(`Taille accessoire : x${state.hatScaleMul}`);
+    });
+
     function updateHUD() {
       document.getElementById('pet-name-display').textContent = state.name;
       document.getElementById('coins-display').textContent = `${state.coins} ★`;
@@ -1483,7 +1562,7 @@
     function petCompanion() {
       state.fun = Math.min(100, state.fun + 12);
       state.coins += 5;
-      setAIMode('happy', 2.2);
+      setAIMode('happy', 2.8);
       spawnParticles3D(0xff6b8b, 8);
       showToast(`Ronronnement de ${state.name} ♥ (+5 ★)`);
       updateHUD();
@@ -1506,8 +1585,7 @@
     function cycleRoomDecoration() {
       state.roomTheme = ((state.roomTheme || 0) + 1) % roomThemes.length;
       applyRoomTheme(state.roomTheme);
-      const tName = roomThemes[state.roomTheme].name;
-      showToast(`Décoration du salon : Thème ${tName} !`);
+      showToast(`Décoration : Thème ${roomThemes[state.roomTheme].name} !`);
       saveState();
     }
 
@@ -1529,7 +1607,7 @@
     document.getElementById('btn-wash').addEventListener('click', () => {
       state.hygiene = 100;
       state.fun = Math.min(100, state.fun + 8);
-      setAIMode('happy', 2.2);
+      setAIMode('happy', 2.5);
       spawnParticles3D(0x38bdf8, 10);
       showToast('Pelage tout doux et brillant !');
       updateHUD();
@@ -1570,7 +1648,7 @@
     selectCoat.addEventListener('change', (e) => {
       state.coat = e.target.value;
       applyCoatToMeshes(state.coat);
-      showToast(`Robe changée : ${selectCoat.options[selectCoat.selectedIndex].text}`);
+      showToast(`Robe : ${selectCoat.options[selectCoat.selectedIndex].text}`);
       saveState();
     });
 
@@ -1615,7 +1693,7 @@
         scene.background.setHex(0xdbeafe);
         scene.fog.color.setHex(0xdbeafe);
         skyMat.color.setHex(0x7dd3fc);
-        hemiLight.intensity = 0.95;
+        hemiLight.intensity = 1.0;
         sunLight.color.setHex(0xfffbeb);
         sunLight.intensity = 1.45;
         nightLampLight.intensity = 0;
@@ -1625,7 +1703,7 @@
         scene.background.setHex(0xfed7aa);
         scene.fog.color.setHex(0xfed7aa);
         skyMat.color.setHex(0xfb923c);
-        hemiLight.intensity = 0.7;
+        hemiLight.intensity = 0.75;
         sunLight.color.setHex(0xf97316);
         sunLight.intensity = 1.35;
         nightLampLight.intensity = 1.4;
@@ -1635,7 +1713,7 @@
         scene.background.setHex(0x1e1b4b);
         scene.fog.color.setHex(0x1e1b4b);
         skyMat.color.setHex(0x0f172a);
-        hemiLight.intensity = 0.32;
+        hemiLight.intensity = 0.35;
         sunLight.color.setHex(0x818cf8);
         sunLight.intensity = 0.38;
         nightLampLight.intensity = 2.8;
@@ -1659,29 +1737,20 @@
     });
 
     // ============================================================================
-    // 11. BOUCLE D'ANIMATION 60 FPS APAISÉE & NATURELLE
+    // 11. BOUCLE D'ANIMATION 60 FPS (AVEC ANIMATION DOUCE DU SQUELETTE NINTENDOGS)
     // ============================================================================
     const clock = new THREE.Clock();
-    const headWorldPos = new THREE.Vector3();
 
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
       const elapsed = clock.getElapsedTime();
 
-      // Rotation douce du ventilateur de plafond
-      ceilingFanGroup.rotation.y += dt * 1.1;
+      ceilingFanGroup.rotation.y += dt * 1.0;
 
-      if (mixer) {
-        mixer.update(dt);
-        if (activeHeadTarget) {
-          activeHeadTarget.getWorldPosition(headWorldPos);
-          petRoot.worldToLocal(headWorldPos);
-          // Lissage (lerp) de la position de la couronne pour qu'elle ne tremble pas
-          hatGroup.position.lerp(new THREE.Vector3(headWorldPos.x, headWorldPos.y + 0.18, headWorldPos.z), 0.25);
-        }
-      }
+      if (mixer) mixer.update(dt);
 
+      // Déplacement autonome
       ai.timer -= dt;
       if (ai.mode === 'walk') {
         const dir = new THREE.Vector3().subVectors(ai.targetPos, petRoot.position);
@@ -1705,12 +1774,61 @@
 
       if (ai.timer <= 0) chooseNextAutonomousBehavior();
 
-      // Animation calme et réaliste du Chat 3DS intégré (sans oscillation constante !)
+      // A. Animation procédurale des vrais modèles Nintendogs + Cats (.dae) via leurs Os !
+      if (daeRig && !mixer) {
+        const { model, bones, basePosY } = daeRig;
+
+        if (elapsed > nextHeadLookChange) {
+          headLookTargetY = (Math.random() - 0.5) * 0.35;
+          headTiltTargetZ = (Math.random() - 0.5) * 0.18; // Petite inclinaison mignonne façon Nintendogs
+          nextHeadLookChange = elapsed + 4.5 + Math.random() * 4;
+        }
+
+        // 1. Tête & Cou vivants mais très doux
+        if (bones.head) {
+          const init = bones.head.userData.initRot;
+          const nodX = ai.mode === 'eat' ? Math.sin(elapsed * 7) * 0.25 + 0.35 : (ai.mode === 'sleep' ? 0.3 : Math.sin(elapsed * 1.5) * 0.03);
+          const turnY = ai.mode === 'walk' ? 0 : headLookTargetY;
+          const tiltZ = ai.mode === 'happy' ? Math.sin(elapsed * 5) * 0.18 : headTiltTargetZ;
+
+          bones.head.rotation.x = THREE.MathUtils.lerp(bones.head.rotation.x, init.x + nodX, 0.06);
+          bones.head.rotation.y = THREE.MathUtils.lerp(bones.head.rotation.y, init.y + turnY, 0.05);
+          bones.head.rotation.z = THREE.MathUtils.lerp(bones.head.rotation.z, init.z + tiltZ, 0.05);
+        }
+
+        // 2. Balancement souple de la queue
+        bones.tails.forEach((tBone, idx) => {
+          const init = tBone.userData.initRot;
+          const speed = ai.mode === 'happy' ? 6.0 : 1.8;
+          const amp = ai.mode === 'sleep' ? 0.02 : (ai.mode === 'happy' ? 0.25 : 0.09);
+          tBone.rotation.z = init.z + Math.sin(elapsed * speed - idx * 0.5) * amp;
+        });
+
+        // 3. Pattes & Respiration du corps
+        if (ai.mode === 'walk') {
+          const w = elapsed * 7.0;
+          bones.legsFL.forEach((b) => (b.rotation.z = b.userData.initRot.z + Math.sin(w) * 0.32));
+          bones.legsBR.forEach((b) => (b.rotation.z = b.userData.initRot.z + Math.sin(w) * 0.32));
+          bones.legsFR.forEach((b) => (b.rotation.z = b.userData.initRot.z - Math.sin(w) * 0.32));
+          bones.legsBL.forEach((b) => (b.rotation.z = b.userData.initRot.z - Math.sin(w) * 0.32));
+          model.position.y = basePosY + Math.abs(Math.sin(w)) * 0.025;
+        } else {
+          // Retour doux des pattes au repos
+          [...bones.legsFL, ...bones.legsFR, ...bones.legsBL, ...bones.legsBR].forEach((b) => {
+            b.rotation.z = THREE.MathUtils.lerp(b.rotation.z, b.userData.initRot.z, 0.1);
+          });
+          // Respiration très douce
+          model.position.y = basePosY + Math.sin(elapsed * 1.6) * 0.006;
+        }
+      }
+
+      // Mise à jour continue de la couronne / accessoire sur la tête
+      updateHatPlacement();
+
+      // B. Animation du Chat Chibi de secours
       if (proceduralParts) {
         const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
-
         if (ai.mode === 'walk') {
-          // Marche souple
           body.rotation.x = Math.PI / 2;
           legs[0].rotation.x = Math.sin(elapsed * 7.5) * 0.4;
           legs[1].rotation.x = -Math.sin(elapsed * 7.5) * 0.4;
@@ -1718,63 +1836,18 @@
           legs[3].rotation.x = Math.sin(elapsed * 7.5) * 0.4;
           body.position.y = 0.48 + Math.abs(Math.sin(elapsed * 7.5)) * 0.025;
           headGroup.position.set(0, 0.86, 0.35);
-          headGroup.rotation.set(0, 0, 0);
-          tailPivot.rotation.z = Math.sin(elapsed * 4) * 0.2;
-          eyesGroup.scale.y = 1;
-        } else if (ai.mode === 'sleep') {
-          // Roulé en boule, immobile à part une très lente respiration
-          body.rotation.x = Math.PI / 2;
-          body.position.y = 0.25 + Math.sin(elapsed * 1.4) * 0.01;
-          headGroup.position.set(0, 0.45, 0.32);
-          headGroup.rotation.set(0.28, 0.2, 0);
-          eyesGroup.scale.y = 0.08;
-          tailPivot.rotation.z = 0;
-          legs.forEach((l) => (l.rotation.x = Math.PI / 2.2));
-        } else if (ai.mode === 'eat') {
-          // Penche la tête vers la gamelle
-          body.rotation.x = Math.PI / 2 + 0.15;
-          body.position.y = 0.44;
-          headGroup.position.set(0, 0.62 + Math.sin(elapsed * 8) * 0.03, 0.4);
-          headGroup.rotation.set(0.45, 0, 0);
-          legs.forEach((l) => (l.rotation.x = 0));
-          eyesGroup.scale.y = 0.2;
-        } else if (ai.mode === 'happy') {
-          // Ronronnement doux sur place (sans sauter dans tous les sens)
-          body.rotation.x = Math.PI / 2 - 0.25;
-          body.position.y = 0.42;
-          headGroup.position.set(0, 0.84, 0.32);
-          headGroup.rotation.z = Math.sin(elapsed * 4) * 0.08;
-          eyesGroup.scale.y = 0.2;
         } else {
-          // ÉTAT ASSIS / REPOS CALME (80% du temps) : Posture assise féline naturelle !
-          body.rotation.x = Math.PI / 2 - 0.32; // Arrière-train posé au sol
-          body.position.y = 0.41 + Math.sin(elapsed * 1.5) * 0.006; // Respiration quasi imperceptible
+          body.rotation.x = Math.PI / 2 - 0.32;
+          body.position.y = 0.41 + Math.sin(elapsed * 1.5) * 0.006;
           headGroup.position.set(0, 0.85, 0.28);
-
-          // Pattes avant droites, pattes arrière repliées
-          legs[0].rotation.x = 0;
-          legs[1].rotation.x = 0;
-          legs[2].rotation.x = -Math.PI / 2.5;
-          legs[3].rotation.x = -Math.PI / 2.5;
-
-          // Change la direction du regard seulement toutes les 5 à 8 secondes, puis reste fixe !
-          if (elapsed > nextHeadLookChange) {
-            headLookTargetY = (Math.random() - 0.5) * 0.55;
-            nextHeadLookChange = elapsed + 5 + Math.random() * 4;
-          }
-          headGroup.rotation.y = THREE.MathUtils.lerp(headGroup.rotation.y, headLookTargetY, 0.04);
-          headGroup.rotation.x = THREE.MathUtils.lerp(headGroup.rotation.x, 0, 0.05);
-          headGroup.rotation.z = THREE.MathUtils.lerp(headGroup.rotation.z, 0, 0.05);
-
-          // Queue posée qui ne bouge doucement que par intermittence
-          const tailWave = Math.sin(elapsed * 0.8) > 0.5 ? Math.sin(elapsed * 2.2) * 0.15 : 0;
-          tailPivot.rotation.z = THREE.MathUtils.lerp(tailPivot.rotation.z, tailWave, 0.05);
-
-          // Clignement naturel des yeux
+          legs[0].rotation.x = legs[1].rotation.x = 0;
+          legs[2].rotation.x = legs[3].rotation.x = -Math.PI / 2.5;
+          tailPivot.rotation.z = Math.sin(elapsed * 1.5) * 0.12;
           eyesGroup.scale.y = (Math.sin(elapsed * 1.4) > 0.97) ? 0.08 : 1;
         }
       }
 
+      // Pelote de laine
       if (yarnVelocity.lengthSq() > 0.001) {
         yarnBall.position.addScaledVector(yarnVelocity, dt);
         yarnBall.rotation.x += yarnVelocity.z * dt * 3;
@@ -1784,10 +1857,10 @@
         if (yarnBall.position.z > 2.6 || yarnBall.position.z < -2.0) yarnVelocity.z *= -0.8;
       }
 
+      // Poussière & Cœurs
       const posArr = dustGeo.attributes.position.array;
       for (let i = 0; i < dustCount; i++) {
         posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.001;
-        posArr[i * 3] += Math.cos(elapsed * 0.5 + i) * 0.0008;
       }
       dustGeo.attributes.position.needsUpdate = true;
 
