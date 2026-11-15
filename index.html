@@ -51,7 +51,7 @@
     /* ÉCRAN SUPÉRIEUR 3D */
     #top-screen-frame {
       position: relative;
-      flex: 7.2;
+      flex: 7.0;
       background: #000;
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -155,35 +155,43 @@
       box-shadow: 0 0 8px #6ee7b7;
     }
 
-    /* ÉCRAN INFÉRIEUR EN MODE STANDBY / CALIBRAGE D'IMPORTATION */
+    /* ÉCRAN INFÉRIEUR : CONTRÔLE DES 3 AXES DE ROTATION X / Y / Z */
     #bottom-screen-frame {
       position: relative;
       z-index: 40;
-      flex: 2.8;
+      flex: 3.0;
       background: var(--ui-bg);
       border-radius: 18px;
       border: 4px solid #3c425c;
-      padding: 12px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .standby-banner {
       background: var(--ui-card);
       border: 1.5px solid var(--ui-border);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 12px;
+      border-radius: 11px;
+      padding: 7px 10px;
+      font-size: 11.5px;
       color: var(--text-main);
-      line-height: 1.4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .import-controls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 6px;
+    }
+
+    .import-controls-row2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
     }
 
     .btn-3ds {
@@ -191,12 +199,12 @@
       border: 2px solid #dfd3c3;
       border-bottom-width: 4px;
       border-radius: 12px;
-      padding: 10px 6px;
+      padding: 7px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 2px;
       cursor: pointer;
       color: var(--text-main);
       font-weight: 700;
@@ -260,7 +268,7 @@
       <div id="toast">Chargement...</div>
 
       <div id="hud-bottom-controls">
-        <div id="pet-mood-bubble">Recherche de MorgnaCat.dae...</div>
+        <div id="pet-mood-bubble">Chargement de MorgnaCat.dae...</div>
         <div class="top-overlay-btns">
           <button type="button" class="overlay-btn" id="btn-deco-top">🎨 Déco : Pastel</button>
           <button type="button" class="overlay-btn" id="camera-hint">☀️ Lumière : Auto</button>
@@ -272,20 +280,33 @@
 
     <div id="hinge"><div class="hinge-led"></div></div>
 
-    <!-- ÉCRAN DU BAS : OUTILS D'INSPECTION DU MODÈLE IMPORTÉ (OPTIONS EN STANDBY) -->
+    <!-- ÉCRAN DU BAS : RÉGLAGE DES 3 AXES DE ROTATION (X, Y, Z) -->
     <div id="bottom-screen-frame">
       <div class="standby-banner">
-        <strong>Mode Test d'Importation 3D (Options & Animations en standby)</strong><br/>
-        Modèle unique : <code>MorgnaCat.dae</code> • Texture : <code>c0003_t01_cat_low.png</code>
+        <span><strong>Calibrage Orientation 3D</strong> (Sauvegardé auto)</span>
+        <code id="angles-readout" style="background:#f3ece1;padding:2px 7px;border-radius:6px;font-weight:700;">X:0° Y:0° Z:90°</code>
       </div>
 
+      <!-- Ligne 1 : Les 3 axes de rotation indépendants -->
       <div class="import-controls">
-        <button type="button" class="btn-3ds" id="btn-rot-x">
-          <span>🔄 Pivoter Axe X</span>
-          <small id="label-rot-x" style="font-weight:500;font-size:10px;">Auto (4 pattes)</small>
+        <button type="button" class="btn-3ds" id="btn-rot-z" style="border-color:#ff85a2;">
+          <span>🔄 Roulis (Axe Z)</span>
+          <small id="label-rot-z" style="font-weight:600;font-size:10px;color:#db2777;">Redresser flanc : 90°</small>
         </button>
+        <button type="button" class="btn-3ds" id="btn-rot-x">
+          <span>🔄 Tangage (Axe X)</span>
+          <small id="label-rot-x" style="font-weight:500;font-size:10px;">Avant/Arrière : 0°</small>
+        </button>
+        <button type="button" class="btn-3ds" id="btn-rot-y">
+          <span>🔄 Direction (Axe Y)</span>
+          <small id="label-rot-y" style="font-weight:500;font-size:10px;">Gauche/Droite : 0°</small>
+        </button>
+      </div>
+
+      <!-- Ligne 2 : Sens UV Texture et Taille -->
+      <div class="import-controls-row2">
         <button type="button" class="btn-3ds" id="btn-flip-uv">
-          <span>🎨 Sens Texture UV</span>
+          <span>🎨 Sens Texture UV (FlipY)</span>
           <small id="label-uv" style="font-weight:500;font-size:10px;">FlipY : Standard</small>
         </button>
         <button type="button" class="btn-3ds" id="btn-scale">
@@ -302,15 +323,22 @@
     import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
 
     // ============================================================================
-    // 1. ÉTAT D'IMPORTATION
+    // 1. ÉTAT D'IMPORTATION (AVEC ROTATION Z = 90° PAR DÉFAUT POUR REDRESSER DU FLANC DROIT)
     // ============================================================================
-    const state = {
+    const defaultState = {
       lightingMode: 'auto',
       roomTheme: 0,
-      rotXIndex: 0,    // Permet de pivoter de 90° si besoin
-      flipY: true,     // Sens vertical de la texture PNG
-      scaleMul: 1.0    // Taille du chat dans la pièce
+      rotXDeg: 0,
+      rotYDeg: 0,
+      rotZDeg: 90,   // +90° sur Z pour redresser le chat qui était couché sur le flanc droit !
+      flipY: true,
+      scaleMul: 1.0
     };
+
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('morgana_orient_v1') || '{}'));
+    function saveState() {
+      localStorage.setItem('morgana_orient_v1', JSON.stringify(state));
+    }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -659,18 +687,19 @@
     roomGroup.add(bowlGroup);
 
     // ============================================================================
-    // 5. IMPORTATION PURE ET EXCLUSIVE DE MORGANA (MorgnaCat.dae + c0003_t01_cat_low.png)
+    // 5. IMPORTATION ET ORIENTATION 3 AXES (X, Y, Z) DE MORGANA
     // ============================================================================
     const petRoot = new THREE.Group();
-    petRoot.position.set(0, 0, 0.2); // Posé au centre du tapis
+    petRoot.position.set(0, 0, 0.2);
     scene.add(petRoot);
 
     const colladaLoader = new ColladaLoader();
-    let morganaWrapper = null;
+    let morganaPivot = null; // Groupe qui porte la rotation (X, Y, Z)
+    let morganaModel = null; // Scène Collada brute (dont on remet la rotation interne à 0)
     let morganaTexture = null;
     let morganaRawImg = null;
 
-    // Calcule la boîte englobante exacte en tenant compte du SkinnedMesh
+    // Calcule la boîte englobante en tenant compte des os du SkinnedMesh
     function computeExactBox(root) {
       root.updateMatrixWorld(true);
       const box = new THREE.Box3();
@@ -679,6 +708,9 @@
       root.traverse((child) => {
         if (child.isMesh && child.geometry && child.geometry.attributes.position) {
           child.frustumCulled = false;
+          if (child.isSkinnedMesh && child.skeleton) {
+            try { child.skeleton.update(); } catch (_) {}
+          }
           const pos = child.geometry.attributes.position;
           const step = Math.max(1, Math.floor(pos.count / 500));
           for (let i = 0; i < pos.count; i += step) {
@@ -698,7 +730,6 @@
       return box;
     }
 
-    // Crée la texture Three.js 100% opaque à partir de c0003_t01_cat_low.png
     function buildMorganaTexture(img, flipY) {
       const canvas = document.createElement('canvas');
       canvas.width = img.width || 512;
@@ -713,7 +744,6 @@
       ctx.drawImage(img, 0, 0);
       ctx.restore();
 
-      // Force l'opacité Alpha à 255 pour éviter tout problème de transparence
       try {
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const d = imgData.data;
@@ -755,50 +785,55 @@
       });
     }
 
-    function placeAndScaleMorgana() {
-      if (!morganaWrapper) return;
+    // Applique les 3 angles (X, Y, Z) et pose les pattes pile sur le tapis
+    function updateMorganaOrientationAndScale() {
+      if (!morganaPivot || !morganaModel) return;
 
-      morganaWrapper.position.set(0, 0, 0);
-      morganaWrapper.rotation.set(0, 0, 0);
-      morganaWrapper.scale.setScalar(1);
+      // 1. Remet tout à plat avant de calculer
+      morganaPivot.position.set(0, 0, 0);
+      morganaPivot.scale.setScalar(1);
 
-      const rotations = [0, Math.PI / 2, -Math.PI / 2, Math.PI];
-      if (state.rotXIndex === 0) {
-        // Détection automatique : si la hauteur dépasse nettement la longueur, on le bascule à plat
-        const b0 = computeExactBox(morganaWrapper);
-        const s0 = new THREE.Vector3();
-        b0.getSize(s0);
-        if (s0.y > s0.z * 1.35) {
-          morganaWrapper.rotation.x = Math.PI / 2;
-        }
-      } else {
-        morganaWrapper.rotation.x = rotations[state.rotXIndex % rotations.length];
-      }
+      // Applique les 3 angles choisis (en degrés -> radians)
+      morganaPivot.rotation.set(
+        THREE.MathUtils.degToRad(state.rotXDeg),
+        THREE.MathUtils.degToRad(state.rotYDeg),
+        THREE.MathUtils.degToRad(state.rotZDeg)
+      );
 
-      const rawBox = computeExactBox(morganaWrapper);
+      // 2. Mesure la taille et met à l'échelle
+      const rawBox = computeExactBox(morganaPivot);
       const size = new THREE.Vector3();
       rawBox.getSize(size);
       let maxDim = Math.max(size.x, size.y, size.z);
       if (!isFinite(maxDim) || maxDim <= 0.0001) maxDim = 1;
 
       const targetSize = 1.15 * state.scaleMul;
-      morganaWrapper.scale.setScalar(targetSize / maxDim);
+      morganaPivot.scale.setScalar(targetSize / maxDim);
 
-      const finalBox = computeExactBox(morganaWrapper);
+      // 3. Recalcule la boîte après mise à l'échelle pour centrer X/Z et poser le bas (min.y) sur le tapis (y = 0.02)
+      const finalBox = computeExactBox(morganaPivot);
       const center = new THREE.Vector3();
       finalBox.getCenter(center);
 
-      // Centre le modèle sur X/Z et pose ses pattes pile sur le tapis (y = 0.02)
-      morganaWrapper.position.x -= center.x;
-      morganaWrapper.position.z -= center.z;
-      morganaWrapper.position.y += (0.02 - finalBox.min.y);
+      morganaPivot.position.x -= center.x;
+      morganaPivot.position.z -= center.z;
+      morganaPivot.position.y += (0.02 - finalBox.min.y);
+
+      // Met à jour l'affichage des angles dans l'interface
+      document.getElementById('angles-readout').textContent =
+        `X:${state.rotXDeg}° Y:${state.rotYDeg}° Z:${state.rotZDeg}°`;
+      document.getElementById('label-rot-z').textContent = `Redresser flanc : ${state.rotZDeg}°`;
+      document.getElementById('label-rot-x').textContent = `Avant/Arrière : ${state.rotXDeg}°`;
+      document.getElementById('label-rot-y').textContent = `Gauche/Droite : ${state.rotYDeg}°`;
+      document.getElementById('label-uv').textContent = state.flipY ? 'FlipY : Standard' : 'FlipY : Inversé';
+      document.getElementById('label-scale').textContent = `Taille : ${state.scaleMul}x`;
     }
 
     function applyTextureToMorganaMeshes() {
-      if (!morganaWrapper || !morganaRawImg) return;
+      if (!morganaPivot || !morganaRawImg) return;
       morganaTexture = buildMorganaTexture(morganaRawImg, state.flipY);
 
-      morganaWrapper.traverse((child) => {
+      morganaPivot.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
             map: morganaTexture,
@@ -838,13 +873,12 @@
           async (collada) => {
             while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
 
-            const model = collada.scene;
-            morganaWrapper = new THREE.Group();
-            morganaWrapper.add(model);
+            morganaModel = collada.scene;
+            morganaPivot = new THREE.Group();
+            morganaPivot.add(morganaModel);
 
-            // Supprime toutes les lignes d'armature ou aides visuelles Collada
             const linesToRemove = [];
-            model.traverse((child) => {
+            morganaModel.traverse((child) => {
               if (child.isLine || child.isLineSegments || child.type === 'Line' || child.type === 'LineSegments') {
                 linesToRemove.push(child);
               } else if (child.isMesh) {
@@ -855,18 +889,17 @@
             });
             linesToRemove.forEach((l) => { if (l.parent) l.parent.remove(l); });
 
-            // Charge la texture c0003_t01_cat_low.png
             morganaRawImg = await loadMorganaTexturePNG(baseFolder);
             if (morganaRawImg) {
               applyTextureToMorganaMeshes();
             }
 
-            petRoot.add(morganaWrapper);
-            placeAndScaleMorgana();
+            petRoot.add(morganaPivot);
+            updateMorganaOrientationAndScale();
 
             document.getElementById('pet-mood-bubble').textContent =
-              `Modèle importé avec succès depuis "${path}" !`;
-            showToast('Morgana (MorgnaCat.dae) importé !');
+              `Morgana importé ! Utilise Roulis (Z) ou Tangage (X) s'il faut ajuster sa posture.`;
+            showToast('Morgana redressé !');
           },
           undefined,
           () => tryNextDAE()
@@ -877,36 +910,50 @@
     }
 
     // ============================================================================
-    // 6. BOUTONS D'INSPECTION DE L'IMPORTATION & AMBIANCE
+    // 6. BOUTONS DES 3 AXES DE ROTATION (Z = FLANC, X = AVANT/ARRIÈRE, Y = DIRECTION)
     // ============================================================================
+    document.getElementById('btn-rot-z').addEventListener('click', () => {
+      state.rotZDeg = (state.rotZDeg + 90) % 360;
+      updateMorganaOrientationAndScale();
+      saveState();
+      showToast(`Roulis (Axe Z) : ${state.rotZDeg}°`);
+    });
+
     document.getElementById('btn-rot-x').addEventListener('click', () => {
-      state.rotXIndex = (state.rotXIndex + 1) % 4;
-      placeAndScaleMorgana();
-      const labels = ['Auto (4 pattes)', 'Rotation : +90°', 'Rotation : -90°', 'Rotation : 180°'];
-      document.getElementById('label-rot-x').textContent = labels[state.rotXIndex];
-      showToast(labels[state.rotXIndex]);
+      state.rotXDeg = (state.rotXDeg + 90) % 360;
+      updateMorganaOrientationAndScale();
+      saveState();
+      showToast(`Tangage (Axe X) : ${state.rotXDeg}°`);
+    });
+
+    document.getElementById('btn-rot-y').addEventListener('click', () => {
+      state.rotYDeg = (state.rotYDeg + 90) % 360;
+      updateMorganaOrientationAndScale();
+      saveState();
+      showToast(`Direction (Axe Y) : ${state.rotYDeg}°`);
     });
 
     document.getElementById('btn-flip-uv').addEventListener('click', () => {
       state.flipY = !state.flipY;
       applyTextureToMorganaMeshes();
-      const txt = state.flipY ? 'FlipY : Standard' : 'FlipY : Inversé';
-      document.getElementById('label-uv').textContent = txt;
-      showToast(`Texture c0003_t01_cat_low.png → ${txt}`);
+      updateMorganaOrientationAndScale();
+      saveState();
+      showToast(state.flipY ? 'FlipY : Standard' : 'FlipY : Inversé');
     });
 
     document.getElementById('btn-scale').addEventListener('click', () => {
       const scales = [0.75, 1.0, 1.3, 1.6];
       const next = (scales.indexOf(state.scaleMul) + 1) % scales.length;
       state.scaleMul = scales[next];
-      placeAndScaleMorgana();
-      document.getElementById('label-scale').textContent = `Taille : ${state.scaleMul}x`;
-      showToast(`Taille du chat : ${state.scaleMul}x`);
+      updateMorganaOrientationAndScale();
+      saveState();
+      showToast(`Taille : ${state.scaleMul}x`);
     });
 
     document.getElementById('btn-deco-top').addEventListener('click', () => {
       state.roomTheme = (state.roomTheme + 1) % roomThemes.length;
       applyRoomTheme(state.roomTheme);
+      saveState();
       showToast(`Déco : ${roomThemes[state.roomTheme].name}`);
     });
 
@@ -972,10 +1019,11 @@
       };
       cameraHintBtn.textContent = labels[state.lightingMode];
       applyEnvironmentLighting();
+      saveState();
     });
 
     // ============================================================================
-    // 7. BOUCLE DE RENDU STATIQUE (SANS AUCUNE ANIMATION SUR LE CHAT)
+    // 7. BOUCLE DE RENDU STATIQUE
     // ============================================================================
     const clock = new THREE.Clock();
 
@@ -995,7 +1043,7 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    applyRoomTheme(0);
+    applyRoomTheme(state.roomTheme || 0);
     applyEnvironmentLighting();
     importMorganaCat();
     animate();
