@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Neko 3DS — Test Importation Morgana</title>
+  <title>Neko 3DS — Morgana (Calibré X:180° Z:90°)</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
@@ -51,7 +51,7 @@
     /* ÉCRAN SUPÉRIEUR 3D */
     #top-screen-frame {
       position: relative;
-      flex: 7.0;
+      flex: 6.8;
       background: #000;
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -116,6 +116,7 @@
       font-weight: 600;
       color: var(--text-main);
       box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      max-width: 58%;
     }
 
     .top-overlay-btns {
@@ -155,11 +156,11 @@
       box-shadow: 0 0 8px #6ee7b7;
     }
 
-    /* ÉCRAN INFÉRIEUR : CONTRÔLE DES 3 AXES DE ROTATION X / Y / Z */
+    /* ÉCRAN INFÉRIEUR : CONTRÔLE DE POSE & DIAGNOSTIC SQUELETTE */
     #bottom-screen-frame {
       position: relative;
       z-index: 40;
-      flex: 3.0;
+      flex: 3.2;
       background: var(--ui-bg);
       border-radius: 18px;
       border: 4px solid #3c425c;
@@ -174,23 +175,37 @@
       background: var(--ui-card);
       border: 1.5px solid var(--ui-border);
       border-radius: 11px;
-      padding: 7px 10px;
-      font-size: 11.5px;
+      padding: 6px 10px;
+      font-size: 11px;
       color: var(--text-main);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
+    #bones-log {
+      background: #f5efe6;
+      border: 1px solid #dfd3c3;
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-family: monospace;
+      font-size: 10.5px;
+      color: #4a3f35;
+      max-height: 44px;
+      overflow-y: auto;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
     .import-controls {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
     }
 
     .import-controls-row2 {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
     }
 
@@ -198,8 +213,8 @@
       background: linear-gradient(180deg, #ffffff 0%, #f5efe6 100%);
       border: 2px solid #dfd3c3;
       border-bottom-width: 4px;
-      border-radius: 12px;
-      padding: 7px 4px;
+      border-radius: 11px;
+      padding: 6px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -208,8 +223,13 @@
       cursor: pointer;
       color: var(--text-main);
       font-weight: 700;
-      font-size: 11px;
+      font-size: 10.5px;
       touch-action: manipulation;
+    }
+
+    .btn-3ds.active-test {
+      border-color: #ff85a2;
+      background: #fff0f4;
     }
 
     .btn-3ds:active {
@@ -257,7 +277,7 @@
     <div id="top-screen-frame">
       <div id="hud-top">
         <div class="hud-pill">
-          <span>Morgana (MorgnaCat.dae)</span>
+          <span>🐱 Morgana — Calibré (X:180° Z:90°)</span>
         </div>
         <div class="hud-pill">
           <span id="day-phase-dot" style="width:9px;height:9px;border-radius:50%;background:#fbbf24;display:inline-block;"></span>
@@ -265,10 +285,10 @@
         </div>
       </div>
 
-      <div id="toast">Chargement...</div>
+      <div id="toast">Prêt !</div>
 
       <div id="hud-bottom-controls">
-        <div id="pet-mood-bubble">Chargement de MorgnaCat.dae...</div>
+        <div id="pet-mood-bubble">Importation de MorgnaCat.dae (X:180° Z:90°)...</div>
         <div class="top-overlay-btns">
           <button type="button" class="overlay-btn" id="btn-deco-top">🎨 Déco : Pastel</button>
           <button type="button" class="overlay-btn" id="camera-hint">☀️ Lumière : Auto</button>
@@ -280,38 +300,48 @@
 
     <div id="hinge"><div class="hinge-led"></div></div>
 
-    <!-- ÉCRAN DU BAS : RÉGLAGE DES 3 AXES DE ROTATION (X, Y, Z) -->
+    <!-- ÉCRAN DU BAS : ORIENTATION VERROUILLÉE + TEST DOUX DU SQUELETTE -->
     <div id="bottom-screen-frame">
       <div class="standby-banner">
-        <span><strong>Calibrage Orientation 3D</strong> (Sauvegardé auto)</span>
-        <code id="angles-readout" style="background:#f3ece1;padding:2px 7px;border-radius:6px;font-weight:700;">X:0° Y:0° Z:90°</code>
+        <span><strong>Orientation verrouillée :</strong> <code>X:180° Z:90°</code></span>
+        <span id="yaw-readout" style="font-weight:700;color:#db2777;">Direction Y : 0°</span>
       </div>
 
-      <!-- Ligne 1 : Les 3 axes de rotation indépendants -->
+      <div id="bones-log">Analyse des os de MorgnaCat.dae en cours...</div>
+
+      <!-- Ligne 1 : Test d'animation douce étape par étape (désactivé par défaut) -->
       <div class="import-controls">
-        <button type="button" class="btn-3ds" id="btn-rot-z" style="border-color:#ff85a2;">
-          <span>🔄 Roulis (Axe Z)</span>
-          <small id="label-rot-z" style="font-weight:600;font-size:10px;color:#db2777;">Redresser flanc : 90°</small>
+        <button type="button" class="btn-3ds active-test" id="btn-test-none">
+          <span>⏸️ Statique</span>
+          <small style="font-weight:500;font-size:9.5px;">Aucun mouvement</small>
         </button>
-        <button type="button" class="btn-3ds" id="btn-rot-x">
-          <span>🔄 Tangage (Axe X)</span>
-          <small id="label-rot-x" style="font-weight:500;font-size:10px;">Avant/Arrière : 0°</small>
+        <button type="button" class="btn-3ds" id="btn-test-breathe">
+          <span>💨 Respiration</span>
+          <small style="font-weight:500;font-size:9.5px;">Repos doux</small>
         </button>
-        <button type="button" class="btn-3ds" id="btn-rot-y">
-          <span>🔄 Direction (Axe Y)</span>
-          <small id="label-rot-y" style="font-weight:500;font-size:10px;">Gauche/Droite : 0°</small>
+        <button type="button" class="btn-3ds" id="btn-test-head">
+          <span>🐱 Tête & Queue</span>
+          <small style="font-weight:500;font-size:9.5px;">Test des os</small>
+        </button>
+        <button type="button" class="btn-3ds" id="btn-test-walk">
+          <span>🐾 Marche</span>
+          <small style="font-weight:500;font-size:9.5px;">Sur place</small>
         </button>
       </div>
 
-      <!-- Ligne 2 : Sens UV Texture et Taille -->
+      <!-- Ligne 2 : Réglage direction Y, Texture FlipY et Taille -->
       <div class="import-controls-row2">
+        <button type="button" class="btn-3ds" id="btn-rot-y">
+          <span>🔄 Tourner (Axe Y)</span>
+          <small id="label-rot-y" style="font-weight:500;font-size:9.5px;">Face caméra : 0°</small>
+        </button>
         <button type="button" class="btn-3ds" id="btn-flip-uv">
-          <span>🎨 Sens Texture UV (FlipY)</span>
-          <small id="label-uv" style="font-weight:500;font-size:10px;">FlipY : Standard</small>
+          <span>🎨 Sens Texture UV</span>
+          <small id="label-uv" style="font-weight:500;font-size:9.5px;">FlipY : Standard</small>
         </button>
         <button type="button" class="btn-3ds" id="btn-scale">
           <span>📏 Taille du Chat</span>
-          <small id="label-scale" style="font-weight:500;font-size:10px;">Taille : 1.0x</small>
+          <small id="label-scale" style="font-weight:500;font-size:9.5px;">Taille : 1.0x</small>
         </button>
       </div>
     </div>
@@ -323,29 +353,25 @@
     import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
 
     // ============================================================================
-    // 1. ÉTAT D'IMPORTATION (AVEC ROTATION Z = 90° PAR DÉFAUT POUR REDRESSER DU FLANC DROIT)
+    // 1. ÉTAT VERROUILLÉ AVEC TES VALEURS EXACTES : X = 180°, Z = 90°
     // ============================================================================
-    const defaultState = {
+    const state = {
       lightingMode: 'auto',
       roomTheme: 0,
-      rotXDeg: 0,
+      rotXDeg: 180,  // Verrouillé selon ton calibrage !
       rotYDeg: 0,
-      rotZDeg: 90,   // +90° sur Z pour redresser le chat qui était couché sur le flanc droit !
+      rotZDeg: 90,   // Verrouillé selon ton calibrage !
       flipY: true,
-      scaleMul: 1.0
+      scaleMul: 1.0,
+      testAnimMode: 'none' // 'none' (100% statique par défaut), 'breathe', 'head', 'walk'
     };
-
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('morgana_orient_v1') || '{}'));
-    function saveState() {
-      localStorage.setItem('morgana_orient_v1', JSON.stringify(state));
-    }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
       clearTimeout(t._tid);
-      t._tid = setTimeout(() => t.classList.remove('show'), 2600);
+      t._tid = setTimeout(() => t.classList.remove('show'), 2500);
     }
 
     // ============================================================================
@@ -357,7 +383,7 @@
     scene.fog = new THREE.FogExp2(0xdbeafe, 0.016);
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(2.2, 3.2, 5.8);
+    camera.position.set(2.0, 2.8, 5.2);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -369,11 +395,11 @@
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0.65, 0.2);
+    controls.target.set(0, 0.6, 0.2);
     controls.enablePan = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
-    controls.minDistance = 1.8;
+    controls.minDistance = 1.6;
     controls.maxDistance = 15.0;
     controls.minPolarAngle = Math.PI / 7;
     controls.maxPolarAngle = Math.PI / 2.22;
@@ -687,19 +713,18 @@
     roomGroup.add(bowlGroup);
 
     // ============================================================================
-    // 5. IMPORTATION ET ORIENTATION 3 AXES (X, Y, Z) DE MORGANA
+    // 5. IMPORTATION CALIBRÉE DE MORGANA (X: 180°, Z: 90°) + SCANNEUR D'OS
     // ============================================================================
     const petRoot = new THREE.Group();
     petRoot.position.set(0, 0, 0.2);
     scene.add(petRoot);
 
     const colladaLoader = new ColladaLoader();
-    let morganaPivot = null; // Groupe qui porte la rotation (X, Y, Z)
-    let morganaModel = null; // Scène Collada brute (dont on remet la rotation interne à 0)
-    let morganaTexture = null;
+    let morganaInnerPivot = null; // Porte la rotation fixe X:180°, Z:90°
+    let morganaModel = null;
     let morganaRawImg = null;
+    let detectedRig = null;
 
-    // Calcule la boîte englobante en tenant compte des os du SkinnedMesh
     function computeExactBox(root) {
       root.updateMatrixWorld(true);
       const box = new THREE.Box3();
@@ -785,58 +810,108 @@
       });
     }
 
-    // Applique les 3 angles (X, Y, Z) et pose les pattes pile sur le tapis
+    // Analyse et affiche les vrais noms d'os du squelette de MorgnaCat.dae
+    function analyzeMorganaSkeleton(root, finalBox) {
+      const boneNames = [];
+      const bones = {
+        head: null,
+        neck: null,
+        tails: [],
+        legsFL: [],
+        legsFR: [],
+        legsBL: [],
+        legsBR: []
+      };
+
+      const center = new THREE.Vector3();
+      finalBox.getCenter(center);
+      const worldPos = new THREE.Vector3();
+
+      root.traverse((obj) => {
+        if (obj.isBone || obj.type === 'Bone' || obj.type === 'Joint') {
+          obj.userData.initRot = obj.rotation.clone();
+          boneNames.push(obj.name);
+          const n = (obj.name || '').toLowerCase();
+
+          if (!bones.head && (n.includes('head') || n.includes('face'))) {
+            bones.head = obj;
+          } else if (!bones.neck && n.includes('neck')) {
+            bones.neck = obj;
+          } else if (n.includes('tail')) {
+            bones.tails.push(obj);
+          } else if (n.includes('leg') || n.includes('arm') || n.includes('thigh') || n.includes('up') || n.includes('hand') || n.includes('foot')) {
+            obj.getWorldPosition(worldPos);
+            petRoot.worldToLocal(worldPos);
+            if (worldPos.x < center.x) {
+              if (worldPos.z >= center.z) bones.legsFL.push(obj);
+              else bones.legsBL.push(obj);
+            } else {
+              if (worldPos.z >= center.z) bones.legsFR.push(obj);
+              else bones.legsBR.push(obj);
+            }
+          }
+        }
+      });
+
+      const logEl = document.getElementById('bones-log');
+      if (boneNames.length > 0) {
+        logEl.textContent = `Os détectés (${boneNames.length}) : ` + boneNames.join(', ');
+      } else {
+        logEl.textContent = `Modèle statique (0 os nommé détecté).`;
+      }
+
+      return bones;
+    }
+
     function updateMorganaOrientationAndScale() {
-      if (!morganaPivot || !morganaModel) return;
+      if (!morganaInnerPivot || !morganaModel) return;
 
-      // 1. Remet tout à plat avant de calculer
-      morganaPivot.position.set(0, 0, 0);
-      morganaPivot.scale.setScalar(1);
+      morganaInnerPivot.position.set(0, 0, 0);
+      morganaInnerPivot.scale.setScalar(1);
 
-      // Applique les 3 angles choisis (en degrés -> radians)
-      morganaPivot.rotation.set(
+      // Applique ton calibrage exact : X = 180°, Z = 90° (+ Y pour tourner dans le salon)
+      morganaInnerPivot.rotation.set(
         THREE.MathUtils.degToRad(state.rotXDeg),
         THREE.MathUtils.degToRad(state.rotYDeg),
         THREE.MathUtils.degToRad(state.rotZDeg)
       );
 
-      // 2. Mesure la taille et met à l'échelle
-      const rawBox = computeExactBox(morganaPivot);
+      const rawBox = computeExactBox(morganaInnerPivot);
       const size = new THREE.Vector3();
       rawBox.getSize(size);
       let maxDim = Math.max(size.x, size.y, size.z);
       if (!isFinite(maxDim) || maxDim <= 0.0001) maxDim = 1;
 
       const targetSize = 1.15 * state.scaleMul;
-      morganaPivot.scale.setScalar(targetSize / maxDim);
+      morganaInnerPivot.scale.setScalar(targetSize / maxDim);
 
-      // 3. Recalcule la boîte après mise à l'échelle pour centrer X/Z et poser le bas (min.y) sur le tapis (y = 0.02)
-      const finalBox = computeExactBox(morganaPivot);
+      const finalBox = computeExactBox(morganaInnerPivot);
       const center = new THREE.Vector3();
       finalBox.getCenter(center);
 
-      morganaPivot.position.x -= center.x;
-      morganaPivot.position.z -= center.z;
-      morganaPivot.position.y += (0.02 - finalBox.min.y);
+      // Centre le chat sur X/Z et pose ses 4 pattes pile sur le tapis (y = 0.02)
+      morganaInnerPivot.position.x -= center.x;
+      morganaInnerPivot.position.z -= center.z;
+      morganaInnerPivot.position.y += (0.02 - finalBox.min.y);
+      morganaInnerPivot.userData.baseY = morganaInnerPivot.position.y;
+      morganaInnerPivot.userData.baseScale = morganaInnerPivot.scale.x;
 
-      // Met à jour l'affichage des angles dans l'interface
-      document.getElementById('angles-readout').textContent =
-        `X:${state.rotXDeg}° Y:${state.rotYDeg}° Z:${state.rotZDeg}°`;
-      document.getElementById('label-rot-z').textContent = `Redresser flanc : ${state.rotZDeg}°`;
-      document.getElementById('label-rot-x').textContent = `Avant/Arrière : ${state.rotXDeg}°`;
-      document.getElementById('label-rot-y').textContent = `Gauche/Droite : ${state.rotYDeg}°`;
+      document.getElementById('yaw-readout').textContent = `Direction Y : ${state.rotYDeg}°`;
+      document.getElementById('label-rot-y').textContent = `Orientation : ${state.rotYDeg}°`;
       document.getElementById('label-uv').textContent = state.flipY ? 'FlipY : Standard' : 'FlipY : Inversé';
       document.getElementById('label-scale').textContent = `Taille : ${state.scaleMul}x`;
+
+      return finalBox;
     }
 
     function applyTextureToMorganaMeshes() {
-      if (!morganaPivot || !morganaRawImg) return;
-      morganaTexture = buildMorganaTexture(morganaRawImg, state.flipY);
+      if (!morganaInnerPivot || !morganaRawImg) return;
+      const tex = buildMorganaTexture(morganaRawImg, state.flipY);
 
-      morganaPivot.traverse((child) => {
+      morganaInnerPivot.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            map: morganaTexture,
+            map: tex,
             color: 0xffffff,
             roughness: 0.75,
             metalness: 0.05,
@@ -860,7 +935,7 @@
       function tryNextDAE() {
         if (idx >= daeCandidates.length) {
           document.getElementById('pet-mood-bubble').textContent =
-            'Fichier MorgnaCat.dae introuvable. Place le dossier "Morgana (Cat Form)" à la racine ou dans models/ !';
+            'MorgnaCat.dae introuvable. Place le dossier "Morgana (Cat Form)" à la racine ou dans models/ !';
           showToast('MorgnaCat.dae introuvable');
           return;
         }
@@ -874,8 +949,8 @@
             while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
 
             morganaModel = collada.scene;
-            morganaPivot = new THREE.Group();
-            morganaPivot.add(morganaModel);
+            morganaInnerPivot = new THREE.Group();
+            morganaInnerPivot.add(morganaModel);
 
             const linesToRemove = [];
             morganaModel.traverse((child) => {
@@ -894,12 +969,13 @@
               applyTextureToMorganaMeshes();
             }
 
-            petRoot.add(morganaPivot);
-            updateMorganaOrientationAndScale();
+            petRoot.add(morganaInnerPivot);
+            const finalBox = updateMorganaOrientationAndScale();
+            detectedRig = analyzeMorganaSkeleton(morganaInnerPivot, finalBox);
 
             document.getElementById('pet-mood-bubble').textContent =
-              `Morgana importé ! Utilise Roulis (Z) ou Tangage (X) s'il faut ajuster sa posture.`;
-            showToast('Morgana redressé !');
+              `Morgana bien debout sur ses 4 pattes (X:180° Z:90°) !`;
+            showToast('Orientation X:180° Z:90° appliquée !');
           },
           undefined,
           () => tryNextDAE()
@@ -910,34 +986,52 @@
     }
 
     // ============================================================================
-    // 6. BOUTONS DES 3 AXES DE ROTATION (Z = FLANC, X = AVANT/ARRIÈRE, Y = DIRECTION)
+    // 6. BOUTONS DE TEST ET DE RÉGLAGES
     // ============================================================================
-    document.getElementById('btn-rot-z').addEventListener('click', () => {
-      state.rotZDeg = (state.rotZDeg + 90) % 360;
-      updateMorganaOrientationAndScale();
-      saveState();
-      showToast(`Roulis (Axe Z) : ${state.rotZDeg}°`);
-    });
+    function setTestMode(mode, btnId) {
+      state.testAnimMode = mode;
+      ['btn-test-none', 'btn-test-breathe', 'btn-test-head', 'btn-test-walk'].forEach((id) => {
+        document.getElementById(id).classList.toggle('active-test', id === btnId);
+      });
 
-    document.getElementById('btn-rot-x').addEventListener('click', () => {
-      state.rotXDeg = (state.rotXDeg + 90) % 360;
-      updateMorganaOrientationAndScale();
-      saveState();
-      showToast(`Tangage (Axe X) : ${state.rotXDeg}°`);
+      // Réinitialise les os si on repasse en Statique
+      if (mode === 'none' && morganaInnerPivot) {
+        morganaInnerPivot.traverse((obj) => {
+          if (obj.userData && obj.userData.initRot) {
+            obj.rotation.copy(obj.userData.initRot);
+          }
+        });
+        updateMorganaOrientationAndScale();
+      }
+    }
+
+    document.getElementById('btn-test-none').addEventListener('click', () => {
+      setTestMode('none', 'btn-test-none');
+      showToast('Mode Statique (Aucun mouvement)');
+    });
+    document.getElementById('btn-test-breathe').addEventListener('click', () => {
+      setTestMode('breathe', 'btn-test-breathe');
+      showToast('Test : Respiration douce');
+    });
+    document.getElementById('btn-test-head').addEventListener('click', () => {
+      setTestMode('head', 'btn-test-head');
+      showToast('Test : Mouvement Tête & Queue');
+    });
+    document.getElementById('btn-test-walk').addEventListener('click', () => {
+      setTestMode('walk', 'btn-test-walk');
+      showToast('Test : Marche sur place');
     });
 
     document.getElementById('btn-rot-y').addEventListener('click', () => {
       state.rotYDeg = (state.rotYDeg + 90) % 360;
       updateMorganaOrientationAndScale();
-      saveState();
-      showToast(`Direction (Axe Y) : ${state.rotYDeg}°`);
+      showToast(`Direction Y : ${state.rotYDeg}°`);
     });
 
     document.getElementById('btn-flip-uv').addEventListener('click', () => {
       state.flipY = !state.flipY;
       applyTextureToMorganaMeshes();
       updateMorganaOrientationAndScale();
-      saveState();
       showToast(state.flipY ? 'FlipY : Standard' : 'FlipY : Inversé');
     });
 
@@ -946,14 +1040,12 @@
       const next = (scales.indexOf(state.scaleMul) + 1) % scales.length;
       state.scaleMul = scales[next];
       updateMorganaOrientationAndScale();
-      saveState();
       showToast(`Taille : ${state.scaleMul}x`);
     });
 
     document.getElementById('btn-deco-top').addEventListener('click', () => {
       state.roomTheme = (state.roomTheme + 1) % roomThemes.length;
       applyRoomTheme(state.roomTheme);
-      saveState();
       showToast(`Déco : ${roomThemes[state.roomTheme].name}`);
     });
 
@@ -1019,19 +1111,47 @@
       };
       cameraHintBtn.textContent = labels[state.lightingMode];
       applyEnvironmentLighting();
-      saveState();
     });
 
     // ============================================================================
-    // 7. BOUCLE DE RENDU STATIQUE
+    // 7. BOUCLE DE RENDU (STATIQUE PAR DÉFAUT + MODES DE TEST DOUX)
     // ============================================================================
     const clock = new THREE.Clock();
 
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
+      const elapsed = clock.getElapsedTime();
 
       ceilingFanGroup.rotation.y += dt * 1.0;
+
+      if (morganaInnerPivot && state.testAnimMode !== 'none') {
+        const baseS = morganaInnerPivot.userData.baseScale || 1;
+        const baseY = morganaInnerPivot.userData.baseY || 0;
+
+        if (state.testAnimMode === 'breathe') {
+          // Respiration très douce
+          const breathe = 1 + Math.sin(elapsed * 2.2) * 0.015;
+          morganaInnerPivot.scale.set(baseS, baseS * breathe, baseS);
+        } else if (state.testAnimMode === 'head' && detectedRig) {
+          if (detectedRig.head) {
+            const init = detectedRig.head.userData.initRot;
+            detectedRig.head.rotation.y = init.y + Math.sin(elapsed * 1.5) * 0.25;
+            detectedRig.head.rotation.z = init.z + Math.cos(elapsed * 1.2) * 0.12;
+          }
+          detectedRig.tails.forEach((t, i) => {
+            const init = t.userData.initRot;
+            t.rotation.z = init.z + Math.sin(elapsed * 2.5 - i * 0.4) * 0.18;
+          });
+        } else if (state.testAnimMode === 'walk' && detectedRig) {
+          const w = elapsed * 8.0;
+          morganaInnerPivot.position.y = baseY + Math.abs(Math.sin(w)) * 0.03;
+          detectedRig.legsFL.slice(0, 2).forEach((b) => (b.rotation.z = b.userData.initRot.z + Math.sin(w) * 0.25));
+          detectedRig.legsBR.slice(0, 2).forEach((b) => (b.rotation.z = b.userData.initRot.z + Math.sin(w) * 0.25));
+          detectedRig.legsFR.slice(0, 2).forEach((b) => (b.rotation.z = b.userData.initRot.z - Math.sin(w) * 0.25));
+          detectedRig.legsBL.slice(0, 2).forEach((b) => (b.rotation.z = b.userData.initRot.z - Math.sin(w) * 0.25));
+        }
+      }
 
       controls.update();
       renderer.render(scene, camera);
@@ -1043,7 +1163,7 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    applyRoomTheme(state.roomTheme || 0);
+    applyRoomTheme(0);
     applyEnvironmentLighting();
     importMorganaCat();
     animate();
