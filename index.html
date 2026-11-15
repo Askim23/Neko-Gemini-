@@ -94,7 +94,6 @@
       pointer-events: auto;
     }
 
-    /* Petit panneau d'ajustement rapide de l'accessoire si besoin */
     #hat-adjust-bar {
       position: absolute;
       top: 48px;
@@ -462,7 +461,7 @@
     import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
     // ============================================================================
-    // 1. ÉTAT & SAUVEGARDE (AVEC RÉGLAGES FINS D'ACCESSOIRES PAR MODÈLE)
+    // 1. ÉTAT & SAUVEGARDE
     // ============================================================================
     const defaultState = {
       name: 'Mochi',
@@ -473,7 +472,7 @@
       hygiene: 95,
       coat: 'original',
       hat: 'crown',
-      species: 'f2_cat_std.dae', // Charge le vrai Chat Nintendogs 3DS par défaut !
+      species: 'f2_cat_std.dae',
       lightingMode: 'auto',
       roomTheme: 0,
       hatOffsetY: 0,
@@ -481,9 +480,9 @@
       hatScaleMul: 1.0
     };
 
-    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v5') || '{}'));
+    const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem('neko3ds_save_v6') || '{}'));
     function saveState() {
-      localStorage.setItem('neko3ds_save_v5', JSON.stringify(state));
+      localStorage.setItem('neko3ds_save_v6', JSON.stringify(state));
     }
 
     function showToast(msg) {
@@ -495,7 +494,7 @@
     }
 
     // ============================================================================
-    // 2. SCÈNE THREE.JS & CAMÉRA ANTI-MUR
+    // 2. SCÈNE THREE.JS, CHARGEURS & RÉSOLUTION EXPLICITE DES TEXTURES PNG 3DS
     // ============================================================================
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
@@ -528,8 +527,47 @@
 
     const gltfLoader = new GLTFLoader();
     const colladaLoader = new ColladaLoader();
+    const texLoader = new THREE.TextureLoader();
 
-    // Cherche automatiquement les modèles .dae (Nintendogs) ou .glb dans tous les dossiers
+    // Charge une texture PNG officielle 3DS en cherchant dans tous les sous-dossiers possibles
+    function load3DSTextureSmart(imgFilename, baseFolder, isColor = true) {
+      return new Promise((resolve) => {
+        const candidates = [
+          `${baseFolder}images/${imgFilename}`,
+          `${baseFolder}${imgFilename}`,
+          `Nintendogs and Cat/images/${imgFilename}`,
+          `models/Nintendogs and Cat/images/${imgFilename}`,
+          `models/images/${imgFilename}`,
+          `images/${imgFilename}`,
+          `models/${imgFilename}`,
+          `./${imgFilename}`
+        ];
+
+        let idx = 0;
+        function tryNext() {
+          if (idx >= candidates.length) {
+            resolve(null);
+            return;
+          }
+          const url = candidates[idx++];
+          texLoader.load(
+            encodeURI(url),
+            (tex) => {
+              // INDISPENSABLE POUR LA 3DS : RepeatWrapping car les UV 3DS dépassent [0..1]
+              tex.wrapS = THREE.RepeatWrapping;
+              tex.wrapT = THREE.RepeatWrapping;
+              if (isColor) tex.colorSpace = THREE.SRGBColorSpace;
+              tex.needsUpdate = true;
+              resolve(tex);
+            },
+            undefined,
+            () => tryNext()
+          );
+        }
+        tryNext();
+      });
+    }
+
     function loadSmartModel(filename, onSuccess, onError) {
       const cleanName = filename.replace(/^(models\/|Nintendogs and Cat\/)/, '');
       const isDAE = cleanName.toLowerCase().endsWith('.dae');
@@ -554,17 +592,19 @@
           return;
         }
         const path = candidatePaths[index++];
+        const baseFolder = path.substring(0, path.lastIndexOf('/') + 1);
+
         if (isDAE) {
           colladaLoader.load(
             encodeURI(path),
-            (collada) => onSuccess({ scene: collada.scene, animations: collada.animations || [], isDAE: true }, path),
+            (collada) => onSuccess({ scene: collada.scene, animations: collada.animations || [], isDAE: true, baseFolder, cleanName }, path),
             undefined,
             () => tryNext()
           );
         } else {
           gltfLoader.load(
             encodeURI(path),
-            (gltf) => onSuccess({ scene: gltf.scene, animations: gltf.animations || [], isDAE: false }, path),
+            (gltf) => onSuccess({ scene: gltf.scene, animations: gltf.animations || [], isDAE: false, baseFolder, cleanName }, path),
             undefined,
             () => tryNext()
           );
@@ -576,7 +616,7 @@
     // ============================================================================
     // 3. ÉCLAIRAGE DYNAMIQUE
     // ============================================================================
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 1.0);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf3e8ff, 1.05);
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.45);
@@ -614,7 +654,7 @@
     scene.add(sunbeam);
 
     // ============================================================================
-    // 4. SALON 3D ULTRA-COMPLET (AVEC TOUS LES NOUVEAUX MEUBLES)
+    // 4. SALON 3D ULTRA-COMPLET
     // ============================================================================
     const roomGroup = new THREE.Group();
     scene.add(roomGroup);
@@ -686,7 +726,6 @@
     leftWall.receiveShadow = true;
     roomGroup.add(leftWall);
 
-    // Fenêtre + Rideaux
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x7dd3fc });
     const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.65), skyMat);
     windowGlass.position.set(0.1, 2.6, -4.12);
@@ -707,7 +746,6 @@
       roomGroup.add(curtain);
     });
 
-    // Guirlande lumineuse
     const bulbGeo = new THREE.SphereGeometry(0.065, 10, 10);
     const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffe484 });
     for (let i = 0; i < 11; i++) {
@@ -718,7 +756,6 @@
       roomGroup.add(b1, b2);
     }
 
-    // Tapis central
     const r1 = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.03, 40), rug1Mat);
     const r2 = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 1.85, 0.035, 40), rug2Mat);
     r1.position.set(-0.1, 0.015, 0.4);
@@ -726,7 +763,6 @@
     r1.receiveShadow = r2.receiveShadow = true;
     roomGroup.add(r1, r2);
 
-    // Lit + Table de chevet + Radio
     const bedGroup = new THREE.Group();
     bedGroup.position.set(2.8, 0, -2.5);
     const frame = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.35, 2.6), woodMat);
@@ -755,7 +791,6 @@
     nightStand.add(nsBox, radioBody);
     roomGroup.add(nightStand);
 
-    // Canapé + Table basse + Fauteuil & Pouf
     const sofaGroup = new THREE.Group();
     sofaGroup.position.set(-1.35, 0, -3.35);
     const seat = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.45, 0.95), sofaMat);
@@ -790,7 +825,6 @@
     armchairGroup.add(acSeat, ottoman);
     roomGroup.add(armchairGroup);
 
-    // Bureau + Laptop + Bibliothèque + Meuble TV
     const deskGroup = new THREE.Group();
     deskGroup.position.set(-3.45, 0, 0.15);
     deskGroup.rotation.y = Math.PI / 2;
@@ -831,7 +865,6 @@
     tvGroup.add(tvStand, tvFrame, tvScreen);
     roomGroup.add(tvGroup);
 
-    // Ventilateur de plafond
     const ceilingFanGroup = new THREE.Group();
     ceilingFanGroup.position.set(0, 4.15, 0);
     const fanHub = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.18, 16), woodMat);
@@ -846,7 +879,6 @@
     }
     roomGroup.add(ceilingFanGroup);
 
-    // Arbre à chat + Carton avec peluche + Coussin + Gamelles + Pelote
     const catTree = new THREE.Group();
     catTree.position.set(2.95, 0, 1.15);
     const sisalMat = new THREE.MeshStandardMaterial({ color: 0xd6b88d, roughness: 0.95 });
@@ -931,7 +963,7 @@
     }
 
     // ============================================================================
-    // 6. ROBES & ACCESSOIRES 3D PROPORTIONNÉS POUR NINTENDOGS + CATS
+    // 6. ROBES PERSONNALISÉES (AVEC REPEATWRAPPING 3DS !) & ACCESSOIRES
     // ============================================================================
     function generateCoatTexture(coatId) {
       const c = document.createElement('canvas');
@@ -987,12 +1019,13 @@
       }
 
       const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.needsUpdate = true;
       return tex;
     }
 
-    // Groupe d'accessoires qui s'ajuste exactement entre les oreilles ou autour du cou
     const hatGroup = new THREE.Group();
 
     function buildAccessory3D(hatType) {
@@ -1000,7 +1033,7 @@
       if (hatType === 'none') return;
 
       const inner = new THREE.Group();
-      const s = 0.72 * (state.hatScaleMul || 1.0); // Taille fine adaptée entre les deux oreilles du chat 3DS
+      const s = 0.72 * (state.hatScaleMul || 1.0);
       inner.scale.setScalar(s);
 
       if (hatType === 'crown') {
@@ -1026,7 +1059,6 @@
         rightWing.rotation.z = Math.PI / 2; rightWing.position.x = 0.09;
         const bow = new THREE.Group();
         bow.add(center, leftWing, rightWing);
-        // Placé directement sous le menton / sur le poitrail
         bow.position.set(0, -0.34, 0.12);
         inner.add(bow);
       } else if (hatType === 'glasses') {
@@ -1065,7 +1097,7 @@
     }
 
     // ============================================================================
-    // 7. CHARGEUR OFFICIEL NINTENDOGS (.DAE) + ANIMATEUR SQUELETTIQUE 3DS
+    // 7. CHARGEUR OFFICIEL NINTENDOGS (.DAE) + LIAISON DES TEXTURES PNG 3DS
     // ============================================================================
     const petRoot = new THREE.Group();
     scene.add(petRoot);
@@ -1074,7 +1106,7 @@
     let animationsMap = {};
     let currentAction = null;
     let proceduralParts = null;
-    let daeRig = null; // Contient les os du modèle officiel Nintendogs (.dae) pour les animer !
+    let daeRig = null;
     let petBodyMeshes = [];
     let headAnchorBase = new THREE.Vector3(0, 1.05, 0.32);
     let activeHeadTarget = null;
@@ -1200,7 +1232,6 @@
       return box;
     }
 
-    // Analyse les os du modèle officiel Nintendogs (.dae) pour lui donner vie !
     function setupNintendogsDAERig(model) {
       const bones = {
         head: null,
@@ -1241,6 +1272,78 @@
       return { model, bones, basePosY: model.position.y };
     }
 
+    // Associe manuellement et proprement les vraies textures PNG de ton archive Nintendogs + Cats !
+    async function applyOfficialNintendogsTextures(model, cleanName, baseFolder) {
+      const isCat = cleanName.toLowerCase().includes('cat');
+      const isGolden = cleanName.toLowerCase().includes('gld');
+
+      const colFile = isCat ? 'cat_col.png' : 'bgl_col.png';
+      const whiskerFile = isCat ? 'cat_whisker_col.png' : 'bgl_whisker_col.png';
+      const norFile = isCat ? null : 'bgl_nor.png';
+
+      const [colTex, whiskerTex, norTex] = await Promise.all([
+        load3DSTextureSmart(colFile, baseFolder, true),
+        load3DSTextureSmart(whiskerFile, baseFolder, true),
+        norFile ? load3DSTextureSmart(norFile, baseFolder, false) : Promise.resolve(null)
+      ]);
+
+      model.traverse((child) => {
+        if (!child.isMesh) return;
+
+        const oldMats = Array.isArray(child.material) ? child.material : [child.material];
+        const newMats = oldMats.map((oldMat) => {
+          const matName = ((oldMat && oldMat.name) ? oldMat.name : '').toLowerCase();
+          const meshName = (child.name || '').toLowerCase();
+          const isWhisker = matName.includes('whisker') || meshName.includes('whisker') || (oldMat && oldMat.transparent);
+
+          if (isWhisker && whiskerTex) {
+            return new THREE.MeshStandardMaterial({
+              name: 'whisker',
+              map: whiskerTex,
+              transparent: true,
+              alphaTest: 0.1,
+              depthWrite: false,
+              side: THREE.DoubleSide,
+              roughness: 0.6
+            });
+          }
+
+          if (colTex) {
+            const bodyMat = new THREE.MeshStandardMaterial({
+              name: 'fur_body',
+              map: colTex,
+              normalMap: norTex || null,
+              // Pour le Golden Retriever (gld.dae), on applique une légère teinte dorée chaude
+              color: isGolden ? 0xffe4b5 : 0xffffff,
+              roughness: 0.78,
+              metalness: 0.04,
+              side: THREE.DoubleSide
+            });
+            return bodyMat;
+          }
+
+          // Si déjà une texture embarquée par ColladaLoader, on force RepeatWrapping
+          if (oldMat && oldMat.map) {
+            oldMat.map.wrapS = THREE.RepeatWrapping;
+            oldMat.map.wrapT = THREE.RepeatWrapping;
+            oldMat.map.colorSpace = THREE.SRGBColorSpace;
+            oldMat.map.needsUpdate = true;
+          }
+          return oldMat;
+        });
+
+        child.material = Array.isArray(child.material) ? newMats : newMats[0];
+        child.userData.originalMat = Array.isArray(child.material)
+          ? child.material.map((m) => m.clone())
+          : child.material.clone();
+      });
+
+      // Si l'utilisateur avait choisi une des 11 robes personnalisées, on la réapplique par-dessus
+      if (state.coat !== 'original') {
+        applyCoatToMeshes(state.coat);
+      }
+    }
+
     function loadPetModel(speciesName) {
       while (petRoot.children.length > 0) petRoot.remove(petRoot.children[0]);
       mixer = null;
@@ -1260,38 +1363,22 @@
 
       loadSmartModel(
         speciesName,
-        (loaded, loadedPath) => {
+        async (loaded) => {
           const model = loaded.isDAE ? loaded.scene : SkeletonUtils.clone(loaded.scene);
           petBodyMeshes = [];
 
-          // Améliore le rendu des moustaches transparentes (whiskers) des modèles Nintendogs 3DS
           model.traverse((child) => {
             if (child.isMesh) {
               child.frustumCulled = false;
               child.castShadow = true;
               child.receiveShadow = true;
 
-              const mats = Array.isArray(child.material) ? child.material : [child.material];
-              mats.forEach((m) => {
-                if (!m) return;
-                m.roughness = 0.75;
-                m.metalness = 0.05;
-                if (/whisker/i.test(child.name) || (m.name && /whisker/i.test(m.name))) {
-                  m.transparent = true;
-                  m.alphaTest = 0.15;
-                  m.depthWrite = false;
-                  m.side = THREE.DoubleSide;
-                }
-              });
-
               if (!child.userData.originalMat && child.material) {
                 child.userData.originalMat = Array.isArray(child.material)
                   ? child.material.map((m) => m.clone())
                   : child.material.clone();
               }
-              if (!/whisker/i.test(child.name)) {
-                petBodyMeshes.push(child);
-              }
+              petBodyMeshes.push(child);
             }
           });
 
@@ -1305,7 +1392,6 @@
             mixer.update(0.016);
           }
 
-          // Mise à l'échelle automatique propre (1.28m dans le salon)
           const rawBox = computeAccurateBounds(model);
           const size = new THREE.Vector3();
           rawBox.getSize(size);
@@ -1323,11 +1409,9 @@
           model.position.z -= center.z;
           model.position.y -= isFinite(finalBox.min.y) ? finalBox.min.y : 0;
 
-          // Détection du squelette Nintendogs (.dae) ou de l'os de tête (.glb)
           daeRig = setupNintendogsDAERig(model);
           activeHeadTarget = daeRig.bones.head || daeRig.bones.neck;
 
-          // Position de base calibrée juste entre les deux oreilles du modèle !
           const totalHeight = Math.max(0.6, finalBox.max.y - finalBox.min.y);
           const totalLength = Math.max(0.6, finalBox.max.z - finalBox.min.z);
           headAnchorBase.set(0, totalHeight * 0.84, totalLength * 0.28);
@@ -1335,14 +1419,19 @@
           petRoot.add(model);
           petRoot.add(hatGroup);
           updateHatPlacement();
-
           buildAccessory3D(state.hat);
-          if (state.coat !== 'original') applyCoatToMeshes(state.coat);
 
-          showToast(`Modèle 3DS "${speciesName}" chargé avec succès !`);
+          // Charge et applique les vraies textures PNG 3DS du sous-dossier images/ !
+          if (loaded.isDAE) {
+            await applyOfficialNintendogsTextures(model, loaded.cleanName, loaded.baseFolder);
+          } else if (state.coat !== 'original') {
+            applyCoatToMeshes(state.coat);
+          }
+
+          showToast(`Modèle 3DS "${speciesName}" et ses textures chargés !`);
         },
         () => {
-          showToast(`"${speciesName}" introuvable dans Nintendogs and Cat/ → Chat Chibi activé`);
+          showToast(`"${speciesName}" introuvable → Chat Chibi activé`);
           const cat = createProceduralCat3DS();
           petRoot.add(cat);
           buildAccessory3D(state.hat);
@@ -1359,7 +1448,6 @@
         const worldPos = new THREE.Vector3();
         activeHeadTarget.getWorldPosition(worldPos);
         petRoot.worldToLocal(worldPos);
-        // Place la couronne pile au sommet du crâne de l'os Head + ton offset personnalisé
         hatGroup.position.set(
           worldPos.x,
           worldPos.y + 0.14 + (state.hatOffsetY || 0),
@@ -1409,6 +1497,7 @@
       }
     }
 
+    // Compatible avec les matériaux simples ET les tableaux de matériaux des modèles .dae 3DS !
     function applyCoatToMeshes(coatId) {
       if (coatId === 'original' && !proceduralParts) {
         petBodyMeshes.forEach((mesh) => {
@@ -1420,9 +1509,21 @@
         });
         return;
       }
+
       const tex = generateCoatTexture(coatId === 'original' ? 'tuxedo' : coatId);
       petBodyMeshes.forEach((mesh) => {
-        if (mesh.material && !Array.isArray(mesh.material)) {
+        if (!mesh.material) return;
+        if (Array.isArray(mesh.material)) {
+          mesh.material = mesh.material.map((m) => {
+            if (!m || m.name === 'whisker' || m.transparent) return m;
+            const cloned = m.clone();
+            cloned.map = tex;
+            cloned.color.setHex(0xffffff);
+            cloned.needsUpdate = true;
+            return cloned;
+          });
+        } else {
+          if (mesh.material.name === 'whisker' || mesh.material.transparent) return;
           mesh.material = mesh.material.clone();
           mesh.material.map = tex;
           mesh.material.color.setHex(0xffffff);
@@ -1513,7 +1614,6 @@
       }
     });
 
-    // Boutons d'ajustement chirurgical de l'accessoire (Hauteur / Profondeur / Taille)
     document.getElementById('adj-up').addEventListener('click', () => {
       state.hatOffsetY = Number(((state.hatOffsetY || 0) + 0.04).toFixed(2));
       updateHatPlacement();
@@ -1737,7 +1837,7 @@
     });
 
     // ============================================================================
-    // 11. BOUCLE D'ANIMATION 60 FPS (AVEC ANIMATION DOUCE DU SQUELETTE NINTENDOGS)
+    // 11. BOUCLE D'ANIMATION 60 FPS
     // ============================================================================
     const clock = new THREE.Clock();
 
@@ -1750,7 +1850,6 @@
 
       if (mixer) mixer.update(dt);
 
-      // Déplacement autonome
       ai.timer -= dt;
       if (ai.mode === 'walk') {
         const dir = new THREE.Vector3().subVectors(ai.targetPos, petRoot.position);
@@ -1774,17 +1873,15 @@
 
       if (ai.timer <= 0) chooseNextAutonomousBehavior();
 
-      // A. Animation procédurale des vrais modèles Nintendogs + Cats (.dae) via leurs Os !
       if (daeRig && !mixer) {
         const { model, bones, basePosY } = daeRig;
 
         if (elapsed > nextHeadLookChange) {
           headLookTargetY = (Math.random() - 0.5) * 0.35;
-          headTiltTargetZ = (Math.random() - 0.5) * 0.18; // Petite inclinaison mignonne façon Nintendogs
+          headTiltTargetZ = (Math.random() - 0.5) * 0.18;
           nextHeadLookChange = elapsed + 4.5 + Math.random() * 4;
         }
 
-        // 1. Tête & Cou vivants mais très doux
         if (bones.head) {
           const init = bones.head.userData.initRot;
           const nodX = ai.mode === 'eat' ? Math.sin(elapsed * 7) * 0.25 + 0.35 : (ai.mode === 'sleep' ? 0.3 : Math.sin(elapsed * 1.5) * 0.03);
@@ -1796,7 +1893,6 @@
           bones.head.rotation.z = THREE.MathUtils.lerp(bones.head.rotation.z, init.z + tiltZ, 0.05);
         }
 
-        // 2. Balancement souple de la queue
         bones.tails.forEach((tBone, idx) => {
           const init = tBone.userData.initRot;
           const speed = ai.mode === 'happy' ? 6.0 : 1.8;
@@ -1804,7 +1900,6 @@
           tBone.rotation.z = init.z + Math.sin(elapsed * speed - idx * 0.5) * amp;
         });
 
-        // 3. Pattes & Respiration du corps
         if (ai.mode === 'walk') {
           const w = elapsed * 7.0;
           bones.legsFL.forEach((b) => (b.rotation.z = b.userData.initRot.z + Math.sin(w) * 0.32));
@@ -1813,19 +1908,15 @@
           bones.legsBL.forEach((b) => (b.rotation.z = b.userData.initRot.z - Math.sin(w) * 0.32));
           model.position.y = basePosY + Math.abs(Math.sin(w)) * 0.025;
         } else {
-          // Retour doux des pattes au repos
           [...bones.legsFL, ...bones.legsFR, ...bones.legsBL, ...bones.legsBR].forEach((b) => {
             b.rotation.z = THREE.MathUtils.lerp(b.rotation.z, b.userData.initRot.z, 0.1);
           });
-          // Respiration très douce
           model.position.y = basePosY + Math.sin(elapsed * 1.6) * 0.006;
         }
       }
 
-      // Mise à jour continue de la couronne / accessoire sur la tête
       updateHatPlacement();
 
-      // B. Animation du Chat Chibi de secours
       if (proceduralParts) {
         const { headGroup, eyesGroup, legs, tailPivot, body } = proceduralParts;
         if (ai.mode === 'walk') {
@@ -1847,7 +1938,6 @@
         }
       }
 
-      // Pelote de laine
       if (yarnVelocity.lengthSq() > 0.001) {
         yarnBall.position.addScaledVector(yarnVelocity, dt);
         yarnBall.rotation.x += yarnVelocity.z * dt * 3;
@@ -1857,7 +1947,6 @@
         if (yarnBall.position.z > 2.6 || yarnBall.position.z < -2.0) yarnVelocity.z *= -0.8;
       }
 
-      // Poussière & Cœurs
       const posArr = dustGeo.attributes.position.array;
       for (let i = 0; i < dustCount; i++) {
         posArr[i * 3 + 1] += Math.sin(elapsed + i) * 0.001;
